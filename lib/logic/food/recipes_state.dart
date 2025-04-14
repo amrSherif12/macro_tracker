@@ -14,3 +14,9 @@ class RecipesLoaded extends RecipesState {
 class RecipesNoData extends RecipesState {}
 
 class RecipesNoInternet extends RecipesState {}
+
+class RecipesError extends RecipesState {
+  String errorMessage;
+
+  RecipesError({required this.errorMessage});
+}

@@ -49,7 +49,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(
           builder: (context) => BlocProvider(
                 create: (context) => RecipeInfoCubit(),
-                child: RecipeInfo(id: args.id),
+                child: RecipeInfo(recipe: args.recipe),
               ));
 
     case Routes.createRecipeRoute:
@@ -65,7 +65,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(
           builder: (context) => BlocProvider(
                 create: (context) => FoodInfoCubit(),
-                child: FoodInfo(id: args.id),
+                child: FoodInfo(food: args.food),
               ));
 
     case Routes.addFoodRoute:

@@ -3,6 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:macro_tracker_2/data/helpers/auth_helper.dart';
 import 'package:macro_tracker_2/logic/food/food_cubit.dart';
 import 'package:macro_tracker_2/presentation/widgets/ingredients_tile.dart';
+import 'package:macro_tracker_2/presentation/widgets/placeholder/error.dart';
+import 'package:macro_tracker_2/presentation/widgets/placeholder/loading_widget.dart';
+import 'package:macro_tracker_2/presentation/widgets/placeholder/no_internet.dart';
 import 'package:macro_tracker_2/presentation/widgets/toast.dart';
 import '../../../constants/colors.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -142,6 +145,9 @@ class _CreateRecipeState extends State<CreateRecipe> {
                           kcal: state.food[index].kcal,
                           unit: state.food[index].unit,
                           uid: state.food[index].uid,
+                          carb: state.food[index].carb,
+                          fat: state.food[index].fat,
+                          protein: state.food[index].protein,
                         ),
                         list: chosen,
                         isChecked: chosen.contains(state.food[index].id!)),
@@ -184,45 +190,11 @@ class _CreateRecipeState extends State<CreateRecipe> {
               ),
             ));
           } else if (state is FoodNoInternet) {
-            return Center(
-                child: Padding(
-              padding: const EdgeInsets.all(15),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: 350,
-                    child: Image.asset('assets/imgs/nointernet.png'),
-                  ),
-                  const Text(
-                    'No Internet',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 26,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'f',
-                    ),
-                  ),
-                  const Text(
-                    'Try reloading the page or checking you internet connection.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontFamily: 'f',
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
-            ));
+            return NoInternet();
+          } else if (state is FoodError) {
+            return ErrorScreen(errorMessage: state.errorMessage);
           } else {
-            return Center(
-                child: LoadingAnimationWidget.discreteCircle(
-                    color: ConstColors.secMid,
-                    size: 30,
-                    secondRingColor: ConstColors.secMidOff,
-                    thirdRingColor: ConstColors.secOff));
+            return LoadingWidget();
           }
         },
       ),

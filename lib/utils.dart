@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 
 class CustomClipPath extends CustomClipper<Path> {
   @override
@@ -83,4 +84,9 @@ String unitConverter(String unit) {
   } else {
     return 'table spoon';
   }
+}
+
+Future<bool> connectedToInternet() async {
+  bool connected = await InternetConnection().hasInternetAccess;
+  return connected;
 }

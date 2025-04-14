@@ -31,7 +31,7 @@ class _RecipeTileState extends State<RecipeTile> {
         child: MaterialButton(
           onPressed: () async {
             await Navigator.pushNamed(context, Routes.recipeInfoRoute,
-                arguments: RecipeInfo(id: widget.recipe.id!));
+                arguments: RecipeInfo(recipe: widget.recipe));
             widget.refresh();
           },
           elevation: 10,

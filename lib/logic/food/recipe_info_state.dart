@@ -4,7 +4,7 @@ part of 'recipe_info_cubit.dart';
 abstract class RecipeInfoState {}
 
 class RecipeInfoLoaded extends RecipeInfoState {
-  final RecipeInfoModel recipe;
+  final RecipeModel recipe;
 
   RecipeInfoLoaded({required this.recipe});
 }
@@ -12,3 +12,9 @@ class RecipeInfoLoaded extends RecipeInfoState {
 class RecipeInfoLoading extends RecipeInfoState {}
 
 class RecipeInfoNoInternet extends RecipeInfoState {}
+
+class RecipeInfoError extends RecipeInfoState {
+  String errorMessage;
+
+  RecipeInfoError({required this.errorMessage});
+}

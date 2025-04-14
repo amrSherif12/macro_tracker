@@ -79,14 +79,14 @@ class _NavigationState extends State<Navigation> {
                 duration: const Duration(milliseconds: 500),
                 gap: 10,
                 tabActiveBorder: Border.all(color: Colors.white, width: 1),
-                padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+                padding: const EdgeInsets.fromLTRB(13, 13, 13, 13),
                 tabs: const [
                   GButton(
                     iconActiveColor: Colors.white,
                     iconColor: Colors.white,
                     textColor: Colors.white,
                     textStyle: TextStyle(
-                        fontFamily: "f", color: Colors.white, fontSize: 13),
+                        fontFamily: "f", color: Colors.white, fontSize: 14),
                     icon: Icons.book,
                     text: 'Diary',
                   ),
@@ -95,7 +95,7 @@ class _NavigationState extends State<Navigation> {
                     iconColor: Colors.white,
                     textColor: Colors.white,
                     textStyle: TextStyle(
-                        fontFamily: "f", color: Colors.white, fontSize: 13),
+                        fontFamily: "f", color: Colors.white, fontSize: 14),
                     icon: Icons.search,
                     text: 'Search',
                   ),
@@ -104,18 +104,18 @@ class _NavigationState extends State<Navigation> {
                     iconColor: Colors.white,
                     textColor: Colors.white,
                     textStyle: TextStyle(
-                        fontFamily: "f", color: Colors.white, fontSize: 13),
+                        fontFamily: "f", color: Colors.white, fontSize: 14),
                     icon: Icons.fitness_center,
-                    text: 'My Exercises',
+                    text: 'Exercises',
                   ),
                   GButton(
                     iconActiveColor: Colors.white,
                     iconColor: Colors.white,
                     textColor: Colors.white,
                     textStyle: TextStyle(
-                        fontFamily: "f", color: Colors.white, fontSize: 13),
+                        fontFamily: "f", color: Colors.white, fontSize: 14),
                     icon: Icons.restaurant,
-                    text: 'My foods',
+                    text: 'Food',
                   )
                 ]),
           ),

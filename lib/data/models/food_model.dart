@@ -6,51 +6,23 @@ class FoodModel {
   String food;
   int kcal;
   String unit;
-
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'uid': uid,
-      'food': food,
-      'kcal': kcal,
-      'unit': unit,
-    };
-  }
-
-  static FoodModel fromMap(DocumentSnapshot map) {
-    return FoodModel(
-      id: map.id,
-      uid: map["uid"],
-      food: map["food"],
-      kcal: map["kcal"],
-      unit: map["unit"],
-    );
-  }
-
-  FoodModel(
-      {this.id,
-      required this.uid,
-      required this.food,
-      required this.kcal,
-      required this.unit});
-}
-
-class FoodInfoModel extends FoodModel {
-  FoodInfoModel(
-      {super.id,
-      required super.food,
-      required super.kcal,
-      required super.unit,
-      required super.uid,
-      required this.protein,
-      required this.carb,
-      required this.fat});
-
   double protein;
   double carb;
   double fat;
+  double? amount;
 
-  Map<String, dynamic> toMap_() {
+  FoodModel(
+      {this.id,
+      required this.food,
+      required this.kcal,
+      required this.unit,
+      required this.uid,
+      required this.protein,
+      required this.carb,
+      this.amount,
+      required this.fat});
+
+  Map<String, dynamic> toMap() {
     return {
       'uid': uid,
       'food': food,
@@ -62,8 +34,8 @@ class FoodInfoModel extends FoodModel {
     };
   }
 
-  static FoodInfoModel fromMap(DocumentSnapshot map) {
-    return FoodInfoModel(
+  static FoodModel fromMap(DocumentSnapshot map) {
+    return FoodModel(
       id: map.id,
       uid: map["uid"],
       food: map["food"],
@@ -73,5 +45,13 @@ class FoodInfoModel extends FoodModel {
       carb: map["carb"],
       fat: map["fat"],
     );
+  }
+
+  static List<FoodModel> fromListMap(Map map) {
+    List<FoodModel> list = [];
+    for (int i = 0; i < map.length; i++) {
+      list.add(fromMap(map[map.keys.toList()[i]]));
+    }
+    return list;
   }
 }

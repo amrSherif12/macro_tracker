@@ -28,10 +28,11 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  animate_do: ^3.3.4
+  animate_do: ^4.2.0
   cloud_firestore: ^5.0.1
   flutter:
     sdk: flutter
+  internet_connection_checker_plus: ^2.7.1
 
 
 
@@ -48,12 +49,12 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^4.0.0
-  flutter_bloc: ^8.1.1
-  bloc: ^8.1.0
+  flutter_lints: ^5.0.0
+  flutter_bloc: ^9.1.0
+  bloc: ^9.0.0
   percent_indicator: ^4.0.1
-  email_validator: ^2.1.17
-  syncfusion_flutter_charts: ^26.1.35
+  email_validator: ^3.0.0
+  syncfusion_flutter_charts: ^29.1.33
   shared_preferences: ^2.0.15
   cupertino_icons: ^1.0.6
   firebase_core: ^3.1.0
@@ -61,7 +62,6 @@ dev_dependencies:
   fluttertoast: ^8.2.6
   loading_animation_widget: ^1.2.1
   google_nav_bar: ^5.0.6
-  internet_connection_checker: ^1.0.0+1
   simple_circular_progress_bar: ^1.0.2
 
 # For information on the generic Dart part of this file, see the

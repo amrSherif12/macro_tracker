@@ -15,3 +15,9 @@ class HomeLoaded extends HomeState {
 }
 
 class HomeNoInternet extends HomeState {}
+
+class HomeError extends HomeState {
+  String errorMessage;
+
+  HomeError({required this.errorMessage});
+}

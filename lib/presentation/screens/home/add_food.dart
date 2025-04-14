@@ -13,7 +13,6 @@ class _AddFoodState extends State<AddFood> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ConstColors.main,
-
     );
   }
 }

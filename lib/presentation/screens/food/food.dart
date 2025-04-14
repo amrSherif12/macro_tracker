@@ -48,16 +48,17 @@ class _FoodState extends State<Food> with TickerProviderStateMixin {
           controller: tabController,
           unselectedLabelStyle:
               TextStyle(color: Colors.white.withOpacity(0.75), fontSize: 19),
-          labelStyle: const TextStyle(color: Colors.white, fontSize: 22, fontFamily: 'f'),
+          labelStyle: const TextStyle(
+              color: Colors.white, fontSize: 22, fontFamily: 'f'),
           dividerColor: ConstColors.secMid,
           indicator: const UnderlineTabIndicator(
               borderSide: BorderSide(color: Colors.white, width: 2)),
           tabs: const [
             Tab(
-              text: 'My foods',
+              child: Text('My Foods', style: TextStyle(fontFamily: 'f'),),
             ),
             Tab(
-              text: 'My recipes',
+              child: Text('My Recipes', style: TextStyle(fontFamily: 'f'),),
             ),
           ],
         ),

@@ -5,7 +5,7 @@ import '../../constants/colors.dart';
 
 class Exercises extends StatefulWidget {
   final bool isFree;
-  final Map exercises;
+  final List exercises;
   const Exercises({super.key, required this.exercises, required this.isFree});
 
   @override
@@ -13,7 +13,6 @@ class Exercises extends StatefulWidget {
 }
 
 class _ExercisesState extends State<Exercises> {
-
   late bool open;
 
   @override
@@ -51,12 +50,10 @@ class _ExercisesState extends State<Exercises> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 15, 0, 10),
                   child: FloatingActionButton(
-                    onPressed: widget.isFree ? () {
-
-                    } : null,
+                    onPressed: widget.isFree ? () {} : null,
                     heroTag: null,
                     backgroundColor:
-                    widget.isFree ? ConstColors.cheat : Colors.blue[600],
+                        widget.isFree ? ConstColors.cheat : Colors.blue[600],
                     child: const Icon(
                       Icons.add,
                       color: Colors.white,
@@ -67,43 +64,41 @@ class _ExercisesState extends State<Exercises> {
             ),
             open == true
                 ? FadeInDown(
-              from: 40,
-              duration: const Duration(milliseconds: 450),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
-                child: ListView.builder(
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(5),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            widget.exercises.values
-                                .toList()[index]['exercise']
-                                .exercise,
-                            style: TextStyle(
-                                fontFamily: "F",
-                                fontSize: 20,
-                                color: Colors.grey[300]),
-                          ),
-                          Text(
-                            toString(),
-                            style: TextStyle(
-                                fontFamily: "F",
-                                fontSize: 20,
-                                color: Colors.grey[400]),
-                          ),
-                        ],
+                    from: 40,
+                    duration: const Duration(milliseconds: 450),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
+                      child: ListView.builder(
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.all(5),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  widget.exercises[index].exercise,
+                                  style: TextStyle(
+                                      fontFamily: "F",
+                                      fontSize: 20,
+                                      color: Colors.grey[300]),
+                                ),
+                                Text(
+                                  toString(),
+                                  style: TextStyle(
+                                      fontFamily: "F",
+                                      fontSize: 20,
+                                      color: Colors.grey[400]),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        itemCount: widget.exercises.length,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
                       ),
-                    );
-                  },
-                  itemCount: widget.exercises.length,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                ),
-              ),
-            )
+                    ),
+                  )
                 : Container(),
             Column(
               children: [
@@ -119,36 +114,36 @@ class _ExercisesState extends State<Exercises> {
                     children: [
                       widget.exercises.isNotEmpty
                           ? IconButton(
-                        splashRadius: 1,
-                        icon: AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 400),
-                            transitionBuilder: (child, anim) =>
-                                RotationTransition(
-                                  turns: child.key ==
-                                      const ValueKey('icon1')
-                                      ? Tween<double>(begin: 1, end: 1)
-                                      .animate(anim)
-                                      : Tween<double>(begin: 0.75, end: 1)
-                                      .animate(anim),
-                                  child: FadeTransition(
-                                      opacity: anim, child: child),
-                                ),
-                            child: open == true
-                                ? const Icon(Icons.keyboard_arrow_up,
-                                color: Colors.white,
-                                size: 30,
-                                key: ValueKey('icon1'))
-                                : const Icon(
-                              Icons.keyboard_arrow_down,
-                              color: Colors.white,
-                              size: 30,
-                              key: ValueKey('icon2'),
-                            )),
-                        onPressed: () {
-                          open = !open;
-                          setState(() {});
-                        },
-                      )
+                              splashRadius: 1,
+                              icon: AnimatedSwitcher(
+                                  duration: const Duration(milliseconds: 400),
+                                  transitionBuilder: (child, anim) =>
+                                      RotationTransition(
+                                        turns: child.key ==
+                                                const ValueKey('icon1')
+                                            ? Tween<double>(begin: 1, end: 1)
+                                                .animate(anim)
+                                            : Tween<double>(begin: 0.75, end: 1)
+                                                .animate(anim),
+                                        child: FadeTransition(
+                                            opacity: anim, child: child),
+                                      ),
+                                  child: open == true
+                                      ? const Icon(Icons.keyboard_arrow_up,
+                                          color: Colors.white,
+                                          size: 30,
+                                          key: ValueKey('icon1'))
+                                      : const Icon(
+                                          Icons.keyboard_arrow_down,
+                                          color: Colors.white,
+                                          size: 30,
+                                          key: ValueKey('icon2'),
+                                        )),
+                              onPressed: () {
+                                open = !open;
+                                setState(() {});
+                              },
+                            )
                           : const SizedBox(),
                       const Spacer(),
                       Text(

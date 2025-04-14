@@ -25,8 +25,7 @@ class _ExerciseState extends State<Exercise> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          },
+        onPressed: () async {},
         backgroundColor: ConstColors.exeMid,
         child: const Icon(
           Icons.add,

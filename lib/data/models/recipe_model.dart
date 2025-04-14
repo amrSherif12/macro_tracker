@@ -6,41 +6,17 @@ class RecipeModel {
   String uid;
   String recipe;
   int kcal;
-
-  RecipeModel(
-      {this.id, required this.uid, required this.recipe, required this.kcal});
-
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'uid': uid,
-      'recipe': recipe,
-      'kcal': kcal,
-    };
-  }
-
-  static RecipeModel fromMap(DocumentSnapshot map) {
-    return RecipeModel(
-      uid: map["uid"],
-      id: map.id,
-      recipe: map["recipe"],
-      kcal: map["kcal"],
-    );
-  }
-}
-
-class RecipeInfoModel extends RecipeModel {
   List ingredients;
   List amounts;
   double protein;
   double carb;
   double fat;
 
-  RecipeInfoModel({
-    super.id,
-    required super.uid,
-    required super.recipe,
-    required super.kcal,
+  RecipeModel({
+    this.id,
+    required this.uid,
+    required this.recipe,
+    required this.kcal,
     required this.ingredients,
     required this.amounts,
     required this.protein,
@@ -48,10 +24,10 @@ class RecipeInfoModel extends RecipeModel {
     required this.fat,
   });
 
-  Map<String, dynamic> toMap_() {
+  Map<String, dynamic> toMap() {
     List ingredientsMap = [];
     for (int i = 0; i < ingredients.length; i++) {
-      FoodInfoModel food = ingredients[i];
+      FoodModel food = ingredients[i];
       ingredientsMap.add(food.toMap());
     }
     return {
@@ -66,7 +42,7 @@ class RecipeInfoModel extends RecipeModel {
     };
   }
 
-  static RecipeInfoModel fromMap(DocumentSnapshot map) {
+  static RecipeModel fromMap(DocumentSnapshot map) {
     List<FoodModel> food = [];
     for (int i = 0; i < map['ingredients'].length; i++) {
       final ingredient = map['ingredients'][i];
@@ -76,9 +52,12 @@ class RecipeInfoModel extends RecipeModel {
         kcal: ingredient['kcal'],
         unit: ingredient['unit'],
         uid: ingredient['uid'],
+        carb: ingredient['carb'],
+        fat: ingredient['fat'],
+        protein: ingredient['protein'],
       ));
     }
-    return RecipeInfoModel(
+    return RecipeModel(
       id: map.id,
       uid: map["uid"],
       recipe: map["recipe"],
@@ -89,5 +68,13 @@ class RecipeInfoModel extends RecipeModel {
       carb: map["carb"],
       fat: map["fat"],
     );
+  }
+
+  static List<RecipeModel> fromListMap(Map map) {
+    List<RecipeModel> list = [];
+    for (int i = 0; i < map.length; i++) {
+      list.add(fromMap(map[map.keys.toList()[i]]));
+    }
+    return list;
   }
 }

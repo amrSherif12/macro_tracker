@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:macro_tracker_2/data/models/food_model.dart';
+import 'package:macro_tracker_2/data/models/recipe_model.dart';
 
 class DayModel {
   DateTime date;
@@ -12,15 +14,15 @@ class DayModel {
   double fatCons;
   double fatGoal;
   bool isFree;
-  Map breakfastFood;
-  Map breakfastRecipes;
-  Map lunchFood;
-  Map lunchRecipes;
-  Map dinnerFood;
-  Map dinnerRecipes;
-  Map snacksFood;
-  Map snacksRecipes;
-  Map exercises;
+  List<FoodModel> breakfastFood;
+  List<RecipeModel> breakfastRecipes;
+  List<FoodModel> lunchFood;
+  List<RecipeModel> lunchRecipes;
+  List<FoodModel> dinnerFood;
+  List<RecipeModel> dinnerRecipes;
+  List<FoodModel> snacksFood;
+  List<RecipeModel> snacksRecipes;
+  List exercises;
 
   DayModel({
     required this.date,
@@ -83,15 +85,15 @@ class DayModel {
       fatCons: map["fatCons"],
       fatGoal: map["fatGoal"],
       isFree: map["isFree"],
-      breakfastFood: map["breakfastFood"],
-      breakfastRecipes: map["breakfastRecipes"],
-      lunchFood: map["lunchFood"],
-      lunchRecipes: map["lunchRecipes"],
-      dinnerFood: map["dinnerFood"],
-      dinnerRecipes: map["dinnerRecipes"],
-      snacksFood: map["snacksFood"],
-      snacksRecipes: map["snacksRecipes"],
-      exercises: map["exercises"],
+      breakfastFood: FoodModel.fromListMap(map["breakfastFood"]),
+      breakfastRecipes: RecipeModel.fromListMap(map["breakfastRecipes"]),
+      lunchFood: FoodModel.fromListMap(map["lunchFood"]),
+      lunchRecipes: RecipeModel.fromListMap(map["lunchRecipes"]),
+      dinnerFood: FoodModel.fromListMap(map["dinnerFood"]),
+      dinnerRecipes: RecipeModel.fromListMap(map["dinnerRecipes"]),
+      snacksFood: FoodModel.fromListMap(map["snacksFood"]),
+      snacksRecipes: RecipeModel.fromListMap(map["snacksRecipes"]),
+      exercises: [],
     );
   }
 }

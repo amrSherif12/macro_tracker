@@ -45,13 +45,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(splashColor: ConstColors.sec.withOpacity(0.6)),
-      debugShowCheckedModeBanner: false,
-      onGenerateRoute: router.generateRoute,
-      initialRoute: Routes.loadingRoute,
-      onUnknownRoute: (settings) =>
-          MaterialPageRoute(builder: (context) => const Undefined()),
+    return SafeArea(
+      top: false,
+      child: MaterialApp(
+        theme: ThemeData(splashColor: ConstColors.sec.withOpacity(0.6), fontFamily: 'F'),
+        debugShowCheckedModeBanner: false,
+        onGenerateRoute: router.generateRoute,
+        initialRoute: Routes.loadingRoute,
+        onUnknownRoute: (settings) =>
+            MaterialPageRoute(builder: (context) => const Undefined()),
+      ),
     );
   }
 }

@@ -8,7 +8,6 @@ import 'package:meta/meta.dart';
 
 import '../../constants/strings.dart';
 import '../../data/helpers/auth_helper.dart';
-import '../../data/helpers/firestore_helper.dart';
 import '../../presentation/widgets/toast.dart';
 
 class SignUpCubit extends Cubit<SignUpState> {

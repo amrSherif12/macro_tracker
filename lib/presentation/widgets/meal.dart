@@ -1,13 +1,14 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:macro_tracker_2/constants/colors.dart';
-import 'package:macro_tracker_2/utils.dart';
+import 'package:macro_tracker_2/data/models/food_model.dart';
+import 'package:macro_tracker_2/data/models/recipe_model.dart';
 
 import '../../constants/strings.dart';
 
 class Meal extends StatefulWidget {
-  final Map food;
-  final Map recipes;
+  final List<FoodModel> food;
+  final List<RecipeModel> recipes;
   final IconData icon;
   final String meal;
   final bool isFree;
@@ -31,10 +32,10 @@ class _MealState extends State<Meal> {
 
   void kcalCalc() {
     for (int i = 0; i < widget.food.length; i++) {
-      String unit = widget.food.values.toList()[i]['food'].unit;
-      String food = widget.food.values.toList()[i]['food'].food;
-      double amount = widget.food.values.toList()[i]['amount'];
-      int kcal = widget.food.values.toList()[i]['food'].kcal;
+      String unit = widget.food[i].unit;
+      String food = widget.food[i].food;
+      double amount = widget.food[i].amount!;
+      int kcal = widget.food[i].kcal;
       if (unit == 'per 100 gm' || unit == 'per 100 ml') {
         items.add(food);
         itemsKcal.add((kcal * amount / 100).toInt());
@@ -44,8 +45,8 @@ class _MealState extends State<Meal> {
       }
     }
     for (int i = 0; i < widget.recipes.length; i++) {
-      String recipe = widget.food.values.toList()[i].food;
-      int kcal = widget.food.values.toList()[i].kcal;
+      String recipe = widget.recipes[i].recipe;
+      int kcal = widget.recipes[i].kcal;
       items.add(recipe);
       itemsKcal.add(kcal);
     }
@@ -92,9 +93,11 @@ class _MealState extends State<Meal> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 15, 0, 10),
                   child: FloatingActionButton(
-                    onPressed: !widget.isFree ? () {
-                      Navigator.pushNamed(context, Routes.addFoodRoute);
-                    } : null,
+                    onPressed: !widget.isFree
+                        ? () {
+                            Navigator.pushNamed(context, Routes.addFoodRoute);
+                          }
+                        : null,
                     heroTag: null,
                     backgroundColor:
                         widget.isFree ? ConstColors.cheat : ConstColors.sec,

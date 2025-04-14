@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:macro_tracker_2/data/models/food_model.dart';
 import 'package:macro_tracker_2/logic/food/food_cubit.dart';
+import 'package:macro_tracker_2/presentation/screens/food/food.dart';
 import 'package:macro_tracker_2/presentation/screens/food/food_info.dart';
 
 import '../../constants/strings.dart';
@@ -30,7 +31,9 @@ class _FoodTileState extends State<FoodTile> {
         child: MaterialButton(
           onPressed: () async {
             await Navigator.pushNamed(context, Routes.foodInfoRoute,
-                arguments: FoodInfo(id: widget.food.id!));
+                arguments: FoodInfo(
+                  food: widget.food,
+                ));
             widget.refresh();
           },
           elevation: 10,

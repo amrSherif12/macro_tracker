@@ -29,8 +29,6 @@ class _FoodTileState extends State<FoodTile> {
         borderRadius: BorderRadius.circular(20),
         child: MaterialButton(
           onPressed: () async {
-            await Navigator.pushNamed(context, Routes.foodInfoRoute,
-                arguments: FoodInfo(id: widget.food.id!));
             widget.refresh();
           },
           elevation: 10,

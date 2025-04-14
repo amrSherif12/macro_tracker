@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:macro_tracker_2/data/helpers/auth_helper.dart';
-import 'package:macro_tracker_2/data/helpers/firestore_helper.dart';
+import 'package:macro_tracker_2/data/helpers/firestore/food_repository.dart';
 import 'package:macro_tracker_2/data/models/recipe_model.dart';
 import 'package:macro_tracker_2/presentation/widgets/textfield.dart';
 import 'package:macro_tracker_2/utils.dart';
@@ -134,7 +134,7 @@ class _IngredientsAmountsState extends State<IngredientsAmounts> {
                   if (nameCont.text.isNotEmpty &&
                       controllersAreNotEmpty(controllers)) {
                     if (widget.create) {
-                      await FireStoreHelper.instance.addRecipe(
+                      await FoodRepository.instance.addRecipe(
                         context,
                         nameCont.text,
                         widget.items,

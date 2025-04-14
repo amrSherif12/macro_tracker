@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:macro_tracker_2/constants/colors.dart';
 import 'package:macro_tracker_2/constants/strings.dart';
-import 'package:macro_tracker_2/data/helpers/firestore_helper.dart';
+import 'package:macro_tracker_2/data/helpers/firestore/food_repository.dart';
 import 'package:macro_tracker_2/data/models/food_model.dart';
 
 import '../../../data/helpers/auth_helper.dart';
@@ -68,9 +68,9 @@ class _CreateFoodState extends State<CreateFood> {
                       'Macro nutrients are exceeding the calories in the food',
                       context);
                 } else {
-                  FireStoreHelper.instance.addFood(
+                  FoodRepository.instance.addFood(
                       context,
-                      FoodInfoModel(
+                      FoodModel(
                           food: nameCont.text,
                           kcal: int.parse(kcalCont.text),
                           unit: unit,

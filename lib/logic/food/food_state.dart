@@ -14,3 +14,9 @@ class FoodLoaded extends FoodState {
 class FoodNoData extends FoodState {}
 
 class FoodNoInternet extends FoodState {}
+
+class FoodError extends FoodState {
+  String errorMessage;
+
+  FoodError({required this.errorMessage});
+}

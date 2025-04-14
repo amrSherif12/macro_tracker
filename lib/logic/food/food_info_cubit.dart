@@ -1,10 +1,12 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:macro_tracker_2/data/helpers/firestore_helper.dart';
+import 'package:macro_tracker_2/data/helpers/firestore/food_repository.dart';
 import 'package:macro_tracker_2/presentation/widgets/toast.dart';
 import 'package:meta/meta.dart';
 
+import '../../data/helpers/firestore/day_repository.dart';
 import '../../data/models/food_model.dart';
+import '../../utils.dart';
 
 part 'food_info_state.dart';
 
@@ -13,15 +15,19 @@ class FoodInfoCubit extends Cubit<FoodInfoState> {
 
   Future<void> getFood(String id) async {
     emit(FoodInfoLoading());
-    if (await FireStoreHelper.instance.connectedToInternet()) {
-      FoodInfoModel food = await FireStoreHelper.instance.getFood(id);
+    try {
+      FoodModel food = await FoodRepository.instance.getFood(id);
       emit(FoodInfoLoaded(food: food));
-    } else {
-      emit(FoodInfoNoInternet());
+    } catch (e) {
+      if (!(await connectedToInternet())) {
+        emit(FoodInfoNoInternet());
+      } else {
+        emit(FoodInfoError(errorMessage: e.toString()));
+      }
     }
   }
 
-  Future<void> saveFood(BuildContext context, FoodInfoModel food) async {
+  Future<void> saveFood(BuildContext context, FoodModel food) async {
     if (food.kcal > 1000) {
       toastBuilder('Food can\'t exceed 1000 kcal', context);
     }
@@ -29,7 +35,7 @@ class FoodInfoCubit extends Cubit<FoodInfoState> {
       toastBuilder(
           'Macro nutrients are exceeding the calories in the food', context);
     } else {
-      await FireStoreHelper.instance.updateFood(context, food);
+      await FoodRepository.instance.updateFood(context, food);
       Navigator.pop(context);
     }
   }
