@@ -1,11 +1,11 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:macro_tracker_2/data/models/recipe_model.dart';
 import 'package:macro_tracker_2/presentation/screens/food/recipe_info.dart';
 
 import '../../constants/strings.dart';
+import 'delete.dart';
 
 class RecipeTile extends StatefulWidget {
   final RecipeModel recipe;
@@ -47,7 +47,7 @@ class _RecipeTileState extends State<RecipeTile> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.recipe.recipe,
+                          widget.recipe.name,
                           style: const TextStyle(
                               fontFamily: "F",
                               fontSize: 20,
@@ -73,7 +73,17 @@ class _RecipeTileState extends State<RecipeTile> {
                   ),
                   FloatingActionButton(
                     heroTag: null,
-                    onPressed: () async {},
+                    onPressed: () async {
+                      await showDialog(
+                        context: context,
+                        builder: (context) => Delete(
+                          id: widget.recipe.id!,
+                          name: widget.recipe.name,
+                          isRecipe: true,
+                        ),
+                      );
+                      widget.refresh;
+                    },
                     backgroundColor: Colors.grey[700],
                     child: const Icon(
                       Icons.delete,

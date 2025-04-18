@@ -55,10 +55,16 @@ class _FoodState extends State<Food> with TickerProviderStateMixin {
               borderSide: BorderSide(color: Colors.white, width: 2)),
           tabs: const [
             Tab(
-              child: Text('My Foods', style: TextStyle(fontFamily: 'f'),),
+              child: Text(
+                'My Foods',
+                style: TextStyle(fontFamily: 'f'),
+              ),
             ),
             Tab(
-              child: Text('My Recipes', style: TextStyle(fontFamily: 'f'),),
+              child: Text(
+                'My Recipes',
+                style: TextStyle(fontFamily: 'f'),
+              ),
             ),
           ],
         ),

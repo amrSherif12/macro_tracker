@@ -1,14 +1,14 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:macro_tracker_2/constants/colors.dart';
+import 'package:macro_tracker_2/data/models/consumable_model.dart';
 import 'package:macro_tracker_2/data/models/food_model.dart';
 import 'package:macro_tracker_2/data/models/recipe_model.dart';
 
 import '../../constants/strings.dart';
 
 class Meal extends StatefulWidget {
-  final List<FoodModel> food;
-  final List<RecipeModel> recipes;
+  final List<ConsumableModel> food;
   final IconData icon;
   final String meal;
   final bool isFree;
@@ -19,7 +19,7 @@ class Meal extends StatefulWidget {
       required this.meal,
       required this.food,
       required this.isFree,
-      required this.recipes});
+      });
 
   @override
   State<Meal> createState() => _MealState();
@@ -32,26 +32,31 @@ class _MealState extends State<Meal> {
 
   void kcalCalc() {
     for (int i = 0; i < widget.food.length; i++) {
-      String unit = widget.food[i].unit;
-      String food = widget.food[i].food;
-      double amount = widget.food[i].amount!;
-      int kcal = widget.food[i].kcal;
-      if (unit == 'per 100 gm' || unit == 'per 100 ml') {
-        items.add(food);
-        itemsKcal.add((kcal * amount / 100).toInt());
-      } else {
-        items.add(food);
-        itemsKcal.add((kcal * amount).toInt());
+      if (widget.food[i] is FoodModel){
+        FoodModel foodModel = widget.food[i] as FoodModel;
+        String unit = foodModel.unit;
+        String food = foodModel.name;
+        double amount = foodModel.amount!;
+        int kcal = widget.food[i].kcal;
+        if (unit == 'per 100 gm' || unit == 'per 100 ml') {
+          items.add(food);
+          itemsKcal.add((kcal * amount / 100).toInt());
+        } else {
+          items.add(food);
+          itemsKcal.add((kcal * amount).toInt());
+        }
+      } else if (widget.food[i] is RecipeModel) {
+        RecipeModel recipeModel = widget.food[i] as RecipeModel;
+        for (int i = 0; i < widget.food.length; i++) {
+          String recipe = recipeModel.name;
+          int kcal = recipeModel.kcal;
+          items.add(recipe);
+          itemsKcal.add(kcal);
+        }
+        for (int i = 0; i < items.length; i++) {
+          totalKcal += itemsKcal[i];
+        }
       }
-    }
-    for (int i = 0; i < widget.recipes.length; i++) {
-      String recipe = widget.recipes[i].recipe;
-      int kcal = widget.recipes[i].kcal;
-      items.add(recipe);
-      itemsKcal.add(kcal);
-    }
-    for (int i = 0; i < items.length; i++) {
-      totalKcal += itemsKcal[i];
     }
   }
 

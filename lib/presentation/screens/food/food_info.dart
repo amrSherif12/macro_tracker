@@ -25,16 +25,15 @@ class _FoodInfoState extends State<FoodInfo> {
   TextEditingController proteinCont = TextEditingController();
   TextEditingController carbCont = TextEditingController();
   TextEditingController fatCont = TextEditingController();
-  late String unit;
+
 
   @override
   Widget build(BuildContext context) {
-    nameCont.text = widget.food.food;
+    nameCont.text = widget.food.name;
     kcalCont.text = widget.food.kcal.toString();
     proteinCont.text = widget.food.protein.toString();
     carbCont.text = widget.food.carb.toString();
     fatCont.text = widget.food.fat.toString();
-    unit = widget.food.unit;
     double others = widget.food.kcal -
         widget.food.protein * 4 -
         widget.food.carb * 4 -
@@ -85,9 +84,9 @@ class _FoodInfoState extends State<FoodInfo> {
                         context,
                         FoodModel(
                             id: widget.food.id,
-                            food: nameCont.text,
+                            name: nameCont.text,
                             kcal: int.parse(kcalCont.text),
-                            unit: unit,
+                            unit: widget.food.unit,
                             uid: AuthenticationHelper
                                 .instance.auth.currentUser!.uid,
                             protein: double.parse(proteinCont.text),
@@ -98,15 +97,9 @@ class _FoodInfoState extends State<FoodInfo> {
                 child: const Row(
                   children: [
                     Icon(
-                      Icons.restaurant,
+                      Icons.check,
                       color: Colors.white,
                       size: 27,
-                    ),
-                    SizedBox(width: 5),
-                    Text(
-                      "Save",
-                      style: TextStyle(
-                          color: Colors.white, fontFamily: 'F', fontSize: 20),
                     ),
                   ],
                 ),
@@ -140,7 +133,7 @@ class _FoodInfoState extends State<FoodInfo> {
                         ),
                       ),
                       DropdownButton<String>(
-                        value: unit,
+                        value: widget.food.unit,
                         icon: const Icon(
                           Icons.keyboard_arrow_down_sharp,
                           color: Colors.white54,
@@ -154,7 +147,10 @@ class _FoodInfoState extends State<FoodInfo> {
                           color: Colors.greenAccent,
                         ),
                         onChanged: (String? value) {
-                          unit = value!;
+                          widget.food.unit = value!;
+                          setState(() {
+
+                          });
                         },
                         items: Lists.units.map<DropdownMenuItem<String>>(
                           (String value) {

@@ -44,7 +44,7 @@ class _FoodTileState extends State<FoodTile> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.food.food,
+                          widget.food.name,
                           style: const TextStyle(
                               fontFamily: "F",
                               fontSize: 20,

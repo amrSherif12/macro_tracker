@@ -48,7 +48,8 @@ class MyApp extends StatelessWidget {
     return SafeArea(
       top: false,
       child: MaterialApp(
-        theme: ThemeData(splashColor: ConstColors.sec.withOpacity(0.6), fontFamily: 'F'),
+        theme: ThemeData(
+            splashColor: ConstColors.sec.withOpacity(0.6), fontFamily: 'F'),
         debugShowCheckedModeBanner: false,
         onGenerateRoute: router.generateRoute,
         initialRoute: Routes.loadingRoute,

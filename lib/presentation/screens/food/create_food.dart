@@ -56,8 +56,8 @@ class _CreateFoodState extends State<CreateFood> {
               ),
             ),
             IconButton(
-              onPressed: () {
-                if (int.parse(kcalCont.text) > 1000) {
+              onPressed: () async {
+                if (int.parse(kcalCont.text) > 10000) {
                   toastBuilder('Food can\'t exceed 1000 kcal', context);
                 }
                 if (double.parse(proteinCont.text) * 4 +
@@ -71,7 +71,7 @@ class _CreateFoodState extends State<CreateFood> {
                   FoodRepository.instance.addFood(
                       context,
                       FoodModel(
-                          food: nameCont.text,
+                          name: nameCont.text,
                           kcal: int.parse(kcalCont.text),
                           unit: unit,
                           uid: AuthenticationHelper
@@ -81,7 +81,6 @@ class _CreateFoodState extends State<CreateFood> {
                           fat: double.parse(fatCont.text)));
                   Navigator.pop(context);
                 }
-                Navigator.pop(context);
               },
               icon: const Icon(
                 Icons.done,

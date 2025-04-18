@@ -395,7 +395,7 @@ class _HomeState extends State<Home> {
                                         BlocProvider.of<HomeCubit>(context)
                                             .switchCheatDay(true, day: day);
                                       },
-                                      child: const Padding(
+                                      child:  Padding(
                                         padding: EdgeInsets.all(15),
                                         child: Row(
                                           mainAxisAlignment:
@@ -414,7 +414,7 @@ class _HomeState extends State<Home> {
                                               'cheat day',
                                               style: TextStyle(
                                                 fontSize: 19,
-                                                color: Colors.deepPurpleAccent,
+                                                color: ConstColors.cheatMidOff,
                                                 fontWeight: FontWeight.bold,
                                                 fontFamily: "F",
                                               ),
@@ -480,30 +480,26 @@ class _HomeState extends State<Home> {
                         Meal(
                           icon: Icons.coffee,
                           meal: "Breakfast",
-                          food: day.breakfastFood,
-                          recipes: day.breakfastRecipes,
+                          food: day.breakfast,
                           isFree: day.isFree,
                         ),
                         Meal(
                           icon: Icons.lunch_dining,
                           meal: "Lunch",
-                          food: day.lunchFood,
-                          recipes: day.lunchRecipes,
+                          food: day.lunch,
                           isFree: day.isFree,
                         ),
                         Meal(
                           icon: Icons.dinner_dining,
                           meal: "Diner",
-                          food: day.dinnerFood,
+                          food: day.dinner,
                           isFree: day.isFree,
-                          recipes: day.dinnerRecipes,
                         ),
                         Meal(
                           icon: Icons.local_pizza,
                           meal: "Snacks",
-                          food: day.snacksFood,
+                          food: day.snacks,
                           isFree: day.isFree,
-                          recipes: day.snacksRecipes,
                         ),
                         Exercises(
                           exercises: day.exercises,

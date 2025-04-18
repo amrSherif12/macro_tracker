@@ -45,6 +45,7 @@ class _IngredientsAmountsState extends State<IngredientsAmounts> {
 
   @override
   Widget build(BuildContext context) {
+    print(controllers.length);
     return Padding(
       padding:
           EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
@@ -91,7 +92,7 @@ class _IngredientsAmountsState extends State<IngredientsAmounts> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width / 2,
                     child: UnderLineTextField(
-                        label: widget.items[index].food,
+                        label: widget.items[index].name,
                         keyboard: const TextInputType.numberWithOptions(
                             decimal: true),
                         controller: controllers[index]),
@@ -134,7 +135,7 @@ class _IngredientsAmountsState extends State<IngredientsAmounts> {
                   if (nameCont.text.isNotEmpty &&
                       controllersAreNotEmpty(controllers)) {
                     if (widget.create) {
-                      await FoodRepository.instance.addRecipe(
+                      FoodRepository.instance.addRecipe(
                         context,
                         nameCont.text,
                         widget.items,
@@ -142,7 +143,7 @@ class _IngredientsAmountsState extends State<IngredientsAmounts> {
                       );
                       Navigator.pop(context);
                       Navigator.pop(context);
-                    } else {}
+                    }
                   }
                 },
                 child: Material(

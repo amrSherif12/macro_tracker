@@ -13,11 +13,11 @@ class ConstColors {
   static Color exeMid = Colors.blue[700]!;
   static Color exeDark = Colors.blue[900]!;
 
-  static Color cheatOff = Colors.deepPurpleAccent[300]!;
-  static Color cheatMidOff = Colors.deepPurpleAccent[400]!;
-  static Color cheat = Colors.deepPurpleAccent[600]!;
-  static Color cheatMid = Colors.deepPurpleAccent[700]!;
-  static Color cheatDark = Colors.deepPurpleAccent[900]!;
+  static Color cheatOff = Colors.purple[400]!;
+  static Color cheatMidOff = Colors.purple[500]!;
+  static Color cheat = Colors.purple[700]!;
+  static Color cheatMid = Colors.purple[800]!;
+  static Color cheatDark = Colors.purple[900]!;
 
   static Color main = Colors.grey[900]!;
 }

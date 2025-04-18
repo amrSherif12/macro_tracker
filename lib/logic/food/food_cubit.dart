@@ -12,8 +12,9 @@ class FoodCubit extends Cubit<FoodState> {
 
   Future<void> getFood({bool? isRefresh}) async {
     if (isRefresh != true) emit(FoodLoading());
+    List<FoodModel> food = await FoodRepository.instance.getFoods();
+
     try {
-      List<FoodModel> food = await FoodRepository.instance.getFoods();
       if (food.isEmpty) {
         emit(FoodNoData());
       } else {

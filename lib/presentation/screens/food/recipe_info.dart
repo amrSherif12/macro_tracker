@@ -53,45 +53,29 @@ class _RecipeInfoState extends State<RecipeInfo> {
 
     return Scaffold(
         backgroundColor: Colors.grey[900],
+        appBar: AppBar(
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+              size: 23,
+            ),
+          ),
+          title: Text(
+            widget.recipe.name,
+            style: const TextStyle(
+                color: Colors.white,
+                fontFamily: 'F',
+                fontSize: 23),
+            overflow: TextOverflow.ellipsis,
+          ),
+          backgroundColor: ConstColors.sec,
+        ),
         body: Column(
           children: [
-            Container(
-              width: double.infinity,
-              height: 100,
-              color: Colors.green,
-              child: SafeArea(
-                child: Padding(
-                  padding: const EdgeInsets.all(15),
-                  child: Row(
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        icon: const Icon(
-                          Icons.arrow_back,
-                          color: Colors.white,
-                          size: 23,
-                        ),
-                      ),
-                      Expanded(
-                        child: Text(
-                          widget.recipe.recipe,
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontFamily: 'F',
-                              fontSize: 23),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
             Expanded(
               child: ListView(
                 shrinkWrap: true,
@@ -129,7 +113,7 @@ class _RecipeInfoState extends State<RecipeInfo> {
                           children: [
                             Expanded(
                               child: Text(
-                                widget.recipe.ingredients[index].food,
+                                widget.recipe.ingredients.entries.toList()[index].key,
                                 style: const TextStyle(
                                     color: Colors.white,
                                     fontFamily: 'F',
@@ -148,7 +132,7 @@ class _RecipeInfoState extends State<RecipeInfo> {
                                 ),
                                 Text(
                                   unitConverter(
-                                      widget.recipe.ingredients[index].unit),
+                                      widget.recipe.ingredients.entries.toList()[index].value),
                                   style: const TextStyle(
                                       color: Colors.white,
                                       fontFamily: 'F',

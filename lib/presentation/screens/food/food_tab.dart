@@ -39,7 +39,7 @@ class _FoodTabState extends State<FoodTab> {
                     child: FoodTile(
                       food: FoodModel(
                           id: state.food[index].id!,
-                          food: state.food[index].food,
+                          name: state.food[index].name,
                           kcal: state.food[index].kcal,
                           uid: state.food[index].uid,
                           carb: state.food[index].carb,

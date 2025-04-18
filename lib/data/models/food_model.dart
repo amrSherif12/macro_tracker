@@ -1,57 +1,55 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class FoodModel {
-  String uid;
-  String? id;
-  String food;
-  int kcal;
-  String unit;
-  double protein;
-  double carb;
-  double fat;
+import 'quick_calorie_model.dart';
+
+class FoodModel extends QuickCalorieModel {
   double? amount;
+  String unit;
+  String? uid;
 
   FoodModel(
-      {this.id,
-      required this.food,
-      required this.kcal,
+      {this.amount,
       required this.unit,
-      required this.uid,
-      required this.protein,
-      required this.carb,
-      this.amount,
-      required this.fat});
+      super.id,
+      required super.name,
+      required super.kcal,
+      this.uid,
+      required super.protein,
+      required super.carb,
+      required super.fat});
 
+  @override
   Map<String, dynamic> toMap() {
-    return {
-      'uid': uid,
-      'food': food,
+    Map<String, dynamic> map = {
+      'name': name,
       'kcal': kcal,
-      'unit': unit,
       'protein': protein,
       'carb': carb,
       'fat': fat,
+      'unit': unit
     };
+    if (uid != null) map.addAll({'uid': uid});
+    if (amount != null) map.addAll({'amount': amount});
+    return map;
   }
 
   static FoodModel fromMap(DocumentSnapshot map) {
-    return FoodModel(
+    FoodModel food = FoodModel(
       id: map.id,
-      uid: map["uid"],
-      food: map["food"],
+      name: map["name"],
       kcal: map["kcal"],
-      unit: map["unit"],
       protein: map["protein"],
       carb: map["carb"],
       fat: map["fat"],
+      unit: map["unit"],
     );
-  }
+    try {
+      if (map['uid'] != null) food.uid = map['uid'];
+    } catch (e) {}
+    try {
+      if (map['amount'] != null) food.amount = map['amount'];
+    } catch (e) {}
 
-  static List<FoodModel> fromListMap(Map map) {
-    List<FoodModel> list = [];
-    for (int i = 0; i < map.length; i++) {
-      list.add(fromMap(map[map.keys.toList()[i]]));
-    }
-    return list;
+    return food;
   }
 }

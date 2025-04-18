@@ -1,16 +1,15 @@
 // ignore_for_file: use_build_context_synchronously
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:macro_tracker_2/data/models/food_model.dart';
-import 'package:macro_tracker_2/logic/food/food_cubit.dart';
-import 'package:macro_tracker_2/presentation/screens/food/food.dart';
 import 'package:macro_tracker_2/presentation/screens/food/food_info.dart';
+import 'package:macro_tracker_2/presentation/widgets/delete.dart';
 
 import '../../constants/strings.dart';
 
 class FoodTile extends StatefulWidget {
   final FoodModel food;
   final Function refresh;
+
   const FoodTile({
     Key? key,
     required this.refresh,
@@ -49,7 +48,7 @@ class _FoodTileState extends State<FoodTile> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.food.food,
+                          widget.food.name,
                           style: const TextStyle(
                               fontFamily: "F",
                               fontSize: 20,
@@ -76,17 +75,14 @@ class _FoodTileState extends State<FoodTile> {
                   FloatingActionButton(
                     heroTag: null,
                     onPressed: () async {
-                      // await showDialog(
-                      //   context: context,
-                      //   builder: (context) => BlocProvider(
-                      //     create: (context) => MyFoodsCubit(),
-                      //     child: RemoveFood(
-                      //       id: widget.id,
-                      //       name: widget.food,
-                      //     ),
-                      //   ),
-                      // );
-                      // BlocProvider.of<MyFoodsCubit>(context).showFood();
+                      await showDialog(
+                        context: context,
+                        builder: (context) => Delete(
+                          id: widget.food.id!,
+                          name: widget.food.name,
+                        ),
+                      );
+                      widget.refresh;
                     },
                     backgroundColor: Colors.grey[700],
                     child: const Icon(

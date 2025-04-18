@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:macro_tracker_2/data/models/consumable_model.dart';
 import 'package:macro_tracker_2/data/models/food_model.dart';
 import 'package:macro_tracker_2/data/models/recipe_model.dart';
 
@@ -14,14 +15,10 @@ class DayModel {
   double fatCons;
   double fatGoal;
   bool isFree;
-  List<FoodModel> breakfastFood;
-  List<RecipeModel> breakfastRecipes;
-  List<FoodModel> lunchFood;
-  List<RecipeModel> lunchRecipes;
-  List<FoodModel> dinnerFood;
-  List<RecipeModel> dinnerRecipes;
-  List<FoodModel> snacksFood;
-  List<RecipeModel> snacksRecipes;
+  List<ConsumableModel> breakfast;
+  List<ConsumableModel> lunch;
+  List<ConsumableModel> dinner;
+  List<ConsumableModel> snacks;
   List exercises;
 
   DayModel({
@@ -36,14 +33,10 @@ class DayModel {
     required this.fatCons,
     required this.fatGoal,
     required this.isFree,
-    required this.breakfastFood,
-    required this.breakfastRecipes,
-    required this.lunchFood,
-    required this.lunchRecipes,
-    required this.dinnerFood,
-    required this.dinnerRecipes,
-    required this.snacksFood,
-    required this.snacksRecipes,
+    required this.breakfast,
+    required this.lunch,
+    required this.dinner,
+    required this.snacks,
     required this.exercises,
   });
 
@@ -60,14 +53,10 @@ class DayModel {
       'fatCons': fatCons,
       'fatGoal': fatGoal,
       'isFree': isFree,
-      'breakfastFood': breakfastFood,
-      'breakfastRecipes': breakfastRecipes,
-      'lunchFood': lunchFood,
-      'lunchRecipes': lunchRecipes,
-      'dinnerFood': dinnerFood,
-      'dinnerRecipes': dinnerRecipes,
-      'snacksFood': snacksFood,
-      'snacksRecipes': snacksRecipes,
+      'breakfast': breakfast,
+      'lunch': lunch,
+      'dinner': dinner,
+      'snacks': snacks,
       'exercises': exercises,
     };
   }
@@ -85,14 +74,10 @@ class DayModel {
       fatCons: map["fatCons"],
       fatGoal: map["fatGoal"],
       isFree: map["isFree"],
-      breakfastFood: FoodModel.fromListMap(map["breakfastFood"]),
-      breakfastRecipes: RecipeModel.fromListMap(map["breakfastRecipes"]),
-      lunchFood: FoodModel.fromListMap(map["lunchFood"]),
-      lunchRecipes: RecipeModel.fromListMap(map["lunchRecipes"]),
-      dinnerFood: FoodModel.fromListMap(map["dinnerFood"]),
-      dinnerRecipes: RecipeModel.fromListMap(map["dinnerRecipes"]),
-      snacksFood: FoodModel.fromListMap(map["snacksFood"]),
-      snacksRecipes: RecipeModel.fromListMap(map["snacksRecipes"]),
+      breakfast: ConsumableModel.fromListMap(map["breakfast"]),
+      lunch: ConsumableModel.fromListMap(map["lunch"]),
+      dinner: ConsumableModel.fromListMap(map["dinner"]),
+      snacks: ConsumableModel.fromListMap(map["snacks"]),
       exercises: [],
     );
   }

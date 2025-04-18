@@ -5,12 +5,10 @@ import 'package:macro_tracker_2/data/models/food_model.dart';
 class IngredientsTile extends StatefulWidget {
   final FoodModel food;
   final List<String> list;
-  bool isChecked;
   IngredientsTile(
       {Key? key,
       required this.food,
-      required this.list,
-      required this.isChecked})
+      required this.list,})
       : super(key: key);
 
   @override
@@ -20,23 +18,24 @@ class IngredientsTile extends StatefulWidget {
 class _IngredientsTileState extends State<IngredientsTile> {
   @override
   Widget build(BuildContext context) {
+    bool isChecked = widget.list.contains(widget.food.id!);
     return Padding(
       padding: const EdgeInsets.all(15),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(20),
         child: MaterialButton(
           onPressed: () {
-            if (widget.isChecked == false) {
+            if (!isChecked) {
               widget.list.add(widget.food.id!);
             } else {
               widget.list.remove(widget.food.id!);
             }
-            widget.isChecked = !widget.isChecked;
+            isChecked = !isChecked;
             setState(() {});
           },
           elevation: 10,
           color:
-              widget.isChecked == false ? Colors.grey[800] : ConstColors.secOff,
+              !isChecked ? Colors.grey[800] : ConstColors.secOff,
           child: SizedBox(
             width: double.infinity,
             child: Padding(
@@ -48,11 +47,11 @@ class _IngredientsTileState extends State<IngredientsTile> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.food.food,
+                          widget.food.name,
                           style: TextStyle(
                               fontFamily: "F",
                               fontSize: 20,
-                              color: widget.isChecked == false
+                              color: !isChecked
                                   ? Colors.white
                                   : Colors.grey[900]),
                           overflow: TextOverflow.ellipsis,
@@ -65,7 +64,7 @@ class _IngredientsTileState extends State<IngredientsTile> {
                           style: TextStyle(
                               fontFamily: "F",
                               fontSize: 13,
-                              color: widget.isChecked == false
+                              color: !isChecked
                                   ? Colors.grey[300]!
                                   : Colors.grey[900]),
                           overflow: TextOverflow.ellipsis,
@@ -79,7 +78,7 @@ class _IngredientsTileState extends State<IngredientsTile> {
                   FloatingActionButton(
                     heroTag: null,
                     onPressed: null,
-                    backgroundColor: widget.isChecked == false
+                    backgroundColor: !isChecked
                         ? Colors.grey[700]
                         : ConstColors.sec,
                     child: const Icon(

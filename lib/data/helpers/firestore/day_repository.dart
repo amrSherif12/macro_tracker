@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:macro_tracker_2/data/models/consumable_model.dart';
 import 'package:macro_tracker_2/data/models/day_model.dart';
-import 'package:macro_tracker_2/data/models/food_model.dart';
-import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
-import 'package:macro_tracker_2/data/models/recipe_model.dart';
 
 import '../auth_helper.dart';
 
@@ -27,14 +25,10 @@ class DayRepository {
         fatCons: 0,
         fatGoal: 10,
         isFree: false,
-        breakfastFood: [],
-        breakfastRecipes: [],
-        lunchFood: [],
-        lunchRecipes: [],
-        dinnerFood: [],
-        dinnerRecipes: [],
-        snacksFood: [],
-        snacksRecipes: [],
+        breakfast: [],
+        lunch: [],
+        dinner: [],
+        snacks: [],
         exercises: []);
     await ins
         .collection("users")
@@ -55,30 +49,39 @@ class DayRepository {
     return doc.exists;
   }
 
-  void addDayFoodOrRecipe(DateTime date, String meal,
-      {FoodModel? food, RecipeModel? recipe}) async {
+  Future<void> checkAndAddDay(DateTime date) async {
     if (!(await dateIsAdded(date))) {
       await addDay(date);
     }
+  }
+
+  void addFood(DateTime date, String meal, ConsumableModel food) async {
+    await checkAndAddDay(date);
     ins
         .collection("users")
         .doc(AuthenticationHelper.instance.auth.currentUser!.uid)
         .collection('dairy')
         .doc('${date.day}-${date.month}-${date.year}')
         .update(
-      {meal: food == null ? recipe!.toMap() : food.toMap()},
+      {meal: food.toMap()},
     );
   }
 
   Future<void> switchCheatDay(DateTime date, bool isFree) async {
-    if (await dateIsAdded(date)) {
+    try {
       await ins
           .collection("users")
           .doc(AuthenticationHelper.instance.auth.currentUser!.uid)
           .collection('dairy')
           .doc('${date.day}-${date.month}-${date.year}')
           .update({'isFree': isFree});
-    } else {}
+    } catch (e) {
+      if(e.toString() == '[cloud_firestore/not-found] Some requested document was not found.') {
+        await addDay(date);
+        switchCheatDay(date, isFree);
+      }
+    }
+
   }
 
   Future<DayModel> getDay(DateTime date) async {
@@ -95,14 +98,10 @@ class DayRepository {
           fatCons: 0,
           fatGoal: 10,
           isFree: false,
-          breakfastFood: [],
-          breakfastRecipes: [],
-          lunchFood: [],
-          lunchRecipes: [],
-          dinnerFood: [],
-          dinnerRecipes: [],
-          snacksFood: [],
-          snacksRecipes: [],
+          breakfast: [],
+          lunch: [],
+          dinner: [],
+          snacks: [],
           exercises: []);
     } else {
       DayModel day = DayModel.fromMap(await ins

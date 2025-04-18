@@ -71,7 +71,7 @@ class _CreateRecipeState extends State<CreateRecipe> {
                         isScrollControlled: true,
                         builder: (context) {
                           return IngredientsAmounts(
-                            items: food,
+                            items: food.where((food) => chosen.contains(food.id)).toList(),
                             create: true,
                             name: '',
                           );
@@ -139,18 +139,9 @@ class _CreateRecipeState extends State<CreateRecipe> {
                           )
                         : const SizedBox(),
                     IngredientsTile(
-                        food: FoodModel(
-                          id: state.food[index].id!,
-                          food: state.food[index].food,
-                          kcal: state.food[index].kcal,
-                          unit: state.food[index].unit,
-                          uid: state.food[index].uid,
-                          carb: state.food[index].carb,
-                          fat: state.food[index].fat,
-                          protein: state.food[index].protein,
-                        ),
+                        food: food[index],
                         list: chosen,
-                        isChecked: chosen.contains(state.food[index].id!)),
+                        ),
                   ],
                 );
               },
