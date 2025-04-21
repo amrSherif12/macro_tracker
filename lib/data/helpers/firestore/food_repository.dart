@@ -35,7 +35,7 @@ class FoodRepository {
 
   Future<FoodModel> getFood(String id) async {
     FoodModel food =
-        FoodModel.fromMap(await ins.collection("food").doc(id).get());
+        FoodModel.fromDocument(await ins.collection("food").doc(id).get());
     return food;
   }
 
@@ -63,7 +63,7 @@ class FoodRepository {
           .where(FieldPath.documentId, whereIn: sub)
           .get();
       for (int i = 0; i < foodSnapshot.docs.length; i++) {
-        foods.add(FoodModel.fromMap(foodSnapshot.docs[i]));
+        foods.add(FoodModel.fromDocument(foodSnapshot.docs[i]));
       }
     }
     return foods;
@@ -118,7 +118,7 @@ class FoodRepository {
 
   Future<RecipeModel> getRecipe(String id) async {
     RecipeModel recipe =
-        RecipeModel.fromMap(await ins.collection("recipes").doc(id).get());
+        RecipeModel.fromDocument(await ins.collection("recipes").doc(id).get());
     return recipe;
   }
 
@@ -156,7 +156,7 @@ class FoodRepository {
           .where(FieldPath.documentId, whereIn: sub)
           .get();
       for (int i = 0; i < foodSnapshot.docs.length; i++) {
-        recipes.add(RecipeModel.fromMap(foodSnapshot.docs[i]));
+        recipes.add(RecipeModel.fromDocument(foodSnapshot.docs[i]));
       }
     }
 

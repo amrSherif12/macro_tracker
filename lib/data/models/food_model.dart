@@ -30,10 +30,11 @@ class FoodModel extends QuickCalorieModel {
     };
     if (uid != null) map.addAll({'uid': uid});
     if (amount != null) map.addAll({'amount': amount});
+    if (id != null) map.addAll({'id': id});
     return map;
   }
 
-  static FoodModel fromMap(DocumentSnapshot map) {
+  factory FoodModel.fromDocument(DocumentSnapshot map) {
     FoodModel food = FoodModel(
       id: map.id,
       name: map["name"],
@@ -49,6 +50,22 @@ class FoodModel extends QuickCalorieModel {
     try {
       if (map['amount'] != null) food.amount = map['amount'];
     } catch (e) {}
+
+    return food;
+  }
+
+  factory FoodModel.fromMap(Map map, String id) {
+    FoodModel food = FoodModel(
+      id: id,
+      name: map["name"],
+      kcal: map["kcal"],
+      protein: map["protein"],
+      carb: map["carb"],
+      fat: map["fat"],
+      unit: map["unit"],
+    );
+    if (map['uid'] != null) food.uid = map['uid'];
+    if (map['amount'] != null) food.amount = map['amount'];
 
     return food;
   }

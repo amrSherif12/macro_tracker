@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:macro_tracker_2/logic/food/food_cubit.dart';
-import 'package:macro_tracker_2/logic/food/food_info_cubit.dart';
-import 'package:macro_tracker_2/logic/food/recipe_info_cubit.dart';
+import 'package:macro_tracker_2/logic/food/recipes_cubit.dart';
 import 'package:macro_tracker_2/presentation/screens/authentication/login.dart';
 import 'package:macro_tracker_2/presentation/screens/authentication/sign_up.dart';
 import 'package:macro_tracker_2/presentation/screens/authentication/welcome.dart';
@@ -14,6 +13,7 @@ import 'package:macro_tracker_2/presentation/screens/home/add_food.dart';
 import 'package:macro_tracker_2/presentation/screens/loading.dart';
 import 'package:macro_tracker_2/presentation/screens/navigation.dart';
 import 'package:macro_tracker_2/presentation/screens/undefined_screen.dart';
+
 import 'constants/strings.dart';
 import 'logic/authentication/login_cubit.dart';
 import 'logic/authentication/sign_up_cubit.dart';
@@ -47,10 +47,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case Routes.recipeInfoRoute:
       final args = settings.arguments as RecipeInfo;
       return MaterialPageRoute(
-          builder: (context) => BlocProvider(
-                create: (context) => RecipeInfoCubit(),
-                child: RecipeInfo(recipe: args.recipe),
-              ));
+          builder: (context) => RecipeInfo(recipe: args.recipe));
 
     case Routes.createRecipeRoute:
       return MaterialPageRoute(
@@ -63,13 +60,18 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case Routes.foodInfoRoute:
       final args = settings.arguments as FoodInfo;
       return MaterialPageRoute(
-          builder: (context) => BlocProvider(
-                create: (context) => FoodInfoCubit(),
-                child: FoodInfo(food: args.food),
-              ));
+          builder: (context) => FoodInfo(food: args.food));
 
     case Routes.addFoodRoute:
-      return MaterialPageRoute(builder: (context) => const AddFood());
+      final args = settings.arguments as AddFood;
+      return MaterialPageRoute(
+          builder: (context) => MultiBlocProvider(
+                providers: [
+                  BlocProvider(create: (context) => FoodCubit()),
+                  BlocProvider(create: (context) => RecipesCubit()),
+                ],
+                child: AddFood(date: args.date, meal: args.meal,),
+              ));
 
     case Routes.loadingRoute:
       return MaterialPageRoute(builder: (context) => const Loading());

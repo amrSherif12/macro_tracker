@@ -22,7 +22,8 @@ class HomeCubit extends Cubit<HomeState> {
         emit(HomeNoInternet());
       } else {
         emit(HomeError(errorMessage: e.toString()));
-      }    }
+      }
+    }
   }
 
   Future<void> decrementDay({required DayModel day}) async {
@@ -71,9 +72,10 @@ class HomeCubit extends Cubit<HomeState> {
     } else {
       emit(HomeLoaded(day: day, animate: false));
     }
+    DayModel day1 = await DayRepository.instance.getDay(date);
+    emit(HomeLoaded(day: day1, animate: true));
     try {
-      DayModel day = await DayRepository.instance.getDay(date);
-      emit(HomeLoaded(day: day, animate: true));
+
     } catch (e) {
       if (!(await connectedToInternet())) {
         emit(HomeNoInternet());
@@ -81,6 +83,5 @@ class HomeCubit extends Cubit<HomeState> {
         emit(HomeError(errorMessage: e.toString()));
       }
     }
-
   }
 }

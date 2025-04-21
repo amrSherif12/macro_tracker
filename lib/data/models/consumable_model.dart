@@ -25,15 +25,20 @@ abstract class ConsumableModel {
       throw UnimplementedError(
           'fromMap() must be implemented in concrete classes');
 
-  static List<ConsumableModel> fromListMap(List map) {
+  factory ConsumableModel.formDocument(DocumentSnapshot map) =>
+      throw UnimplementedError(
+          'fromDocument() must be implemented in concrete classes');
+
+  static List<ConsumableModel> fromListMap(Map map) {
     List<ConsumableModel> list = [];
+    final keys = map.keys.toList();
     for (int i = 0; i < map.length; i++) {
-      if (map[i]['ingredients'] != null) {
-        list.add(RecipeModel.fromMap(map[i]));
-      } else if (map[i]['amount'] != null || map[i]['uid'] != null) {
-        list.add(FoodModel.fromMap(map[i]));
+      if (map[keys[i]]['ingredients'] != null) {
+        list.add(RecipeModel.fromMap(map[keys[i]], keys[i]));
+      } else if (map[keys[i]]['amount'] != null || map[keys[i]]['uid'] != null) {
+        list.add(FoodModel.fromMap(map[keys[i]], keys[i]));
       } else {
-        list.add(QuickCalorieModel.fromMap(map[i]));
+        list.add(QuickCalorieModel.fromMap(map[keys[i]], keys[i]));
       }
     }
     return list;

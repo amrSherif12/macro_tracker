@@ -45,7 +45,6 @@ class _IngredientsAmountsState extends State<IngredientsAmounts> {
 
   @override
   Widget build(BuildContext context) {
-    print(controllers.length);
     return Padding(
       padding:
           EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),

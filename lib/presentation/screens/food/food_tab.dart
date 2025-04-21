@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:macro_tracker_2/data/helpers/auth_helper.dart';
 import 'package:macro_tracker_2/presentation/widgets/placeholder/loading_widget.dart';
 import 'package:macro_tracker_2/presentation/widgets/placeholder/no_internet.dart';
 
-import '../../../constants/colors.dart';
 import '../../../data/models/food_model.dart';
 import '../../../logic/food/food_cubit.dart';
 import '../../widgets/food_tile.dart';
@@ -13,7 +10,16 @@ import '../../widgets/placeholder/error.dart';
 
 class FoodTab extends StatefulWidget {
   final Function refresh;
-  const FoodTab({super.key, required this.refresh});
+  final bool isAdd;
+  final String? meal;
+  final DateTime? date;
+
+  const FoodTab(
+      {super.key,
+      required this.refresh,
+      required this.isAdd,
+      this.meal,
+      this.date});
 
   @override
   State<FoodTab> createState() => _FoodTabState();
@@ -46,7 +52,10 @@ class _FoodTabState extends State<FoodTab> {
                           fat: state.food[index].fat,
                           protein: state.food[index].protein,
                           unit: state.food[index].unit),
+                      isAdd: widget.isAdd,
                       refresh: widget.refresh,
+                      date: widget.date,
+                      meal: widget.meal,
                     ),
                   ),
                 ],

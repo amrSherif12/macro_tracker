@@ -67,9 +67,7 @@ class _RecipeInfoState extends State<RecipeInfo> {
           title: Text(
             widget.recipe.name,
             style: const TextStyle(
-                color: Colors.white,
-                fontFamily: 'F',
-                fontSize: 23),
+                color: Colors.white, fontFamily: 'F', fontSize: 23),
             overflow: TextOverflow.ellipsis,
           ),
           backgroundColor: ConstColors.sec,
@@ -113,7 +111,9 @@ class _RecipeInfoState extends State<RecipeInfo> {
                           children: [
                             Expanded(
                               child: Text(
-                                widget.recipe.ingredients.entries.toList()[index].key,
+                                widget.recipe.ingredients.entries
+                                    .toList()[index]
+                                    .key,
                                 style: const TextStyle(
                                     color: Colors.white,
                                     fontFamily: 'F',
@@ -131,8 +131,10 @@ class _RecipeInfoState extends State<RecipeInfo> {
                                       fontSize: 20),
                                 ),
                                 Text(
-                                  unitConverter(
-                                      widget.recipe.ingredients.entries.toList()[index].value),
+                                  unitConverter(widget
+                                      .recipe.ingredients.entries
+                                      .toList()[index]
+                                      .value),
                                   style: const TextStyle(
                                       color: Colors.white,
                                       fontFamily: 'F',

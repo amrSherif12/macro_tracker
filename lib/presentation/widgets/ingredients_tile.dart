@@ -5,11 +5,11 @@ import 'package:macro_tracker_2/data/models/food_model.dart';
 class IngredientsTile extends StatefulWidget {
   final FoodModel food;
   final List<String> list;
-  IngredientsTile(
-      {Key? key,
-      required this.food,
-      required this.list,})
-      : super(key: key);
+  IngredientsTile({
+    Key? key,
+    required this.food,
+    required this.list,
+  }) : super(key: key);
 
   @override
   State<IngredientsTile> createState() => _IngredientsTileState();
@@ -34,8 +34,7 @@ class _IngredientsTileState extends State<IngredientsTile> {
             setState(() {});
           },
           elevation: 10,
-          color:
-              !isChecked ? Colors.grey[800] : ConstColors.secOff,
+          color: !isChecked ? Colors.grey[800] : ConstColors.secOff,
           child: SizedBox(
             width: double.infinity,
             child: Padding(
@@ -51,9 +50,8 @@ class _IngredientsTileState extends State<IngredientsTile> {
                           style: TextStyle(
                               fontFamily: "F",
                               fontSize: 20,
-                              color: !isChecked
-                                  ? Colors.white
-                                  : Colors.grey[900]),
+                              color:
+                                  !isChecked ? Colors.white : Colors.grey[900]),
                           overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(
@@ -78,9 +76,8 @@ class _IngredientsTileState extends State<IngredientsTile> {
                   FloatingActionButton(
                     heroTag: null,
                     onPressed: null,
-                    backgroundColor: !isChecked
-                        ? Colors.grey[700]
-                        : ConstColors.sec,
+                    backgroundColor:
+                        !isChecked ? Colors.grey[700] : ConstColors.sec,
                     child: const Icon(
                       Icons.done,
                       color: Colors.white,

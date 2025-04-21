@@ -71,7 +71,9 @@ class _CreateRecipeState extends State<CreateRecipe> {
                         isScrollControlled: true,
                         builder: (context) {
                           return IngredientsAmounts(
-                            items: food.where((food) => chosen.contains(food.id)).toList(),
+                            items: food
+                                .where((food) => chosen.contains(food.id))
+                                .toList(),
                             create: true,
                             name: '',
                           );
@@ -79,7 +81,7 @@ class _CreateRecipeState extends State<CreateRecipe> {
                         isDismissible: true,
                         constraints: BoxConstraints(
                             maxHeight:
-                                MediaQuery.of(context).size.height * 0.7),
+                                MediaQuery.of(context).size.height * 0.8),
                         shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.only(
                             topRight: Radius.circular(30),
@@ -139,9 +141,9 @@ class _CreateRecipeState extends State<CreateRecipe> {
                           )
                         : const SizedBox(),
                     IngredientsTile(
-                        food: food[index],
-                        list: chosen,
-                        ),
+                      food: food[index],
+                      list: chosen,
+                    ),
                   ],
                 );
               },

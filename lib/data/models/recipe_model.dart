@@ -33,7 +33,21 @@ class RecipeModel extends ConsumableModel {
     };
   }
 
-  static RecipeModel fromMap(DocumentSnapshot map) {
+  factory RecipeModel.fromMap(Map map, String id) {
+    return RecipeModel(
+      id: id,
+      uid: map["uid"],
+      name: map["name"],
+      ingredients: map['ingredients'],
+      amounts: map["amounts"],
+      kcal: map["kcal"],
+      protein: map["protein"],
+      carb: map["carb"],
+      fat: map["fat"],
+    );
+  }
+
+  factory RecipeModel.fromDocument(DocumentSnapshot map) {
     return RecipeModel(
       id: map.id,
       uid: map["uid"],

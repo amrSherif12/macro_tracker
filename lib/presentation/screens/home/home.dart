@@ -395,7 +395,7 @@ class _HomeState extends State<Home> {
                                         BlocProvider.of<HomeCubit>(context)
                                             .switchCheatDay(true, day: day);
                                       },
-                                      child:  Padding(
+                                      child: Padding(
                                         padding: EdgeInsets.all(15),
                                         child: Row(
                                           mainAxisAlignment:
@@ -482,24 +482,28 @@ class _HomeState extends State<Home> {
                           meal: "Breakfast",
                           food: day.breakfast,
                           isFree: day.isFree,
+                          date: day.date,
                         ),
                         Meal(
                           icon: Icons.lunch_dining,
                           meal: "Lunch",
                           food: day.lunch,
                           isFree: day.isFree,
+                          date: day.date,
                         ),
                         Meal(
                           icon: Icons.dinner_dining,
-                          meal: "Diner",
+                          meal: "Dinner",
                           food: day.dinner,
                           isFree: day.isFree,
+                          date: day.date,
                         ),
                         Meal(
                           icon: Icons.local_pizza,
                           meal: "Snacks",
                           food: day.snacks,
                           isFree: day.isFree,
+                          date: day.date,
                         ),
                         Exercises(
                           exercises: day.exercises,

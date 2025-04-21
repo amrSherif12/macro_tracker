@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:macro_tracker_2/constants/colors.dart';
 import 'package:macro_tracker_2/constants/strings.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:macro_tracker_2/logic/food/food_cubit.dart';
 import 'package:macro_tracker_2/logic/food/recipes_cubit.dart';
 import 'package:macro_tracker_2/presentation/screens/food/food_tab.dart';
 import 'package:macro_tracker_2/presentation/screens/food/recipe_tab.dart';
 
 class Food extends StatefulWidget {
-  const Food({super.key});
+  final bool isAdd;
+  final String? meal;
+  final DateTime? date;
+
+  const Food({super.key, this.isAdd = false, this.meal, this.date});
 
   @override
   State<Food> createState() => _FoodState();
@@ -70,10 +74,30 @@ class _FoodState extends State<Food> with TickerProviderStateMixin {
         ),
       ),
       body: TabBarView(controller: tabController, children: [
-        FoodTab(refresh: refreshFoodTab),
-        RecipeTab(refresh: refreshRecipeTab)
+        widget.isAdd
+            ? FoodTab(
+                refresh: refreshFoodTab,
+                isAdd: widget.isAdd,
+                date: widget.date,
+                meal: widget.meal,
+              )
+            : FoodTab(
+                refresh: refreshFoodTab,
+                isAdd: widget.isAdd,
+              ),
+        widget.isAdd
+            ? RecipeTab(
+                refresh: refreshRecipeTab,
+                isAdd: widget.isAdd,
+                date: widget.date,
+                meal: widget.meal,
+              )
+            : RecipeTab(
+                refresh: refreshRecipeTab,
+                isAdd: widget.isAdd,
+              ),
       ]),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: !widget.isAdd ? FloatingActionButton(
         onPressed: () async {
           if (tabController.index == 0) {
             await Navigator.pushNamed(context, Routes.createFoodRoute);
@@ -88,7 +112,7 @@ class _FoodState extends State<Food> with TickerProviderStateMixin {
           Icons.add,
           color: Colors.white,
         ),
-      ),
+      ) : null,
     );
   }
 }

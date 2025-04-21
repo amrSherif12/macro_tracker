@@ -3,24 +3,38 @@ import 'package:flutter/material.dart';
 import 'package:macro_tracker_2/data/models/food_model.dart';
 import 'package:macro_tracker_2/presentation/screens/food/food_info.dart';
 import 'package:macro_tracker_2/presentation/widgets/delete.dart';
+import 'package:macro_tracker_2/presentation/widgets/food_amount.dart';
 
 import '../../constants/strings.dart';
 
 class FoodTile extends StatefulWidget {
   final FoodModel food;
   final Function refresh;
+  final bool isAdd;
+  final DateTime? date;
+  final String? meal;
 
-  const FoodTile({
-    Key? key,
-    required this.refresh,
-    required this.food,
-  }) : super(key: key);
+  const FoodTile(
+      {super.key,
+      required this.refresh,
+      required this.food,
+      required this.isAdd,
+      this.date,
+      this.meal});
 
   @override
   State<FoodTile> createState() => _FoodTileState();
 }
 
 class _FoodTileState extends State<FoodTile> {
+  @override
+  void initState() {
+    if (widget.isAdd && (widget.date == null || widget.meal == null)) {
+      throw Exception('Date and meal can\'t be null when adding food');
+    }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -75,18 +89,40 @@ class _FoodTileState extends State<FoodTile> {
                   FloatingActionButton(
                     heroTag: null,
                     onPressed: () async {
-                      await showDialog(
-                        context: context,
-                        builder: (context) => Delete(
-                          id: widget.food.id!,
-                          name: widget.food.name,
-                        ),
-                      );
+                      if (!widget.isAdd) {
+                        await showDialog(
+                          context: context,
+                          builder: (context) => Delete(
+                            id: widget.food.id!,
+                            name: widget.food.name,
+                          ),
+                        );
+                      } else {
+                        showModalBottomSheet(
+                          backgroundColor: Colors.grey[900],
+                          context: context,
+                          builder: (context) {
+                            return FoodAmount(
+                              food: widget.food,
+                              date: widget.date!,
+                              meal: widget.meal!,
+                            );
+                          },
+                          isDismissible: true,
+                          isScrollControlled: true,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(30),
+                              topLeft: Radius.circular(30),
+                            ),
+                          ),
+                        );
+                      }
                       widget.refresh;
                     },
                     backgroundColor: Colors.grey[700],
-                    child: const Icon(
-                      Icons.delete,
+                    child: Icon(
+                      widget.isAdd ? Icons.add : Icons.delete,
                       color: Colors.white,
                     ),
                   ),

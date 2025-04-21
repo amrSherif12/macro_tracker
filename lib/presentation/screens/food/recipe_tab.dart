@@ -1,19 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:macro_tracker_2/data/models/recipe_model.dart';
 import 'package:macro_tracker_2/logic/food/recipes_cubit.dart';
 import 'package:macro_tracker_2/presentation/widgets/placeholder/loading_widget.dart';
 import 'package:macro_tracker_2/presentation/widgets/placeholder/no_internet.dart';
 import 'package:macro_tracker_2/presentation/widgets/recipe_tile.dart';
 
-import '../../../constants/colors.dart';
 import '../../../logic/food/food_cubit.dart';
 import '../../widgets/placeholder/error.dart';
 
 class RecipeTab extends StatefulWidget {
   final Function refresh;
-  const RecipeTab({super.key, required this.refresh});
+  final bool isAdd;
+  final String? meal;
+  final DateTime? date;
+
+  const RecipeTab(
+      {super.key,
+      required this.refresh,
+      required this.isAdd,
+      this.meal,
+      this.date});
 
   @override
   State<RecipeTab> createState() => _RecipeTabState();
@@ -39,6 +45,9 @@ class _RecipeTabState extends State<RecipeTab> {
                     child: RecipeTile(
                       recipe: state.recipes[index],
                       refresh: widget.refresh,
+                      isAdd: widget.isAdd,
+                      date: widget.date,
+                      meal: widget.meal,
                     ),
                   ),
                 ],

@@ -3,12 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:macro_tracker_2/constants/colors.dart';
 import 'package:macro_tracker_2/constants/strings.dart';
 import 'package:macro_tracker_2/data/helpers/auth_helper.dart';
-import 'package:macro_tracker_2/logic/food/food_info_cubit.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import '../../../data/helpers/firestore/food_repository.dart';
 import '../../../data/models/food_model.dart';
 import '../../../logic/food/food_cubit.dart';
 import '../../widgets/textfield.dart';
+import '../../widgets/toast.dart';
 
 class FoodInfo extends StatefulWidget {
   final FoodModel food;
@@ -25,7 +26,6 @@ class _FoodInfoState extends State<FoodInfo> {
   TextEditingController proteinCont = TextEditingController();
   TextEditingController carbCont = TextEditingController();
   TextEditingController fatCont = TextEditingController();
-
 
   @override
   Widget build(BuildContext context) {
@@ -80,18 +80,26 @@ class _FoodInfoState extends State<FoodInfo> {
                       proteinCont.text.isNotEmpty &&
                       carbCont.text.isNotEmpty &&
                       fatCont.text.isNotEmpty) {
-                    await BlocProvider.of<FoodInfoCubit>(context).saveFood(
-                        context,
-                        FoodModel(
-                            id: widget.food.id,
-                            name: nameCont.text,
-                            kcal: int.parse(kcalCont.text),
-                            unit: widget.food.unit,
-                            uid: AuthenticationHelper
-                                .instance.auth.currentUser!.uid,
-                            protein: double.parse(proteinCont.text),
-                            carb: double.parse(carbCont.text),
-                            fat: double.parse(fatCont.text)));
+                    FoodModel food = FoodModel(
+                        id: widget.food.id,
+                        name: nameCont.text,
+                        kcal: int.parse(kcalCont.text),
+                        unit: widget.food.unit,
+                        uid: AuthenticationHelper
+                            .instance.auth.currentUser!.uid,
+                        protein: double.parse(proteinCont.text),
+                        carb: double.parse(carbCont.text),
+                        fat: double.parse(fatCont.text));
+                    if (food.kcal > 1000) {
+                      toastBuilder('Food can\'t exceed 1000 kcal', context);
+                    }
+                    if (food.protein * 4 + food.carb * 4 + food.fat * 9 > food.kcal) {
+                      toastBuilder(
+                          'Macro nutrients are exceeding the calories in the food', context);
+                    } else {
+                      await FoodRepository.instance.updateFood(context, food);
+                      Navigator.pop(context);
+                    }
                   }
                 },
                 child: const Row(
@@ -148,9 +156,7 @@ class _FoodInfoState extends State<FoodInfo> {
                         ),
                         onChanged: (String? value) {
                           widget.food.unit = value!;
-                          setState(() {
-
-                          });
+                          setState(() {});
                         },
                         items: Lists.units.map<DropdownMenuItem<String>>(
                           (String value) {

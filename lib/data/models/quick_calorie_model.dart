@@ -21,9 +21,20 @@ class QuickCalorieModel extends ConsumableModel {
     };
   }
 
-  static QuickCalorieModel fromMap(DocumentSnapshot map) {
+  factory QuickCalorieModel.formDocument(DocumentSnapshot map) {
     return QuickCalorieModel(
       id: map.id,
+      name: map["name"],
+      kcal: map["kcal"],
+      protein: map["protein"],
+      carb: map["carb"],
+      fat: map["fat"],
+    );
+  }
+
+  factory QuickCalorieModel.fromMap(Map map, String id) {
+    return QuickCalorieModel(
+      id: id,
       name: map["name"],
       kcal: map["kcal"],
       protein: map["protein"],

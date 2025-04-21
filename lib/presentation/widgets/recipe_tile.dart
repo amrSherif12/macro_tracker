@@ -5,17 +5,24 @@ import 'package:macro_tracker_2/data/models/recipe_model.dart';
 import 'package:macro_tracker_2/presentation/screens/food/recipe_info.dart';
 
 import '../../constants/strings.dart';
+import '../../data/helpers/firestore/day_repository.dart';
 import 'delete.dart';
 
 class RecipeTile extends StatefulWidget {
   final RecipeModel recipe;
   final Function refresh;
+  final bool isAdd;
+  final DateTime? date;
+  final String? meal;
 
-  const RecipeTile({
-    Key? key,
-    required this.refresh,
-    required this.recipe,
-  }) : super(key: key);
+  const RecipeTile(
+      {Key? key,
+      required this.refresh,
+      required this.recipe,
+      required this.isAdd,
+      this.date,
+      this.meal})
+      : super(key: key);
 
   @override
   State<RecipeTile> createState() => _RecipeTileState();
@@ -74,19 +81,24 @@ class _RecipeTileState extends State<RecipeTile> {
                   FloatingActionButton(
                     heroTag: null,
                     onPressed: () async {
-                      await showDialog(
-                        context: context,
-                        builder: (context) => Delete(
-                          id: widget.recipe.id!,
-                          name: widget.recipe.name,
-                          isRecipe: true,
-                        ),
-                      );
+                      if (!widget.isAdd) {
+                        await showDialog(
+                          context: context,
+                          builder: (context) => Delete(
+                            id: widget.recipe.id!,
+                            name: widget.recipe.name,
+                            isRecipe: true,
+                          ),
+                        );
+                      } else {
+                        DayRepository.instance
+                            .addFood(context, widget.date!, widget.meal!, widget.recipe);
+                      }
                       widget.refresh;
                     },
                     backgroundColor: Colors.grey[700],
-                    child: const Icon(
-                      Icons.delete,
+                    child: Icon(
+                      widget.isAdd ? Icons.add : Icons.delete,
                       color: Colors.white,
                     ),
                   ),

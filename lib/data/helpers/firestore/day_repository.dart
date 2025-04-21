@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:macro_tracker_2/data/models/consumable_model.dart';
 import 'package:macro_tracker_2/data/models/day_model.dart';
+import 'package:macro_tracker_2/presentation/widgets/toast.dart';
+import 'package:macro_tracker_2/utils.dart';
 
 import '../auth_helper.dart';
 
@@ -55,16 +58,17 @@ class DayRepository {
     }
   }
 
-  void addFood(DateTime date, String meal, ConsumableModel food) async {
+  void addFood(BuildContext context, DateTime date, String meal, ConsumableModel food) async {
     await checkAndAddDay(date);
     ins
         .collection("users")
         .doc(AuthenticationHelper.instance.auth.currentUser!.uid)
         .collection('dairy')
         .doc('${date.day}-${date.month}-${date.year}')
-        .update(
-      {meal: food.toMap()},
+        .set(
+      {meal.toLowerCase(): {idGenerator(): food.toMap()}}, SetOptions(merge: true)
     );
+    toastBuilder('Added ${food.name} to $meal', context);
   }
 
   Future<void> switchCheatDay(DateTime date, bool isFree) async {
@@ -76,12 +80,12 @@ class DayRepository {
           .doc('${date.day}-${date.month}-${date.year}')
           .update({'isFree': isFree});
     } catch (e) {
-      if(e.toString() == '[cloud_firestore/not-found] Some requested document was not found.') {
+      if (e.toString() ==
+          '[cloud_firestore/not-found] Some requested document was not found.') {
         await addDay(date);
         switchCheatDay(date, isFree);
       }
     }
-
   }
 
   Future<DayModel> getDay(DateTime date) async {
