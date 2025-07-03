@@ -1,32 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:macro_tracker_2/constants/colors.dart';
-import 'package:macro_tracker_2/data/helpers/firestore/food_repository.dart';
+import 'package:testt/constants/colors.dart';
+import 'package:testt/data/helpers/firestore/food_repository.dart';
+import 'package:testt/data/models/consumable_model.dart';
+import 'package:testt/presentation/widgets/placeholder/loading_widget.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
-class Delete extends StatelessWidget {
-  final String id;
+class Delete extends StatefulWidget {
   final String name;
-  final bool isRecipe;
+  final Future<void> Function() delete;
+  const Delete({super.key, required this.name, required this.delete});
 
-  const Delete({
-    super.key,
-    required this.id,
-    required this.name,
-    this.isRecipe = false,
-  });
+  @override
+  State<Delete> createState() => _DeleteState();
+}
 
+class _DeleteState extends State<Delete> {
+  bool isLoading = false;
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       backgroundColor: ConstColors.main,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       title: const Text(
         'Confirm Delete',
         style: TextStyle(color: Colors.white, fontFamily: 'f'),
       ),
       content: Text(
-        'Are you sure you want to delete $name',
+        'Are you sure you want to delete ${widget.name}',
         style: TextStyle(color: Colors.white, fontFamily: 'f'),
       ),
       actions: <Widget>[
@@ -37,16 +37,20 @@ class Delete extends StatelessWidget {
           ),
           onPressed: () => Navigator.of(context).pop(false),
         ),
-        TextButton(
-          child: const Text(
-            'Delete',
-            style: TextStyle(color: Colors.red),
-          ),
-          onPressed: () {
-            FoodRepository.instance.deleteFood(context, id, isRecipe: isRecipe);
-            Navigator.of(context).pop();
-          },
-        ),
+        isLoading
+            ? SmallLoading()
+            : TextButton(
+                child: const Text(
+                  'Delete',
+                  style: TextStyle(color: Colors.red),
+                ),
+                onPressed: () async {
+                  isLoading = true;
+                  setState(() {});
+                  await widget.delete();
+                  Navigator.of(context).pop();
+                },
+              ),
       ],
     );
   }

@@ -37,29 +37,26 @@ class _ExercisesState extends State<Exercises> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                const Icon(
-                  Icons.fitness_center,
-                  color: Colors.white,
-                  size: 30,
-                ),
+                const Icon(Icons.fitness_center, color: Colors.white, size: 30),
                 const Text(
                   'Exercise',
                   style: TextStyle(
-                      fontFamily: "F", fontSize: 20, color: Colors.white),
+                    fontFamily: "F",
+                    fontSize: 20,
+                    color: Colors.white,
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 15, 0, 10),
                   child: FloatingActionButton(
                     onPressed: widget.isFree ? () {} : null,
                     heroTag: null,
-                    backgroundColor:
-                        widget.isFree ? ConstColors.cheat : Colors.blue[600],
-                    child: const Icon(
-                      Icons.add,
-                      color: Colors.white,
-                    ),
+                    backgroundColor: widget.isFree
+                        ? ConstColors.cheat
+                        : Colors.blue[600],
+                    child: const Icon(Icons.add, color: Colors.white),
                   ),
-                )
+                ),
               ],
             ),
             open == true
@@ -78,16 +75,18 @@ class _ExercisesState extends State<Exercises> {
                                 Text(
                                   widget.exercises[index].exercise,
                                   style: TextStyle(
-                                      fontFamily: "F",
-                                      fontSize: 20,
-                                      color: Colors.grey[300]),
+                                    fontFamily: "F",
+                                    fontSize: 20,
+                                    color: Colors.grey[300],
+                                  ),
                                 ),
                                 Text(
                                   toString(),
                                   style: TextStyle(
-                                      fontFamily: "F",
-                                      fontSize: 20,
-                                      color: Colors.grey[400]),
+                                    fontFamily: "F",
+                                    fontSize: 20,
+                                    color: Colors.grey[400],
+                                  ),
                                 ),
                               ],
                             ),
@@ -116,29 +115,38 @@ class _ExercisesState extends State<Exercises> {
                           ? IconButton(
                               splashRadius: 1,
                               icon: AnimatedSwitcher(
-                                  duration: const Duration(milliseconds: 400),
-                                  transitionBuilder: (child, anim) =>
-                                      RotationTransition(
-                                        turns: child.key ==
-                                                const ValueKey('icon1')
-                                            ? Tween<double>(begin: 1, end: 1)
-                                                .animate(anim)
-                                            : Tween<double>(begin: 0.75, end: 1)
-                                                .animate(anim),
-                                        child: FadeTransition(
-                                            opacity: anim, child: child),
+                                duration: const Duration(milliseconds: 400),
+                                transitionBuilder: (child, anim) =>
+                                    RotationTransition(
+                                      turns:
+                                          child.key == const ValueKey('icon1')
+                                          ? Tween<double>(
+                                              begin: 1,
+                                              end: 1,
+                                            ).animate(anim)
+                                          : Tween<double>(
+                                              begin: 0.75,
+                                              end: 1,
+                                            ).animate(anim),
+                                      child: FadeTransition(
+                                        opacity: anim,
+                                        child: child,
                                       ),
-                                  child: open == true
-                                      ? const Icon(Icons.keyboard_arrow_up,
-                                          color: Colors.white,
-                                          size: 30,
-                                          key: ValueKey('icon1'))
-                                      : const Icon(
-                                          Icons.keyboard_arrow_down,
-                                          color: Colors.white,
-                                          size: 30,
-                                          key: ValueKey('icon2'),
-                                        )),
+                                    ),
+                                child: open == true
+                                    ? const Icon(
+                                        Icons.keyboard_arrow_up,
+                                        color: Colors.white,
+                                        size: 30,
+                                        key: ValueKey('icon1'),
+                                      )
+                                    : const Icon(
+                                        Icons.keyboard_arrow_down,
+                                        color: Colors.white,
+                                        size: 30,
+                                        key: ValueKey('icon2'),
+                                      ),
+                              ),
                               onPressed: () {
                                 open = !open;
                                 setState(() {});
@@ -149,11 +157,12 @@ class _ExercisesState extends State<Exercises> {
                       Text(
                         "Total KCAL: 0",
                         style: const TextStyle(
-                            fontFamily: "F", fontSize: 20, color: Colors.white),
+                          fontFamily: "F",
+                          fontSize: 20,
+                          color: Colors.white,
+                        ),
                       ),
-                      Spacer(
-                        flex: widget.exercises.isNotEmpty ? 2 : 1,
-                      ),
+                      Spacer(flex: widget.exercises.isNotEmpty ? 2 : 1),
                     ],
                   ),
                 ),

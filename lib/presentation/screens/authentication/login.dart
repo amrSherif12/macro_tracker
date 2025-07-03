@@ -20,9 +20,12 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   @override
   void initState() {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
         systemNavigationBarColor: ConstColors.main,
-        statusBarColor: ConstColors.main));
+        statusBarColor: ConstColors.main,
+      ),
+    );
     super.initState();
   }
 
@@ -36,9 +39,10 @@ class _LoginState extends State<Login> {
         width: double.infinity,
         decoration: BoxDecoration(
           gradient: LinearGradient(
-              colors: [ConstColors.main, ConstColors.main],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter),
+            colors: [ConstColors.main, ConstColors.main],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
         ),
         child: Padding(
           padding: const EdgeInsets.all(15),
@@ -52,7 +56,10 @@ class _LoginState extends State<Login> {
                   child: Text(
                     "Welcome Back !",
                     style: TextStyle(
-                        fontFamily: 'f', fontSize: 35, color: Colors.white),
+                      fontFamily: 'f',
+                      fontSize: 35,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
@@ -62,29 +69,30 @@ class _LoginState extends State<Login> {
                   FadeInDown(
                     from: 30,
                     delay: const Duration(milliseconds: 100),
-                    child: TextFieldBuilder(
-                        hint: "Enter your E-mail",
-                        label: "E-mail",
-                        controller:
-                            BlocProvider.of<LoginCubit>(context).emailCon,
-                        iconData: Icons.email),
+                    child: FilledTextFieldBuilder(
+                      hint: "Enter your E-mail",
+                      label: "E-mail",
+                      controller: BlocProvider.of<LoginCubit>(context).emailCon,
+                      iconData: Icons.email,
+                    ),
                   ),
-                  const SizedBox(
-                    height: 30,
-                  ),
+                  const SizedBox(height: 30),
                   FadeInDown(
                     from: 30,
                     delay: const Duration(milliseconds: 200),
                     child: ObscureTextFieldBuilder(
-                        controller:
-                            BlocProvider.of<LoginCubit>(context).passwordCon,
-                        obscureText:
-                            BlocProvider.of<LoginCubit>(context).obscureText,
-                        icon: BlocProvider.of<LoginCubit>(context).icon,
-                        label: "Password",
-                        hint: "Enter your password",
-                        iconData: Icons.password),
-                  )
+                      controller: BlocProvider.of<LoginCubit>(
+                        context,
+                      ).passwordCon,
+                      obscureText: BlocProvider.of<LoginCubit>(
+                        context,
+                      ).obscureText,
+                      icon: BlocProvider.of<LoginCubit>(context).icon,
+                      label: "Password",
+                      hint: "Enter your password",
+                      iconData: Icons.password,
+                    ),
+                  ),
                 ],
               ),
               Column(
@@ -94,33 +102,39 @@ class _LoginState extends State<Login> {
                     delay: const Duration(milliseconds: 300),
                     from: 30,
                     child: ClipRRect(
-                        borderRadius: BorderRadius.circular(15),
-                        child: BlocBuilder<LoginCubit, LoginState>(
-                          builder: (context, state) {
-                            if (state is LoginInitial) {
-                              return MaterialButton(
-                                  onPressed: () {
-                                    BlocProvider.of<LoginCubit>(context)
-                                        .login(context);
-                                  },
-                                  minWidth: double.infinity,
-                                  height: 50,
-                                  color: Colors.white,
-                                  elevation: 5,
-                                  padding: const EdgeInsets.all(20),
-                                  child: Text(
-                                    'LOG IN',
-                                    style: TextStyle(
-                                        fontFamily: 'f',
-                                        fontSize: 20,
-                                        color: ConstColors.main),
-                                  ));
-                            } else {
-                              return LoadingAnimationWidget.threeArchedCircle(
-                                  color: Colors.white, size: 50);
-                            }
-                          },
-                        )),
+                      borderRadius: BorderRadius.circular(15),
+                      child: BlocBuilder<LoginCubit, LoginState>(
+                        builder: (context, state) {
+                          if (state is LoginInitial) {
+                            return MaterialButton(
+                              onPressed: () {
+                                BlocProvider.of<LoginCubit>(
+                                  context,
+                                ).login(context);
+                              },
+                              minWidth: double.infinity,
+                              height: 50,
+                              color: Colors.white,
+                              elevation: 5,
+                              padding: const EdgeInsets.all(20),
+                              child: Text(
+                                'LOG IN',
+                                style: TextStyle(
+                                  fontFamily: 'f',
+                                  fontSize: 20,
+                                  color: ConstColors.main,
+                                ),
+                              ),
+                            );
+                          } else {
+                            return LoadingAnimationWidget.threeArchedCircle(
+                              color: Colors.white,
+                              size: 50,
+                            );
+                          }
+                        },
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -138,7 +152,10 @@ class _LoginState extends State<Login> {
               child: Text(
                 "Don't have an account ? ",
                 style: TextStyle(
-                    fontFamily: 'f', fontSize: 18, color: Colors.white),
+                  fontFamily: 'f',
+                  fontSize: 18,
+                  color: Colors.white,
+                ),
               ),
             ),
             FittedBox(
@@ -148,16 +165,15 @@ class _LoginState extends State<Login> {
                 child: const Text(
                   'Sign up',
                   style: TextStyle(
-                      fontFamily: 'f',
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20),
+                    fontFamily: 'f',
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
                 ),
               ),
             ),
-            const SizedBox(
-              height: 160,
-            ),
+            const SizedBox(height: 130),
           ],
         ),
       ),

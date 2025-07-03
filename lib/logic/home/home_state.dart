@@ -5,8 +5,6 @@ abstract class HomeState {}
 
 class HomeLoading extends HomeState {}
 
-class HomeLoadingDay extends HomeState {}
-
 class HomeLoaded extends HomeState {
   final DayModel day;
   final bool animate;
@@ -17,7 +15,7 @@ class HomeLoaded extends HomeState {
 class HomeNoInternet extends HomeState {}
 
 class HomeError extends HomeState {
-  String errorMessage;
+  final String errorMessage;
 
   HomeError({required this.errorMessage});
 }

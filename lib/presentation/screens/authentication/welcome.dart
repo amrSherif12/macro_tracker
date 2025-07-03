@@ -4,7 +4,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:macro_tracker_2/constants/colors.dart';
+import 'package:testt/constants/colors.dart';
 
 import '../../../constants/strings.dart';
 
@@ -18,66 +18,76 @@ class Welcome extends StatefulWidget {
 class _WelcomeState extends State<Welcome> {
   @override
   void initState() {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
         systemNavigationBarColor: Color(0xFF171717),
-        statusBarColor: Color(0xFF171717)));
+        statusBarColor: Color(0xFF171717),
+      ),
+    );
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF171717),
+      backgroundColor: Color(0xFF1D1D1D),
       body: Stack(
         children: [
-          Image.asset(
-            'assets/imgs/veg.jpg',
+          Positioned(
+            right: 0,
+            left: 0,
+            child: SizedBox(
+              width: 300,
+              child: Image.asset('assets/imgs/veg.jpg'),
+            ),
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(
-                height: MediaQuery.of(context).size.height / 1.7,
-              ),
+              SizedBox(height: MediaQuery.of(context).size.height / 2.5),
               FadeInDown(
                 from: 30,
                 child: Text(
                   "Hi there !",
                   style: TextStyle(
-                      color: Colors.white.withOpacity(0.9),
-                      fontFamily: 'f',
-                      fontSize: 23),
+                    color: Colors.white.withOpacity(0.9),
+                    fontFamily: 'f',
+                    fontSize: 23,
+                  ),
                 ),
               ),
-              const SizedBox(
-                height: 10,
-              ),
+              const SizedBox(height: 10),
               FadeInDown(
                 from: 30,
                 delay: const Duration(milliseconds: 70),
                 child: const Text(
-                  "Welcome To App name",
+                  "Welcome To App",
                   style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'f',
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.2),
+                    color: Colors.white,
+                    fontFamily: 'f',
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.2,
+                  ),
                 ),
               ),
-              const Spacer(),
+              const Spacer(flex: 5,),
               FadeInDown(
                 from: 30,
                 delay: const Duration(milliseconds: 140),
                 child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 10,
+                  ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(15),
                     child: MaterialButton(
                       onPressed: () {
                         Navigator.pushReplacementNamed(
-                            context, Routes.loginRoute);
+                          context,
+                          Routes.loginRoute,
+                        );
                       },
                       minWidth: double.infinity,
                       height: 40,
@@ -87,10 +97,11 @@ class _WelcomeState extends State<Welcome> {
                       child: Text(
                         'SIGN IN',
                         style: TextStyle(
-                            fontFamily: 'f',
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF213F1B)),
+                          fontFamily: 'f',
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF213F1B),
+                        ),
                       ),
                     ),
                   ),
@@ -100,14 +111,18 @@ class _WelcomeState extends State<Welcome> {
                 from: 30,
                 delay: const Duration(milliseconds: 210),
                 child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 10,
+                  ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(15),
                     child: MaterialButton(
                       onPressed: () {
                         Navigator.pushReplacementNamed(
-                            context, Routes.signUpRoute);
+                          context,
+                          Routes.signUpRoute,
+                        );
                       },
                       minWidth: double.infinity,
                       height: 40,
@@ -117,10 +132,11 @@ class _WelcomeState extends State<Welcome> {
                       child: Text(
                         'SIGN UP',
                         style: TextStyle(
-                            fontFamily: 'f',
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF213F1B)),
+                          fontFamily: 'f',
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF213F1B),
+                        ),
                       ),
                     ),
                   ),

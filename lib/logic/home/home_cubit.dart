@@ -1,10 +1,9 @@
 import 'package:bloc/bloc.dart';
-import 'package:macro_tracker_2/data/helpers/firestore/day_repository.dart';
-import 'package:macro_tracker_2/data/helpers/firestore/food_repository.dart';
-import 'package:macro_tracker_2/data/models/day_model.dart';
+import 'package:testt/data/helpers/firestore/day_repository.dart';
+import 'package:testt/data/models/day_model.dart';
 import 'package:meta/meta.dart';
 
-import '../../utils.dart';
+import '../../random.dart';
 
 part 'home_state.dart';
 
@@ -12,10 +11,10 @@ class HomeCubit extends Cubit<HomeState> {
   HomeCubit() : super(HomeLoading());
 
   DateTime date = DateTime.now();
-
+  late DayModel currentDay;
   Future<void> incrementDay({required DayModel day}) async {
     try {
-      date = date.add(const Duration(days: 1));
+      date = day.date.add(const Duration(days: 1));
       getDay(day: day);
     } catch (e) {
       if (!(await connectedToInternet())) {
@@ -28,7 +27,7 @@ class HomeCubit extends Cubit<HomeState> {
 
   Future<void> decrementDay({required DayModel day}) async {
     try {
-      date = date.subtract(const Duration(days: 1));
+      date = day.date.subtract(const Duration(days: 1));
       getDay(day: day);
     } catch (e) {
       if (!(await connectedToInternet())) {
@@ -39,8 +38,10 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
-  Future<void> changeDay(
-      {required DayModel day, required DateTime newDate}) async {
+  Future<void> changeDay({
+    required DayModel day,
+    required DateTime newDate,
+  }) async {
     try {
       date = newDate;
       getDay(day: day);
@@ -55,8 +56,9 @@ class HomeCubit extends Cubit<HomeState> {
 
   Future<void> switchCheatDay(bool isFree, {required DayModel day}) async {
     try {
-      await DayRepository.instance.switchCheatDay(date, isFree);
-      getDay(day: day);
+      currentDay.isFree = !currentDay.isFree;
+      emit(HomeLoaded(day: currentDay, animate: true));
+      DayRepository.instance.switchCheatDay(date, isFree);
     } catch (e) {
       if (!(await connectedToInternet())) {
         emit(HomeNoInternet());
@@ -66,16 +68,16 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
-  Future<void> getDay({required DayModel? day}) async {
+  Future<void> getDay({DayModel? day, bool refresh = false}) async {
     if (day == null) {
       emit(HomeLoading());
-    } else {
+    } else if (!refresh) {
       emit(HomeLoaded(day: day, animate: false));
     }
-    DayModel day1 = await DayRepository.instance.getDay(date);
-    emit(HomeLoaded(day: day1, animate: true));
     try {
-
+      DayModel day = await DayRepository.instance.getDay(date);
+      currentDay = day;
+      emit(HomeLoaded(day: day, animate: true));
     } catch (e) {
       if (!(await connectedToInternet())) {
         emit(HomeNoInternet());

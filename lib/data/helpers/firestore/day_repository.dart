@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:macro_tracker_2/data/models/consumable_model.dart';
-import 'package:macro_tracker_2/data/models/day_model.dart';
-import 'package:macro_tracker_2/presentation/widgets/toast.dart';
-import 'package:macro_tracker_2/utils.dart';
+import 'package:testt/data/models/consumable_model.dart';
+import 'package:testt/data/models/day_model.dart';
+import 'package:testt/presentation/widgets/toast.dart';
+import 'package:testt/random.dart';
 
 import '../auth_helper.dart';
 
@@ -16,30 +16,31 @@ class DayRepository {
   final ins = FirebaseFirestore.instance;
 
   Future<DayModel> addDay(DateTime date) async {
-    DayModel map = DayModel(
-        date: date,
-        kcalConsumed: 0,
-        kcalGoal: 1000,
-        kcalBurned: 0,
-        proteinCons: 0,
-        proteinGoal: 10,
-        carbCons: 0,
-        carbGoal: 10,
-        fatCons: 0,
-        fatGoal: 10,
-        isFree: false,
-        breakfast: [],
-        lunch: [],
-        dinner: [],
-        snacks: [],
-        exercises: []);
+    DayModel day = DayModel(
+      date: date,
+      kcalConsumed: 0,
+      kcalGoal: 1000,
+      kcalBurned: 0,
+      proteinCons: 0,
+      proteinGoal: 10,
+      carbCons: 0,
+      carbGoal: 10,
+      fatCons: 0,
+      fatGoal: 10,
+      isFree: false,
+      breakfast: [],
+      lunch: [],
+      dinner: [],
+      snacks: [],
+      exercises: [],
+    );
     await ins
         .collection("users")
         .doc(AuthenticationHelper.instance.auth.currentUser!.uid)
         .collection('dairy')
         .doc('${date.day}-${date.month}-${date.year}')
-        .set(map.toMap());
-    return map;
+        .set(day.toMap());
+    return day;
   }
 
   Future<bool> dateIsAdded(DateTime date) async {
@@ -58,17 +59,86 @@ class DayRepository {
     }
   }
 
-  void addFood(BuildContext context, DateTime date, String meal, ConsumableModel food) async {
+  void changeMacros({
+    required DateTime date,
+    required Map macros,
+    bool isMinus = false,
+  }) {
+    int kcal = macros['kcal'];
+    double prot = macros['protein'];
+    double carb = macros['carb'];
+    double fat = macros['fat'];
+    if (isMinus) {
+      kcal *= -1;
+      prot *= -1;
+      carb *= -1;
+      fat *= -1;
+    }
+    ins
+        .collection("users")
+        .doc(AuthenticationHelper.instance.auth.currentUser!.uid)
+        .collection('dairy')
+        .doc('${date.day}-${date.month}-${date.year}')
+        .update({
+          'kcalConsumed': FieldValue.increment(kcal),
+          'proteinCons': FieldValue.increment(prot),
+          'fatCons': FieldValue.increment(fat),
+          'carbCons': FieldValue.increment(carb),
+        });
+  }
+
+  Future<void> addFood(
+    BuildContext context,
+    DateTime date,
+    String meal,
+    ConsumableModel food,
+  ) async {
     await checkAndAddDay(date);
     ins
         .collection("users")
         .doc(AuthenticationHelper.instance.auth.currentUser!.uid)
         .collection('dairy')
         .doc('${date.day}-${date.month}-${date.year}')
-        .set(
-      {meal.toLowerCase(): {idGenerator(): food.toMap()}}, SetOptions(merge: true)
-    );
+        .set({
+          meal.toLowerCase(): {idGenerator(): food.toMap()},
+        }, SetOptions(merge: true));
+    Map macros = food.getMacros();
+    changeMacros(date: date, macros: macros);
     toastBuilder('Added ${food.name} to $meal', context);
+  }
+
+  Future<void> removeFood(
+    BuildContext context,
+    DateTime date,
+    String meal,
+    ConsumableModel consumable,
+  ) async {
+    await ins
+        .collection("users")
+        .doc(AuthenticationHelper.instance.auth.currentUser!.uid)
+        .collection('dairy')
+        .doc('${date.day}-${date.month}-${date.year}')
+        .update({
+          '${meal.toLowerCase()}.${consumable.id}': FieldValue.delete(),
+        });
+    Map macros = consumable.getMacros();
+    changeMacros(date: date, macros: macros, isMinus: true);
+    toastBuilder('Removed ${consumable.name} from $meal', context);
+  }
+
+  void updateMacros(
+    DateTime date,
+    double prot,
+    double carb,
+    double fat,
+    int cal,
+  ) {
+    ins
+        .collection("users")
+        .doc(AuthenticationHelper.instance.auth.currentUser!.uid)
+        .collection('dairy')
+        .doc('${date.day}-${date.month}-${date.year}')
+        .update({});
   }
 
   Future<void> switchCheatDay(DateTime date, bool isFree) async {
@@ -91,29 +161,32 @@ class DayRepository {
   Future<DayModel> getDay(DateTime date) async {
     if (!(await dateIsAdded(date))) {
       return DayModel(
-          date: date,
-          kcalConsumed: 0,
-          kcalGoal: 1000,
-          kcalBurned: 0,
-          proteinCons: 0,
-          proteinGoal: 10,
-          carbCons: 0,
-          carbGoal: 10,
-          fatCons: 0,
-          fatGoal: 10,
-          isFree: false,
-          breakfast: [],
-          lunch: [],
-          dinner: [],
-          snacks: [],
-          exercises: []);
+        date: date,
+        kcalConsumed: 0,
+        kcalGoal: 1000,
+        kcalBurned: 0,
+        proteinCons: 0,
+        proteinGoal: 10,
+        carbCons: 0,
+        carbGoal: 10,
+        fatCons: 0,
+        fatGoal: 10,
+        isFree: false,
+        breakfast: [],
+        lunch: [],
+        dinner: [],
+        snacks: [],
+        exercises: [],
+      );
     } else {
-      DayModel day = DayModel.fromMap(await ins
-          .collection("users")
-          .doc(AuthenticationHelper.instance.auth.currentUser!.uid)
-          .collection('dairy')
-          .doc('${date.day}-${date.month}-${date.year}')
-          .get());
+      DayModel day = DayModel.fromMap(
+        await ins
+            .collection("users")
+            .doc(AuthenticationHelper.instance.auth.currentUser!.uid)
+            .collection('dairy')
+            .doc('${date.day}-${date.month}-${date.year}')
+            .get(),
+      );
       return day;
     }
   }

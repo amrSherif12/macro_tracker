@@ -22,9 +22,12 @@ class SignUp extends StatefulWidget {
 class _SignUpState extends State<SignUp> {
   @override
   void initState() {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
         systemNavigationBarColor: ConstColors.main,
-        statusBarColor: ConstColors.main));
+        statusBarColor: ConstColors.main,
+      ),
+    );
     super.initState();
   }
 
@@ -36,10 +39,7 @@ class _SignUpState extends State<SignUp> {
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              ConstColors.main,
-              ConstColors.main,
-            ],
+            colors: [ConstColors.main, ConstColors.main],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -49,20 +49,19 @@ class _SignUpState extends State<SignUp> {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                const SizedBox(
-                  height: 50,
-                ),
+                const SizedBox(height: 30),
                 FadeInDown(
                   from: 30,
                   child: const Text(
                     "Sign up",
                     style: TextStyle(
-                        fontFamily: 'F', fontSize: 35, color: Colors.white),
+                      fontFamily: 'F',
+                      fontSize: 35,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
-                const SizedBox(
-                  height: 50,
-                ),
+                const SizedBox(height: 30),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
@@ -70,65 +69,63 @@ class _SignUpState extends State<SignUp> {
                       FadeInDown(
                         from: 30,
                         delay: const Duration(milliseconds: 70),
-                        child: TextFieldBuilder(
-                          controller:
-                              BlocProvider.of<SignUpCubit>(context).userNameCon,
+                        child: FilledTextFieldBuilder(
+                          controller: BlocProvider.of<SignUpCubit>(
+                            context,
+                          ).userNameCon,
                           label: "User name",
                           hint: "Enter your name",
                           iconData: Icons.person,
                         ),
                       ),
-                      const SizedBox(
-                        height: 30,
-                      ),
+                      const SizedBox(height: 30),
                       FadeInDown(
                         from: 30,
                         delay: const Duration(milliseconds: 140),
-                        child: TextFieldBuilder(
-                          controller:
-                              BlocProvider.of<SignUpCubit>(context).emailCon,
+                        child: FilledTextFieldBuilder(
+                          controller: BlocProvider.of<SignUpCubit>(
+                            context,
+                          ).emailCon,
                           label: "E-mail",
                           hint: "Enter your E-mail",
                           iconData: Icons.email,
                         ),
                       ),
-                      const SizedBox(
-                        height: 30,
-                      ),
+                      const SizedBox(height: 30),
                       FadeInDown(
                         from: 30,
                         delay: const Duration(milliseconds: 210),
                         child: ObscureTextFieldBuilder(
-                          controller:
-                              BlocProvider.of<SignUpCubit>(context).passwordCon,
-                          obscureText:
-                              BlocProvider.of<SignUpCubit>(context).obscureText,
+                          controller: BlocProvider.of<SignUpCubit>(
+                            context,
+                          ).passwordCon,
+                          obscureText: BlocProvider.of<SignUpCubit>(
+                            context,
+                          ).obscureText,
                           icon: BlocProvider.of<SignUpCubit>(context).icon,
                           label: "Password",
                           hint: "Enter your password",
                           iconData: Icons.password,
                         ),
                       ),
-                      const SizedBox(
-                        height: 30,
-                      ),
+                      const SizedBox(height: 30),
                       FadeInDown(
                         from: 30,
                         delay: const Duration(milliseconds: 280),
                         child: ObscureTextFieldBuilder(
-                          controller: BlocProvider.of<SignUpCubit>(context)
-                              .passwordConfirmCon,
-                          obscureText: BlocProvider.of<SignUpCubit>(context)
-                              .confirmObscureText,
+                          controller: BlocProvider.of<SignUpCubit>(
+                            context,
+                          ).passwordConfirmCon,
+                          obscureText: BlocProvider.of<SignUpCubit>(
+                            context,
+                          ).confirmObscureText,
                           icon: BlocProvider.of<SignUpCubit>(context).confIcon,
                           label: "Confirm password",
                           hint: "Confirm your password",
                           iconData: Icons.password,
                         ),
                       ),
-                      const SizedBox(
-                        height: 30,
-                      ),
+                      const SizedBox(height: 30),
                       FadeInDown(
                         from: 30,
                         delay: const Duration(milliseconds: 350),
@@ -138,9 +135,9 @@ class _SignUpState extends State<SignUp> {
                             builder: (context, state) {
                               if (state is SignUpInitial) {
                                 return MaterialButton(
-                                  onPressed: () =>
-                                      BlocProvider.of<SignUpCubit>(context)
-                                          .signUp(context),
+                                  onPressed: () => BlocProvider.of<SignUpCubit>(
+                                    context,
+                                  ).signUp(context),
                                   minWidth: double.infinity,
                                   height: 50,
                                   color: Colors.white,
@@ -149,14 +146,17 @@ class _SignUpState extends State<SignUp> {
                                   child: Text(
                                     'SIGN UP',
                                     style: TextStyle(
-                                        fontFamily: 'f',
-                                        fontSize: 20,
-                                        color: ConstColors.main),
+                                      fontFamily: 'f',
+                                      fontSize: 20,
+                                      color: ConstColors.main,
+                                    ),
                                   ),
                                 );
                               } else {
                                 return LoadingAnimationWidget.threeArchedCircle(
-                                    color: Colors.white, size: 50);
+                                  color: Colors.white,
+                                  size: 50,
+                                );
                               }
                             },
                           ),
@@ -180,7 +180,10 @@ class _SignUpState extends State<SignUp> {
               child: Text(
                 "Don't have an account ? ",
                 style: TextStyle(
-                    fontFamily: 'f', fontSize: 18, color: Colors.white),
+                  fontFamily: 'f',
+                  fontSize: 18,
+                  color: Colors.white,
+                ),
               ),
             ),
             FittedBox(
@@ -190,16 +193,15 @@ class _SignUpState extends State<SignUp> {
                 child: const Text(
                   'Login',
                   style: TextStyle(
-                      fontFamily: 'f',
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20),
+                    fontFamily: 'f',
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
                 ),
               ),
             ),
-            const SizedBox(
-              height: 160,
-            ),
+            const SizedBox(height: 130),
           ],
         ),
       ),

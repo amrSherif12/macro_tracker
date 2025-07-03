@@ -9,10 +9,23 @@ class LoadingWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-        child: LoadingAnimationWidget.discreteCircle(
-            color: ConstColors.secMid,
-            size: 30,
-            secondRingColor: ConstColors.secMidOff,
-            thirdRingColor: ConstColors.secOff));
+      child: LoadingAnimationWidget.threeArchedCircle(
+        color: ConstColors.secMid,
+        size: 30,
+      ),
+    );
+  }
+}
+
+class SmallLoading extends StatelessWidget {
+  final bool isWhite;
+  const SmallLoading({super.key, this.isWhite = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return LoadingAnimationWidget.threeArchedCircle(
+      color: isWhite ? Colors.white : ConstColors.sec,
+      size: 25,
+    );
   }
 }

@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:macro_tracker_2/data/models/consumable_model.dart';
-import 'package:macro_tracker_2/data/models/food_model.dart';
-import 'package:macro_tracker_2/data/models/recipe_model.dart';
+import 'package:testt/data/models/consumable_model.dart';
+import 'package:testt/data/models/food_model.dart';
+import 'package:testt/data/models/recipe_model.dart';
 
 class DayModel {
   DateTime date;
@@ -53,10 +53,10 @@ class DayModel {
       'fatCons': fatCons,
       'fatGoal': fatGoal,
       'isFree': isFree,
-      'breakfast': breakfast,
-      'lunch': lunch,
-      'dinner': dinner,
-      'snacks': snacks,
+      'breakfast': breakfast.isEmpty ? {} : breakfast,
+      'lunch': lunch.isEmpty ? {} : lunch,
+      'dinner': dinner.isEmpty ? {} : dinner,
+      'snacks': snacks.isEmpty ? {} : snacks,
       'exercises': exercises,
     };
   }

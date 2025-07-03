@@ -3,7 +3,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-import 'package:macro_tracker_2/logic/authentication/sign_up_state.dart';
+import 'package:testt/logic/authentication/sign_up_state.dart';
 import 'package:meta/meta.dart';
 
 import '../../constants/strings.dart';

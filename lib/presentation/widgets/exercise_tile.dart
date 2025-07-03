@@ -1,26 +1,23 @@
 // ignore_for_file: use_build_context_synchronously
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:macro_tracker_2/data/models/food_model.dart';
-import 'package:macro_tracker_2/logic/food/food_cubit.dart';
-import 'package:macro_tracker_2/presentation/screens/food/food_info.dart';
+import 'package:testt/data/models/food_model.dart';
+import 'package:testt/logic/food/food_cubit.dart';
+import 'package:testt/presentation/screens/food/food_info.dart';
 
 import '../../constants/strings.dart';
 
-class FoodTile extends StatefulWidget {
+class ExerciseTile extends StatefulWidget {
   final FoodModel food;
   final Function refresh;
-  const FoodTile({
-    Key? key,
-    required this.refresh,
-    required this.food,
-  }) : super(key: key);
+  const ExerciseTile({Key? key, required this.refresh, required this.food})
+    : super(key: key);
 
   @override
-  State<FoodTile> createState() => _FoodTileState();
+  State<ExerciseTile> createState() => _ExerciseTileState();
 }
 
-class _FoodTileState extends State<FoodTile> {
+class _ExerciseTileState extends State<ExerciseTile> {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -46,28 +43,26 @@ class _FoodTileState extends State<FoodTile> {
                         Text(
                           widget.food.name,
                           style: const TextStyle(
-                              fontFamily: "F",
-                              fontSize: 20,
-                              color: Colors.white),
+                            fontFamily: "F",
+                            fontSize: 20,
+                            color: Colors.white,
+                          ),
                           overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(
-                          height: 10,
-                        ),
+                        const SizedBox(height: 10),
                         Text(
                           "${widget.food.kcal.toString()} KCAL ${widget.food.unit}",
                           style: TextStyle(
-                              fontFamily: "F",
-                              fontSize: 13,
-                              color: Colors.grey[300]!),
+                            fontFamily: "F",
+                            fontSize: 13,
+                            color: Colors.grey[300]!,
+                          ),
                           overflow: TextOverflow.ellipsis,
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(
-                    width: 10,
-                  ),
+                  const SizedBox(width: 10),
                   FloatingActionButton(
                     heroTag: null,
                     onPressed: () async {
@@ -84,10 +79,7 @@ class _FoodTileState extends State<FoodTile> {
                       // BlocProvider.of<MyFoodsCubit>(context).showFood();
                     },
                     backgroundColor: Colors.grey[700],
-                    child: const Icon(
-                      Icons.delete,
-                      color: Colors.white,
-                    ),
+                    child: const Icon(Icons.delete, color: Colors.white),
                   ),
                 ],
               ),

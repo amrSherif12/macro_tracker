@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:macro_tracker_2/constants/colors.dart';
+import 'package:testt/constants/colors.dart';
 
 class Exercise extends StatefulWidget {
   const Exercise({super.key});
@@ -14,23 +14,19 @@ class _ExerciseState extends State<Exercise> {
     return Scaffold(
       backgroundColor: ConstColors.main,
       appBar: AppBar(
+        elevation: 0,
+        scrolledUnderElevation: 0,
         backgroundColor: ConstColors.exeMid,
         centerTitle: true,
         title: const Text(
           'My Exercises',
-          style: TextStyle(
-            color: Colors.white,
-            fontFamily: "F",
-          ),
+          style: TextStyle(color: Colors.white, fontFamily: "F"),
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {},
         backgroundColor: ConstColors.exeMid,
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
+        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }

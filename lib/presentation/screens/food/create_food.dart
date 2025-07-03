@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:macro_tracker_2/constants/colors.dart';
-import 'package:macro_tracker_2/constants/strings.dart';
-import 'package:macro_tracker_2/data/helpers/firestore/food_repository.dart';
-import 'package:macro_tracker_2/data/models/food_model.dart';
+import 'package:testt/constants/colors.dart';
+import 'package:testt/constants/strings.dart';
+import 'package:testt/data/helpers/firestore/food_repository.dart';
+import 'package:testt/data/models/food_model.dart';
+import 'package:testt/presentation/widgets/placeholder/loading_widget.dart';
 
 import '../../../data/helpers/auth_helper.dart';
 import '../../widgets/textfield.dart';
@@ -24,6 +25,7 @@ class _CreateFoodState extends State<CreateFood> {
   TextEditingController fatCont = TextEditingController();
 
   late String unit;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -36,13 +38,12 @@ class _CreateFoodState extends State<CreateFood> {
     return Scaffold(
       backgroundColor: ConstColors.main,
       appBar: AppBar(
+        elevation: 0,
+        scrolledUnderElevation: 0,
         backgroundColor: ConstColors.sec,
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
-          icon: const Icon(
-            Icons.arrow_back,
-            color: Colors.white,
-          ),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           splashRadius: 20,
         ),
         title: Row(
@@ -50,44 +51,48 @@ class _CreateFoodState extends State<CreateFood> {
           children: [
             const Text(
               'Create a food',
-              style: TextStyle(
-                color: Colors.white,
-                fontFamily: "F",
-              ),
+              style: TextStyle(color: Colors.white, fontFamily: "F"),
             ),
-            IconButton(
-              onPressed: () async {
-                if (int.parse(kcalCont.text) > 10000) {
-                  toastBuilder('Food can\'t exceed 1000 kcal', context);
-                }
-                if (double.parse(proteinCont.text) * 4 +
-                        double.parse(carbCont.text) * 4 +
-                        double.parse(fatCont.text) * 9 >
-                    int.parse(kcalCont.text)) {
-                  toastBuilder(
-                      'Macro nutrients are exceeding the calories in the food',
-                      context);
-                } else {
-                  FoodRepository.instance.addFood(
-                      context,
-                      FoodModel(
-                          name: nameCont.text,
-                          kcal: int.parse(kcalCont.text),
-                          unit: unit,
-                          uid: AuthenticationHelper
-                              .instance.auth.currentUser!.uid,
-                          protein: double.parse(proteinCont.text),
-                          carb: double.parse(carbCont.text),
-                          fat: double.parse(fatCont.text)));
-                  Navigator.pop(context);
-                }
-              },
-              icon: const Icon(
-                Icons.done,
-                color: Colors.white,
-              ),
-              splashRadius: 20,
-            )
+            isLoading
+                ? SmallLoading(isWhite: true)
+                : IconButton(
+                    onPressed: () async {
+                      if (int.parse(kcalCont.text) > 10000) {
+                        toastBuilder('Food can\'t exceed 1000 kcal', context);
+                      }
+                      if (double.parse(proteinCont.text) * 4 +
+                              double.parse(carbCont.text) * 4 +
+                              double.parse(fatCont.text) * 9 >
+                          int.parse(kcalCont.text)) {
+                        toastBuilder(
+                          'Macro nutrients are exceeding the calories in the food',
+                          context,
+                        );
+                      } else {
+                        isLoading = true;
+                        setState(() {});
+                        await FoodRepository.instance.addFood(
+                          context,
+                          FoodModel(
+                            name: nameCont.text,
+                            kcal: int.parse(kcalCont.text),
+                            unit: unit,
+                            uid: AuthenticationHelper
+                                .instance
+                                .auth
+                                .currentUser!
+                                .uid,
+                            protein: double.parse(proteinCont.text),
+                            carb: double.parse(carbCont.text),
+                            fat: double.parse(fatCont.text),
+                          ),
+                        );
+                        Navigator.pop(context);
+                      }
+                    },
+                    icon: const Icon(Icons.done, color: Colors.white),
+                    splashRadius: 20,
+                  ),
           ],
         ),
       ),
@@ -120,26 +125,21 @@ class _CreateFoodState extends State<CreateFood> {
                 elevation: 16,
                 dropdownColor: Colors.grey[800],
                 style: const TextStyle(color: Colors.white, fontFamily: "F"),
-                underline: Container(
-                  height: 1,
-                  color: Colors.greenAccent,
-                ),
+                underline: Container(height: 1, color: Colors.greenAccent),
                 onChanged: (String? value) {
                   unit = value!;
                   setState(() {});
                 },
-                items: Lists.units.map<DropdownMenuItem<String>>(
-                  (String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  },
-                ).toList(),
+                items: Lists.units.map<DropdownMenuItem<String>>((
+                  String value,
+                ) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
               ),
-              const SizedBox(
-                width: 1,
-              ),
+              const SizedBox(width: 1),
             ],
           ),
           Row(
@@ -148,8 +148,9 @@ class _CreateFoodState extends State<CreateFood> {
                 width: MediaQuery.of(context).size.width / 3,
                 child: UnderLineTextField(
                   label: "Protein",
-                  keyboard:
-                      const TextInputType.numberWithOptions(decimal: true),
+                  keyboard: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
                   controller: proteinCont,
                 ),
               ),
@@ -157,8 +158,9 @@ class _CreateFoodState extends State<CreateFood> {
                 width: MediaQuery.of(context).size.width / 3,
                 child: UnderLineTextField(
                   label: "Carb",
-                  keyboard:
-                      const TextInputType.numberWithOptions(decimal: true),
+                  keyboard: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
                   controller: carbCont,
                 ),
               ),
@@ -166,8 +168,9 @@ class _CreateFoodState extends State<CreateFood> {
                 width: MediaQuery.of(context).size.width / 3,
                 child: UnderLineTextField(
                   label: "Fat",
-                  keyboard:
-                      const TextInputType.numberWithOptions(decimal: true),
+                  keyboard: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
                   controller: fatCont,
                 ),
               ),

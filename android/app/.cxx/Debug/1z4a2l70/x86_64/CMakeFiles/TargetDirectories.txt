@@ -1,2 +1,0 @@
-C:/Users/Arabtech/Documents/GitHub/macro_tracker2/android/app/.cxx/Debug/1z4a2l70/x86_64/CMakeFiles/edit_cache.dir
-C:/Users/Arabtech/Documents/GitHub/macro_tracker2/android/app/.cxx/Debug/1z4a2l70/x86_64/CMakeFiles/rebuild_cache.dir

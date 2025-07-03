@@ -19,8 +19,11 @@ class Undefined extends StatelessWidget {
         child: const Center(
           child: Text(
             "Undefined screen",
-            style:
-                TextStyle(fontFamily: 'F', fontSize: 30, color: Colors.white),
+            style: TextStyle(
+              fontFamily: 'F',
+              fontSize: 30,
+              color: Colors.white,
+            ),
           ),
         ),
       ),

@@ -1,14 +1,17 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
-import 'package:macro_tracker_2/constants/colors.dart';
-import 'package:macro_tracker_2/data/models/consumable_model.dart';
-import 'package:macro_tracker_2/data/models/food_model.dart';
-import 'package:macro_tracker_2/data/models/recipe_model.dart';
-import 'package:macro_tracker_2/presentation/screens/home/add_food.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:testt/constants/colors.dart';
+import 'package:testt/data/models/consumable_model.dart';
+import 'package:testt/data/models/food_model.dart';
+import 'package:testt/logic/home/home_cubit.dart';
+import 'package:testt/presentation/screens/home/add_food.dart';
+import 'package:testt/presentation/screens/home/meal_info.dart';
 
 import '../../constants/strings.dart';
 
 class Meal extends StatefulWidget {
+  final Function refresh;
   final List<ConsumableModel> food;
   final IconData icon;
   final String meal;
@@ -22,6 +25,7 @@ class Meal extends StatefulWidget {
     required this.food,
     required this.isFree,
     required this.date,
+    required this.refresh,
   });
 
   @override
@@ -34,27 +38,10 @@ class _MealState extends State<Meal> {
   int totalKcal = 0;
 
   void kcalCalc() {
+    totalKcal = 0;
     for (int i = 0; i < widget.food.length; i++) {
-      if (widget.food[i] is FoodModel) {
-        FoodModel foodModel = widget.food[i] as FoodModel;
-        String unit = foodModel.unit;
-        String food = foodModel.name;
-        double amount = foodModel.amount!;
-        int kcal = widget.food[i].kcal;
-        if (unit == 'per 100 gm' || unit == 'per 100 ml') {
-          items.add(food);
-          itemsKcal.add((kcal * amount / 100).toInt());
-        } else {
-          items.add(food);
-          itemsKcal.add((kcal * amount).toInt());
-        }
-      } else if (widget.food[i] is RecipeModel) {
-        RecipeModel recipeModel = widget.food[i] as RecipeModel;
-          String recipe = recipeModel.name;
-          int kcal = recipeModel.kcal;
-          items.add(recipe);
-          itemsKcal.add(kcal);
-      }
+      items.add(widget.food[i].name);
+      itemsKcal.add(widget.food[i].getMacros()['kcal']);
     }
     for (int i = 0; i < items.length; i++) {
       totalKcal += itemsKcal[i];
@@ -74,147 +61,179 @@ class _MealState extends State<Meal> {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
-      child: AnimatedContainer(
-        duration: const Duration(seconds: 1),
-        width: double.infinity,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          color: Colors.grey[850],
-        ),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Icon(
-                  widget.icon,
-                  color: Colors.white,
-                  size: 30,
-                ),
-                Text(
-                  widget.meal,
-                  style: const TextStyle(
-                      fontFamily: "F", fontSize: 20, color: Colors.white),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 15, 0, 10),
-                  child: FloatingActionButton(
-                    onPressed: !widget.isFree
-                        ? () {
-                            Navigator.pushNamed(context, Routes.addFoodRoute,
-                                arguments: AddFood(
-                                    date: widget.date, meal: widget.meal));
-                          }
-                        : null,
-                    heroTag: null,
-                    backgroundColor:
-                        widget.isFree ? ConstColors.cheat : ConstColors.sec,
-                    child: const Icon(
-                      Icons.add,
+      child: GestureDetector(
+        onTap: () async {
+          if (widget.food.isNotEmpty) {
+            await Navigator.pushNamed(
+              context,
+              Routes.mealInfoRoute,
+              arguments: MealInfo(
+                meal: widget.meal,
+                food: widget.food,
+                date: widget.date,
+              ),
+            );
+            widget.refresh(day: BlocProvider.of<HomeCubit>(context).currentDay);
+          }
+        },
+        child: AnimatedContainer(
+          duration: const Duration(seconds: 1),
+          width: double.infinity,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15),
+            color: Colors.grey[850],
+          ),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Icon(widget.icon, color: Colors.white, size: 30),
+                  Text(
+                    widget.meal,
+                    style: const TextStyle(
+                      fontFamily: "F",
+                      fontSize: 20,
                       color: Colors.white,
                     ),
                   ),
-                )
-              ],
-            ),
-            open == true
-                ? FadeInDown(
-                    from: 40,
-                    duration: const Duration(milliseconds: 450),
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
-                      child: ListView.builder(
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.all(5),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  items[index],
-                                  style: TextStyle(
-                                      fontFamily: "F",
-                                      fontSize: 20,
-                                      color: Colors.grey[300]),
-                                ),
-                                Text(
-                                  itemsKcal[index].toString(),
-                                  style: TextStyle(
-                                      fontFamily: "F",
-                                      fontSize: 20,
-                                      color: Colors.grey[400]),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                        itemCount: widget.food.length,
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                      ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 15, 0, 10),
+                    child: FloatingActionButton(
+                      onPressed: () async {
+                        await Navigator.pushNamed(
+                          context,
+                          Routes.addFoodRoute,
+                          arguments: AddFood(
+                            date: widget.date,
+                            meal: widget.meal,
+                          ),
+                        );
+                        widget.refresh(
+                          day: BlocProvider.of<HomeCubit>(context).currentDay,
+                        );
+                      },
+                      heroTag: null,
+                      backgroundColor: widget.isFree
+                          ? ConstColors.cheat
+                          : ConstColors.sec,
+                      child: const Icon(Icons.add, color: Colors.white),
                     ),
-                  )
-                : Container(),
-            Column(
-              children: [
-                Divider(
-                  thickness: 2,
-                  endIndent: 30,
-                  indent: 30,
-                  color: Colors.grey[500],
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Row(
-                    children: [
-                      items.isNotEmpty
-                          ? IconButton(
-                              splashRadius: 1,
-                              icon: AnimatedSwitcher(
+                  ),
+                ],
+              ),
+              open == true
+                  ? FadeInDown(
+                      from: 40,
+                      duration: const Duration(milliseconds: 450),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
+                        child: ListView.builder(
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.all(5),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    items[index],
+                                    style: TextStyle(
+                                      fontFamily: "F",
+                                      fontSize: 20,
+                                      color: Colors.grey[300],
+                                    ),
+                                  ),
+                                  Text(
+                                    itemsKcal[index].toString(),
+                                    style: TextStyle(
+                                      fontFamily: "F",
+                                      fontSize: 20,
+                                      color: Colors.grey[400],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                          itemCount: widget.food.length,
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                        ),
+                      ),
+                    )
+                  : Container(),
+              Column(
+                children: [
+                  Divider(
+                    thickness: 2,
+                    endIndent: 30,
+                    indent: 30,
+                    color: Colors.grey[500],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Row(
+                      children: [
+                        items.isNotEmpty
+                            ? IconButton(
+                                splashRadius: 1,
+                                icon: AnimatedSwitcher(
                                   duration: const Duration(milliseconds: 400),
                                   transitionBuilder: (child, anim) =>
                                       RotationTransition(
-                                        turns: child.key ==
-                                                const ValueKey('icon1')
-                                            ? Tween<double>(begin: 1, end: 1)
-                                                .animate(anim)
-                                            : Tween<double>(begin: 0.75, end: 1)
-                                                .animate(anim),
+                                        turns:
+                                            child.key == const ValueKey('icon1')
+                                            ? Tween<double>(
+                                                begin: 1,
+                                                end: 1,
+                                              ).animate(anim)
+                                            : Tween<double>(
+                                                begin: 0.75,
+                                                end: 1,
+                                              ).animate(anim),
                                         child: FadeTransition(
-                                            opacity: anim, child: child),
+                                          opacity: anim,
+                                          child: child,
+                                        ),
                                       ),
                                   child: open == true
-                                      ? const Icon(Icons.keyboard_arrow_up,
+                                      ? const Icon(
+                                          Icons.keyboard_arrow_up,
                                           color: Colors.white,
                                           size: 30,
-                                          key: ValueKey('icon1'))
+                                          key: ValueKey('icon1'),
+                                        )
                                       : const Icon(
                                           Icons.keyboard_arrow_down,
                                           color: Colors.white,
                                           size: 30,
                                           key: ValueKey('icon2'),
-                                        )),
-                              onPressed: () {
-                                open = !open;
-                                setState(() {});
-                              },
-                            )
-                          : const SizedBox(),
-                      const Spacer(),
-                      Text(
-                        "Total KCAL: $totalKcal",
-                        style: const TextStyle(
-                            fontFamily: "F", fontSize: 20, color: Colors.white),
-                      ),
-                      Spacer(
-                        flex: items.isNotEmpty ? 2 : 1,
-                      ),
-                    ],
+                                        ),
+                                ),
+                                onPressed: () {
+                                  open = !open;
+                                  setState(() {});
+                                },
+                              )
+                            : const SizedBox(),
+                        const Spacer(),
+                        Text(
+                          "Total KCAL: $totalKcal",
+                          style: const TextStyle(
+                            fontFamily: "F",
+                            fontSize: 20,
+                            color: Colors.white,
+                          ),
+                        ),
+                        Spacer(flex: items.isNotEmpty ? 2 : 1),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

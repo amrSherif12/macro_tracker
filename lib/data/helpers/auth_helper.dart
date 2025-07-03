@@ -19,8 +19,11 @@ class AuthenticationHelper {
   static AuthenticationHelper get instance => _instance;
   final auth = FirebaseAuth.instance;
 
-  Future<void> emailLogin(BuildContext context,
-      TextEditingController passwordCon, TextEditingController emailCon) async {
+  Future<void> emailLogin(
+    BuildContext context,
+    TextEditingController passwordCon,
+    TextEditingController emailCon,
+  ) async {
     if (passwordCon.text.isEmpty || emailCon.text.isEmpty) {
       toastBuilder("Fill all the fields", context);
     } else if (!EmailValidator.validate(emailCon.text.trim())) {
@@ -29,21 +32,21 @@ class AuthenticationHelper {
       try {
         await auth
             .signInWithEmailAndPassword(
-                email: emailCon.text.trim(), password: passwordCon.text.trim())
-            .then(
-          (value) async {
-            toastBuilder("Signed in successfully", context);
+              email: emailCon.text.trim(),
+              password: passwordCon.text.trim(),
+            )
+            .then((value) async {
+              toastBuilder("Signed in successfully", context);
 
-            Navigator.pushReplacementNamed(context, Routes.navigationRoute);
-          },
-        );
+              Navigator.pushReplacementNamed(context, Routes.navigationRoute);
+            });
       } on FirebaseAuthException catch (e) {
         if (e.code == 'user-not-found') {
           toastBuilder("User not found", context);
-        } else if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
+        } else if (e.code == 'invalid-credential') {
           toastBuilder("Wrong password or email", context);
         } else if (e.code == 'network-request-failed') {
-          toastBuilder("No Internet", context);
+          toastBuilder("No internet connection", context);
         } else if (e.code == 'too-many-requests') {
           toastBuilder("Too many attempts please try later", context);
         }
@@ -60,22 +63,22 @@ class AuthenticationHelper {
   ) async {
     if (passwordCon.trim() == passwordConfirmCon.trim()) {
       try {
-        UserCredential userCredential =
-            await auth.createUserWithEmailAndPassword(
-          email: emailCon.trim(),
-          password: passwordCon.trim(),
-        );
+        UserCredential userCredential = await auth
+            .createUserWithEmailAndPassword(
+              email: emailCon.trim(),
+              password: passwordCon.trim(),
+            );
         userCredential.user!.updateDisplayName(userName.trim());
         await auth
             .signInWithEmailAndPassword(
-                email: emailCon.trim(), password: passwordCon.trim())
-            .then(
-          (value) async {
-            toastBuilder("Account created successfully", context);
+              email: emailCon.trim(),
+              password: passwordCon.trim(),
+            )
+            .then((value) async {
+              toastBuilder("Account created successfully", context);
 
-            Navigator.pushReplacementNamed(context, Routes.navigationRoute);
-          },
-        );
+              Navigator.pushReplacementNamed(context, Routes.navigationRoute);
+            });
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
           toastBuilder("Password can't be less than 6 characters", context);
@@ -87,7 +90,9 @@ class AuthenticationHelper {
       }
     } else if (passwordCon.trim() != passwordConfirmCon.trim()) {
       toastBuilder(
-          "The password confirmation doesn't match the password", context);
+        "The password confirmation doesn't match the password",
+        context,
+      );
     }
   }
 
@@ -105,9 +110,10 @@ class AuthenticationHelper {
 
   Future<UserModel> getUserCredential() async {
     UserModel user = UserModel(
-        uid: auth.currentUser!.uid,
-        name: auth.currentUser!.displayName!,
-        email: auth.currentUser!.email!);
+      uid: auth.currentUser!.uid,
+      name: auth.currentUser!.displayName!,
+      email: auth.currentUser!.email!,
+    );
 
     return user;
   }

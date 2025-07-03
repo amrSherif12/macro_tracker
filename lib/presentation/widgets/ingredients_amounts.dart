@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:macro_tracker_2/data/helpers/auth_helper.dart';
-import 'package:macro_tracker_2/data/helpers/firestore/food_repository.dart';
-import 'package:macro_tracker_2/data/models/recipe_model.dart';
-import 'package:macro_tracker_2/presentation/widgets/textfield.dart';
-import 'package:macro_tracker_2/utils.dart';
+import 'package:testt/data/helpers/auth_helper.dart';
+import 'package:testt/data/helpers/firestore/food_repository.dart';
+import 'package:testt/data/models/recipe_model.dart';
+import 'package:testt/presentation/widgets/textfield.dart';
+import 'package:testt/random.dart';
 
 import '../../data/models/food_model.dart';
 
@@ -13,9 +13,12 @@ class IngredientsAmounts extends StatefulWidget {
   final bool create;
   final String name;
 
-  const IngredientsAmounts(
-      {Key? key, required this.items, required this.create, required this.name})
-      : super(key: key);
+  const IngredientsAmounts({
+    Key? key,
+    required this.items,
+    required this.create,
+    required this.name,
+  }) : super(key: key);
 
   @override
   State<IngredientsAmounts> createState() => _IngredientsAmountsState();
@@ -46,8 +49,9 @@ class _IngredientsAmountsState extends State<IngredientsAmounts> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding:
-          EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
       child: ListView(
         physics: const BouncingScrollPhysics(),
         children: [
@@ -69,8 +73,11 @@ class _IngredientsAmountsState extends State<IngredientsAmounts> {
           const Center(
             child: Text(
               "INGREDIENTS",
-              style:
-                  TextStyle(color: Colors.white, fontFamily: 'F', fontSize: 25),
+              style: TextStyle(
+                color: Colors.white,
+                fontFamily: 'F',
+                fontSize: 25,
+              ),
             ),
           ),
           Divider(
@@ -91,10 +98,12 @@ class _IngredientsAmountsState extends State<IngredientsAmounts> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width / 2,
                     child: UnderLineTextField(
-                        label: widget.items[index].name,
-                        keyboard: const TextInputType.numberWithOptions(
-                            decimal: true),
-                        controller: controllers[index]),
+                      label: widget.items[index].name,
+                      keyboard: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
+                      controller: controllers[index],
+                    ),
                   ),
                   const Spacer(),
                   Column(
@@ -107,14 +116,12 @@ class _IngredientsAmountsState extends State<IngredientsAmounts> {
                           fontSize: 15,
                         ),
                       ),
-                      const SizedBox(
-                        height: 7,
-                      ),
+                      const SizedBox(height: 7),
                       Container(
                         color: Colors.greenAccent,
                         width: 30,
                         height: 1,
-                      )
+                      ),
                     ],
                   ),
                   const Spacer(),
@@ -123,9 +130,7 @@ class _IngredientsAmountsState extends State<IngredientsAmounts> {
             },
             itemCount: widget.items.length,
           ),
-          const SizedBox(
-            height: 50,
-          ),
+          const SizedBox(height: 50),
           Center(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(50),
@@ -134,7 +139,7 @@ class _IngredientsAmountsState extends State<IngredientsAmounts> {
                   if (nameCont.text.isNotEmpty &&
                       controllersAreNotEmpty(controllers)) {
                     if (widget.create) {
-                      FoodRepository.instance.addRecipe(
+                      await FoodRepository.instance.addRecipe(
                         context,
                         nameCont.text,
                         widget.items,

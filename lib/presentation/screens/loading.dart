@@ -28,9 +28,12 @@ class _LoadingState extends State<Loading> {
 
   @override
   void initState() {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
         systemNavigationBarColor: ConstColors.sec,
-        statusBarColor: ConstColors.secDark));
+        statusBarColor: ConstColors.secDark,
+      ),
+    );
     navigation();
     super.initState();
   }

@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:macro_tracker_2/constants/colors.dart';
-import 'package:macro_tracker_2/constants/strings.dart';
-import 'package:macro_tracker_2/logic/food/food_cubit.dart';
-import 'package:macro_tracker_2/logic/food/recipes_cubit.dart';
-import 'package:macro_tracker_2/presentation/screens/food/food_tab.dart';
-import 'package:macro_tracker_2/presentation/screens/food/recipe_tab.dart';
+import 'package:testt/constants/colors.dart';
+import 'package:testt/constants/strings.dart';
+import 'package:testt/logic/food/food_cubit.dart';
+import 'package:testt/logic/food/recipes_cubit.dart';
+import 'package:testt/presentation/screens/food/create_food.dart';
+import 'package:testt/presentation/screens/food/create_recipe.dart';
+import 'package:testt/presentation/screens/food/food_tab.dart';
+import 'package:testt/presentation/screens/food/recipe_tab.dart';
 
 class Food extends StatefulWidget {
-  final bool isAdd;
+  final Tile tile;
   final String? meal;
   final DateTime? date;
 
-  const Food({super.key, this.isAdd = false, this.meal, this.date});
+  const Food({super.key, required this.tile, this.meal, this.date});
 
   @override
   State<Food> createState() => _FoodState();
@@ -24,21 +26,24 @@ class _FoodState extends State<Food> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
         systemNavigationBarColor: ConstColors.main,
-        statusBarColor: ConstColors.sec));
+        statusBarColor: ConstColors.sec,
+      ),
+    );
     tabController = TabController(length: 2, vsync: this);
     BlocProvider.of<FoodCubit>(context).getFood();
     BlocProvider.of<RecipesCubit>(context).getRecipes();
     super.initState();
   }
 
-  void refreshFoodTab() {
-    BlocProvider.of<FoodCubit>(context).getFood(isRefresh: true);
+  Future<void> refreshFoodTab() async {
+    await BlocProvider.of<FoodCubit>(context).getFood(isRefresh: true);
   }
 
-  void refreshRecipeTab() {
-    BlocProvider.of<RecipesCubit>(context).getRecipes(isRefresh: true);
+  Future<void> refreshRecipeTab() async {
+    await BlocProvider.of<RecipesCubit>(context).getRecipes(isRefresh: true);
   }
 
   @override
@@ -46,73 +51,77 @@ class _FoodState extends State<Food> with TickerProviderStateMixin {
     return Scaffold(
       backgroundColor: ConstColors.main,
       appBar: AppBar(
+        elevation: 0,
+        scrolledUnderElevation: 0,
         backgroundColor: ConstColors.sec,
         toolbarHeight: 10,
         bottom: TabBar(
           controller: tabController,
-          unselectedLabelStyle:
-              TextStyle(color: Colors.white.withOpacity(0.75), fontSize: 19),
+          unselectedLabelStyle: TextStyle(
+            color: Colors.white.withOpacity(0.75),
+            fontSize: 19,
+          ),
           labelStyle: const TextStyle(
-              color: Colors.white, fontSize: 22, fontFamily: 'f'),
+            color: Colors.white,
+            fontSize: 22,
+            fontFamily: 'f',
+          ),
           dividerColor: ConstColors.secMid,
           indicator: const UnderlineTabIndicator(
-              borderSide: BorderSide(color: Colors.white, width: 2)),
+            borderSide: BorderSide(color: Colors.white, width: 2),
+          ),
           tabs: const [
             Tab(
-              child: Text(
-                'My Foods',
-                style: TextStyle(fontFamily: 'f'),
-              ),
+              child: Text('My Foods', style: TextStyle(fontFamily: 'f')),
             ),
             Tab(
-              child: Text(
-                'My Recipes',
-                style: TextStyle(fontFamily: 'f'),
-              ),
+              child: Text('My Recipes', style: TextStyle(fontFamily: 'f')),
             ),
           ],
         ),
       ),
-      body: TabBarView(controller: tabController, children: [
-        widget.isAdd
-            ? FoodTab(
-                refresh: refreshFoodTab,
-                isAdd: widget.isAdd,
-                date: widget.date,
-                meal: widget.meal,
-              )
-            : FoodTab(
-                refresh: refreshFoodTab,
-                isAdd: widget.isAdd,
-              ),
-        widget.isAdd
-            ? RecipeTab(
-                refresh: refreshRecipeTab,
-                isAdd: widget.isAdd,
-                date: widget.date,
-                meal: widget.meal,
-              )
-            : RecipeTab(
-                refresh: refreshRecipeTab,
-                isAdd: widget.isAdd,
-              ),
-      ]),
-      floatingActionButton: !widget.isAdd ? FloatingActionButton(
-        onPressed: () async {
-          if (tabController.index == 0) {
-            await Navigator.pushNamed(context, Routes.createFoodRoute);
-            refreshFoodTab();
-          } else {
-            await Navigator.pushNamed(context, Routes.createRecipeRoute);
-            refreshRecipeTab();
-          }
-        },
-        backgroundColor: ConstColors.sec,
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
-      ) : null,
+      body: TabBarView(
+        controller: tabController,
+        children: [
+          widget.tile == Tile.addDairy || widget.tile == Tile.removeDairy
+              ? FoodTab(
+                  refresh: refreshFoodTab,
+                  tile: widget.tile,
+                  date: widget.date,
+                  meal: widget.meal,
+                )
+              : FoodTab(refresh: refreshFoodTab, tile: widget.tile),
+          widget.tile == Tile.addDairy || widget.tile == Tile.removeDairy
+              ? RecipeTab(
+                  refresh: refreshRecipeTab,
+                  tile: widget.tile,
+                  date: widget.date,
+                  meal: widget.meal,
+                )
+              : RecipeTab(refresh: refreshRecipeTab, tile: widget.tile),
+        ],
+      ),
+      floatingActionButton: widget.tile == Tile.removeFood
+          ? FloatingActionButton(
+              onPressed: () async {
+                if (tabController.index == 0) {
+                  await Navigator.pushNamed(context, Routes.createFoodRoute);
+                  refreshFoodTab();
+                } else {
+                  if (BlocProvider.of<FoodCubit>(context).state is FoodLoaded) {
+                    final ingredients = (BlocProvider.of<FoodCubit>(
+                        context).state as FoodLoaded).food;
+                    await Navigator.pushNamed(context, Routes.createRecipeRoute,
+                        arguments: CreateRecipe(
+                            ingredients: ingredients));
+                    refreshRecipeTab();
+                  }
+                }
+              },
+              backgroundColor: ConstColors.sec,
+              child: const Icon(Icons.add, color: Colors.white),
+            )
+          : null,
     );
   }
 }

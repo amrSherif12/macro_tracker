@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:macro_tracker_2/constants/colors.dart';
-import 'package:macro_tracker_2/logic/food/food_cubit.dart';
+import 'package:testt/constants/colors.dart';
+import 'package:testt/constants/strings.dart';
+import 'package:testt/logic/food/food_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:macro_tracker_2/presentation/screens/food/food.dart';
+import 'package:testt/presentation/screens/food/food.dart';
 import '../food/food_tab.dart';
 
 class AddFood extends StatefulWidget {
@@ -15,11 +16,6 @@ class AddFood extends StatefulWidget {
 }
 
 class _AddFoodState extends State<AddFood> {
-
-  void refreshFoodTab() {
-    BlocProvider.of<FoodCubit>(context).getFood(isRefresh: true);
-  }
-
   @override
   void initState() {
     BlocProvider.of<FoodCubit>(context).getFood();
@@ -31,16 +27,18 @@ class _AddFoodState extends State<AddFood> {
     return Scaffold(
       backgroundColor: ConstColors.main,
       appBar: AppBar(
+        elevation: 0,
+        scrolledUnderElevation: 0,
         centerTitle: true,
         backgroundColor: ConstColors.sec,
         iconTheme: IconThemeData(color: Colors.white),
         title: Text(
-          'Add Food', style: TextStyle(fontFamily: 'f', color: Colors.white),),
+          'Add Food',
+          style: TextStyle(fontFamily: 'f', color: Colors.white),
+        ),
         actions: [IconButton(onPressed: () {}, icon: Icon(Icons.search))],
       ),
-      body: Food(isAdd: true, date: widget.date, meal: widget.meal,),
+      body: Food(tile: Tile.addDairy, date: widget.date, meal: widget.meal),
     );
   }
 }
-
-

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:testt/random.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class Macro extends StatefulWidget {
@@ -6,13 +7,13 @@ class Macro extends StatefulWidget {
   final double target;
   final double eaten;
   final Color color;
-  const Macro(
-      {Key? key,
-      required this.target,
-      required this.eaten,
-      required this.macro,
-      required this.color})
-      : super(key: key);
+  const Macro({
+    Key? key,
+    required this.target,
+    required this.eaten,
+    required this.macro,
+    required this.color,
+  }) : super(key: key);
 
   @override
   State<Macro> createState() => _MacroState();
@@ -31,27 +32,33 @@ class _MacroState extends State<Macro> {
               Text(
                 widget.macro,
                 style: const TextStyle(
-                    fontFamily: "F", fontSize: 15, color: Colors.white),
+                  fontFamily: "F",
+                  fontSize: 15,
+                  color: Colors.white,
+                ),
               ),
               Text(
-                "${widget.eaten} / ${widget.target} g",
+                "${widget.eaten.withoutZeroDecimal()} / ${widget.target.withoutZeroDecimal()} g",
                 style: const TextStyle(
-                    fontFamily: "F", fontSize: 15, color: Colors.white),
+                  fontFamily: "F",
+                  fontSize: 15,
+                  color: Colors.white,
+                ),
               ),
             ],
           ),
-          const SizedBox(
-            height: 10,
-          ),
+          const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               LinearPercentIndicator(
-                percent: widget.eaten / widget.target,
+                percent: widget.eaten > widget.target
+                    ? 1
+                    : widget.eaten / widget.target,
                 lineHeight: 5,
                 barRadius: const Radius.circular(50),
                 width: MediaQuery.of(context).size.width * 0.8,
-                animationDuration: 2100,
+                animationDuration: 800,
                 animateFromLastPercent: true,
                 animation: true,
                 progressColor: widget.color,

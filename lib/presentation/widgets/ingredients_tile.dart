@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:macro_tracker_2/constants/colors.dart';
-import 'package:macro_tracker_2/data/models/food_model.dart';
+import 'package:testt/constants/colors.dart';
+import 'package:testt/data/models/food_model.dart';
 
 class IngredientsTile extends StatefulWidget {
   final FoodModel food;
   final List<String> list;
-  IngredientsTile({
-    Key? key,
-    required this.food,
-    required this.list,
-  }) : super(key: key);
+  IngredientsTile({Key? key, required this.food, required this.list})
+    : super(key: key);
 
   @override
   State<IngredientsTile> createState() => _IngredientsTileState();
@@ -20,9 +17,9 @@ class _IngredientsTileState extends State<IngredientsTile> {
   Widget build(BuildContext context) {
     bool isChecked = widget.list.contains(widget.food.id!);
     return Padding(
-      padding: const EdgeInsets.all(15),
+      padding: const EdgeInsets.all(10),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(15),
         child: MaterialButton(
           onPressed: () {
             if (!isChecked) {
@@ -38,7 +35,7 @@ class _IngredientsTileState extends State<IngredientsTile> {
           child: SizedBox(
             width: double.infinity,
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(10, 20, 10, 20),
+              padding: const EdgeInsets.fromLTRB(3, 13, 3, 13),
               child: Row(
                 children: [
                   Expanded(
@@ -48,41 +45,41 @@ class _IngredientsTileState extends State<IngredientsTile> {
                         Text(
                           widget.food.name,
                           style: TextStyle(
-                              fontFamily: "F",
-                              fontSize: 20,
-                              color:
-                                  !isChecked ? Colors.white : Colors.grey[900]),
+                            fontFamily: "F",
+                            fontSize: 18,
+                            color: !isChecked ? Colors.white : Colors.grey[900],
+                          ),
                           overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(
-                          height: 10,
-                        ),
+                        const SizedBox(height: 5),
                         Text(
                           "${widget.food.kcal.toString()} KCAL ${widget.food.unit}",
                           style: TextStyle(
-                              fontFamily: "F",
-                              fontSize: 13,
-                              color: !isChecked
-                                  ? Colors.grey[300]!
-                                  : Colors.grey[900]),
+                            fontFamily: "F",
+                            fontSize: 13,
+                            color: !isChecked
+                                ? Colors.grey[300]!
+                                : Colors.grey[900],
+                          ),
                           overflow: TextOverflow.ellipsis,
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  FloatingActionButton(
-                    heroTag: null,
-                    onPressed: null,
-                    backgroundColor:
-                        !isChecked ? Colors.grey[700] : ConstColors.sec,
-                    child: const Icon(
-                      Icons.done,
-                      color: Colors.white,
+                  const SizedBox(width: 20),
+                  SizedBox(
+                    width: 45,
+                    height: 45,
+                    child: FloatingActionButton(
+                      mini: true,
+                      heroTag: null,
+                      onPressed: null,
+                      backgroundColor: !isChecked
+                          ? Colors.grey[700]
+                          : ConstColors.sec,
+                      child: const Icon(Icons.done, color: Colors.white),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
