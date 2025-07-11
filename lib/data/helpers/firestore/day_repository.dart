@@ -126,20 +126,7 @@ class DayRepository {
     toastBuilder('Removed ${consumable.name} from $meal', context);
   }
 
-  void updateMacros(
-    DateTime date,
-    double prot,
-    double carb,
-    double fat,
-    int cal,
-  ) {
-    ins
-        .collection("users")
-        .doc(AuthenticationHelper.instance.auth.currentUser!.uid)
-        .collection('dairy')
-        .doc('${date.day}-${date.month}-${date.year}')
-        .update({});
-  }
+
 
   Future<void> switchCheatDay(DateTime date, bool isFree) async {
     try {

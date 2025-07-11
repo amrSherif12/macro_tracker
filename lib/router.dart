@@ -45,28 +45,51 @@ Route<dynamic> generateRoute(RouteSettings settings) {
           child: const Navigation(),
         ),
       );
-
     case Routes.createFoodRoute:
-      return MaterialPageRoute(builder: (context) => CreateFood());
+      final args = settings.arguments as CreateFood;
+      final foodTabCubit = BlocProvider.of<FoodCubit>(args.foodTabContext);
+      return MaterialPageRoute(
+        builder: (context) => BlocProvider.value(
+          value: foodTabCubit,
+          child: CreateFood(foodTabContext: args.foodTabContext),
+        ),
+      );
 
     case Routes.recipeInfoRoute:
       final args = settings.arguments as RecipeInfo;
+      final recipeTabCubit = args.refreshContext != null ?  BlocProvider.of<RecipesCubit>(
+        args.refreshContext!,
+      ) : null;
       return MaterialPageRoute(
-        builder: (context) => RecipeInfo(recipe: args.recipe),
+        builder: (context) => recipeTabCubit != null ? BlocProvider.value(
+          value: recipeTabCubit,
+          child: RecipeInfo(
+            recipe: args.recipe,
+            refreshContext: args.refreshContext,
+          ),
+        ) : RecipeInfo(
+          recipe: args.recipe,
+        ),
       );
 
     case Routes.createRecipeRoute:
       final args = settings.arguments as CreateRecipe;
+      final recipeTabCubit = BlocProvider.of<RecipesCubit>(
+        args.refreshContext,
+      );
       return MaterialPageRoute(
-        builder: (context) => BlocProvider(
-          create: (context) => FoodCubit(),
-          child: CreateRecipe(ingredients: args.ingredients,),
+        builder: (context) => BlocProvider.value(
+          value: recipeTabCubit,
+          child: CreateRecipe(
+            ingredients: args.ingredients,
+            refreshContext: args.refreshContext,
+          ),
         ),
       );
 
     case Routes.foodInfoRoute:
       final args = settings.arguments as FoodInfo;
-      return MaterialPageRoute(builder: (context) => FoodInfo(food: args.food));
+      return MaterialPageRoute(builder: (context) => FoodInfo(food: args.food, refreshContext: args.refreshContext,));
 
     case Routes.mealInfoRoute:
       final args = settings.arguments as MealInfo;
@@ -83,7 +106,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
             BlocProvider(create: (context) => FoodCubit()),
             BlocProvider(create: (context) => RecipesCubit()),
           ],
-          child: AddFood(date: args.date, meal: args.meal),
+          child: AddFood(date: args.date, meal: args.meal, dairyContext: args.dairyContext,),
         ),
       );
 

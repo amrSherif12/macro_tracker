@@ -6,7 +6,6 @@ class QuickCalorieModel extends ConsumableModel {
     super.id,
     required super.name,
     required super.description,
-    required super.lowerName,
     required super.kcal,
     required super.protein,
     required super.carb,
@@ -33,7 +32,6 @@ class QuickCalorieModel extends ConsumableModel {
       kcal: map["kcal"],
       protein: map["protein"],
       carb: map["carb"],
-      lowerName: map["lowerName"],
       fat: map["fat"],
       description: map["description"],
     );
@@ -48,7 +46,6 @@ class QuickCalorieModel extends ConsumableModel {
       protein: map["protein"],
       carb: map["carb"],
       fat: map["fat"],
-      lowerName: map["lowerName"],
       description: map["description"],
     );
   }

@@ -4,6 +4,7 @@ import 'package:testt/constants/colors.dart';
 import 'package:testt/constants/strings.dart';
 import 'package:testt/data/helpers/firestore/food_repository.dart';
 import 'package:testt/data/models/food_model.dart';
+import 'package:testt/logic/food/food_cubit.dart';
 import 'package:testt/presentation/widgets/placeholder/loading_widget.dart';
 
 import '../../../data/helpers/auth_helper.dart';
@@ -11,7 +12,8 @@ import '../../widgets/textfield.dart';
 import '../../widgets/toast.dart';
 
 class CreateFood extends StatefulWidget {
-  const CreateFood({Key? key}) : super(key: key);
+  final BuildContext foodTabContext;
+  const CreateFood({Key? key, required this.foodTabContext}) : super(key: key);
 
   @override
   State<CreateFood> createState() => _CreateFoodState();
@@ -23,6 +25,7 @@ class _CreateFoodState extends State<CreateFood> {
   TextEditingController proteinCont = TextEditingController();
   TextEditingController carbCont = TextEditingController();
   TextEditingController fatCont = TextEditingController();
+  TextEditingController descriptionCont = TextEditingController();
 
   late String unit;
   bool isLoading = false;
@@ -59,10 +62,9 @@ class _CreateFoodState extends State<CreateFood> {
                     onPressed: () async {
                       if (int.parse(kcalCont.text) > 10000) {
                         toastBuilder('Food can\'t exceed 1000 kcal', context);
-                      }
-                      if (double.parse(proteinCont.text) * 4 +
-                              double.parse(carbCont.text) * 4 +
-                              double.parse(fatCont.text) * 9 >
+                      } else if (double.parse(proteinCont.text) * 4 +
+                          double.parse(carbCont.text) * 4 +
+                          double.parse(fatCont.text) * 9 >
                           int.parse(kcalCont.text)) {
                         toastBuilder(
                           'Macro nutrients are exceeding the calories in the food',
@@ -71,22 +73,21 @@ class _CreateFoodState extends State<CreateFood> {
                       } else {
                         isLoading = true;
                         setState(() {});
-                        await FoodRepository.instance.addFood(
-                          context,
-                          FoodModel(
-                            name: nameCont.text,
-                            kcal: int.parse(kcalCont.text),
-                            unit: unit,
-                            uid: AuthenticationHelper
-                                .instance
-                                .auth
-                                .currentUser!
-                                .uid,
-                            protein: double.parse(proteinCont.text),
-                            carb: double.parse(carbCont.text),
-                            fat: double.parse(fatCont.text),
-                          ),
-                        );
+                        await BlocProvider.of<FoodCubit>(widget.foodTabContext).addFood(context, FoodModel(
+                          name: nameCont.text,
+                          kcal: int.parse(kcalCont.text),
+                          description: descriptionCont.text.trim(),
+                          lowerName: nameCont.text.toLowerCase(),
+                          unit: unit,
+                          uid: AuthenticationHelper
+                              .instance
+                              .auth
+                              .currentUser!
+                              .uid,
+                          protein: double.parse(proteinCont.text),
+                          carb: double.parse(carbCont.text),
+                          fat: double.parse(fatCont.text),
+                        ),);
                         Navigator.pop(context);
                       }
                     },
@@ -98,11 +99,27 @@ class _CreateFoodState extends State<CreateFood> {
       ),
       body: Column(
         children: [
-          UnderLineTextField(
-            label: "Food name",
-            keyboard: TextInputType.text,
-            controller: nameCont,
+          Row(
+            children: [
+              SizedBox(
+                width: MediaQuery.of(context).size.width / 2,
+                child: UnderLineTextField(
+                  label: "Food name",
+                  keyboard: TextInputType.text,
+                  controller: nameCont,
+                ),
+              ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width / 2,
+                child: UnderLineTextField(
+                  label: "Brand (optional)",
+                  keyboard: TextInputType.text,
+                  controller: descriptionCont,
+                ),
+              ),
+            ],
           ),
+
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.baseline,

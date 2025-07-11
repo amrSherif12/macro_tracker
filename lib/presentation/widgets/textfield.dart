@@ -245,12 +245,14 @@ class UnderLineTextField extends StatelessWidget {
   final String label;
   final TextInputType keyboard;
   final TextEditingController controller;
+  final bool enabled;
 
   const UnderLineTextField({
     Key? key,
     required this.label,
     required this.keyboard,
     required this.controller,
+    this.enabled = true,
   }) : super(key: key);
 
   @override
@@ -258,6 +260,7 @@ class UnderLineTextField extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(15),
       child: TextField(
+        enabled: enabled,
         inputFormatters: <TextInputFormatter>[
           if (keyboard == TextInputType.number)
             FilteringTextInputFormatter.digitsOnly
@@ -281,6 +284,8 @@ class UnderLineTextField extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
           ),
         ),
+        maxLines: keyboard == TextInputType.multiline ? 15 : 1,
+        minLines: 1,
         style: const TextStyle(fontFamily: 'F', color: Colors.white),
         cursorColor: Colors.white,
       ),

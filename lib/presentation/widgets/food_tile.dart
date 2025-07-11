@@ -1,7 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:testt/data/helpers/firestore/food_repository.dart';
 import 'package:testt/data/models/food_model.dart';
+import 'package:testt/logic/food/food_cubit.dart';
 import 'package:testt/presentation/screens/food/food_info.dart';
 import 'package:testt/presentation/widgets/delete.dart';
 import 'package:testt/presentation/widgets/food_amount.dart';
@@ -11,20 +13,20 @@ import '../../data/helpers/firestore/day_repository.dart';
 
 class FoodTile extends StatefulWidget {
   final FoodModel food;
-  final Function? refresh;
   final Tile tile;
   final DateTime? date;
   final String? meal;
   final List<String>? saved;
+  final BuildContext? refreshContext;
 
   const FoodTile({
     super.key,
-    this.refresh,
     required this.food,
     required this.tile,
     this.date,
     this.saved,
     this.meal,
+    this.refreshContext,
   });
 
   @override
@@ -56,9 +58,8 @@ class _FoodTileState extends State<FoodTile> {
             await Navigator.pushNamed(
               context,
               Routes.foodInfoRoute,
-              arguments: FoodInfo(food: widget.food),
+              arguments: FoodInfo(food: widget.food, refreshContext: widget.refreshContext,),
             );
-            widget.refresh!();
           },
           elevation: 10,
           color: Colors.grey[800],
@@ -108,14 +109,13 @@ class _FoodTileState extends State<FoodTile> {
                             builder: (context) => Delete(
                               name: widget.food.name,
                               delete: () async {
-                                await FoodRepository.instance.deleteFood(
+                                await BlocProvider.of<FoodCubit>(widget.refreshContext!).deleteFood(
                                   context,
                                   widget.food.id!,
                                 );
                               },
                             ),
                           );
-                          widget.refresh!();
                         } else if (widget.tile == Tile.removeDairy) {
                           await showDialog(
                             context: context,
@@ -149,6 +149,7 @@ class _FoodTileState extends State<FoodTile> {
                                 consumable: widget.food,
                                 date: widget.date!,
                                 meal: widget.meal!,
+                                dairyContext: widget.refreshContext!,
                               );
                             },
                             isDismissible: true,

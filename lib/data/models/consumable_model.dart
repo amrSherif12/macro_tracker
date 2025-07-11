@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:testt/data/models/food_model.dart';
 import 'package:testt/data/models/quick_calorie_model.dart';
 import 'package:testt/data/models/recipe_model.dart';
@@ -6,7 +5,7 @@ import 'package:testt/data/models/recipe_model.dart';
 abstract class ConsumableModel {
   String? id;
   String name;
-  String lowerName;
+  String? lowerName;
   String description;
   int kcal;
   double protein;
@@ -18,7 +17,7 @@ abstract class ConsumableModel {
     required this.name,
     required this.kcal,
     required this.protein,
-    required this.lowerName,
+    this.lowerName,
     required this.description,
     required this.carb,
     required this.fat,

@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:testt/data/models/consumable_model.dart';
 
 import 'quick_calorie_model.dart';
 
-class FoodModel extends QuickCalorieModel {
+class FoodModel extends ConsumableModel {
   double? amount;
   String unit;
   String? uid;

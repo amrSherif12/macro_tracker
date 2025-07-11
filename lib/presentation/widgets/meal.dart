@@ -11,12 +11,12 @@ import 'package:testt/presentation/screens/home/meal_info.dart';
 import '../../constants/strings.dart';
 
 class Meal extends StatefulWidget {
-  final Function refresh;
   final List<ConsumableModel> food;
   final IconData icon;
   final String meal;
   final bool isFree;
   final DateTime date;
+  final BuildContext dairyContext;
 
   const Meal({
     super.key,
@@ -25,7 +25,7 @@ class Meal extends StatefulWidget {
     required this.food,
     required this.isFree,
     required this.date,
-    required this.refresh,
+    required this.dairyContext,
   });
 
   @override
@@ -73,7 +73,6 @@ class _MealState extends State<Meal> {
                 date: widget.date,
               ),
             );
-            widget.refresh(day: BlocProvider.of<HomeCubit>(context).currentDay);
           }
         },
         child: AnimatedContainer(
@@ -105,12 +104,10 @@ class _MealState extends State<Meal> {
                           context,
                           Routes.addFoodRoute,
                           arguments: AddFood(
+                            dairyContext: widget.dairyContext,
                             date: widget.date,
                             meal: widget.meal,
                           ),
-                        );
-                        widget.refresh(
-                          day: BlocProvider.of<HomeCubit>(context).currentDay,
                         );
                       },
                       heroTag: null,

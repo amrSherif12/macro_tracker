@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:testt/constants/colors.dart';
 import 'package:testt/constants/strings.dart';
 import 'package:testt/data/helpers/auth_helper.dart';
+import 'package:testt/logic/food/food_cubit.dart';
+import 'package:testt/logic/food/recipes_cubit.dart';
 import 'package:testt/presentation/widgets/placeholder/loading_widget.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
+
 import '../../../data/helpers/firestore/food_repository.dart';
 import '../../../data/models/food_model.dart';
-import '../../../logic/food/food_cubit.dart';
 import '../../widgets/textfield.dart';
 import '../../widgets/toast.dart';
 
 class FoodInfo extends StatefulWidget {
   final FoodModel food;
+  final BuildContext? refreshContext;
 
-  const FoodInfo({Key? key, required this.food}) : super(key: key);
+  const FoodInfo({Key? key, required this.food, this.refreshContext}) : super(key: key);
 
   @override
   State<FoodInfo> createState() => _FoodInfoState();
@@ -23,6 +25,7 @@ class FoodInfo extends StatefulWidget {
 
 class _FoodInfoState extends State<FoodInfo> {
   TextEditingController nameCont = TextEditingController();
+  TextEditingController descriptionCont = TextEditingController();
   TextEditingController kcalCont = TextEditingController();
   TextEditingController proteinCont = TextEditingController();
   TextEditingController carbCont = TextEditingController();
@@ -33,6 +36,7 @@ class _FoodInfoState extends State<FoodInfo> {
   @override
   Widget build(BuildContext context) {
     nameCont.text = widget.food.name;
+    descriptionCont.text = widget.food.description ?? "";
     kcalCont.text = widget.food.kcal.toString();
     proteinCont.text = widget.food.protein.toString();
     carbCont.text = widget.food.carb.toString();
@@ -90,6 +94,8 @@ class _FoodInfoState extends State<FoodInfo> {
                         FoodModel food = FoodModel(
                           id: widget.food.id,
                           name: nameCont.text,
+                          description: descriptionCont.text.trim(),
+                          lowerName: nameCont.text.toLowerCase(),
                           kcal: int.parse(kcalCont.text),
                           unit: widget.food.unit,
                           uid: AuthenticationHelper
@@ -113,7 +119,7 @@ class _FoodInfoState extends State<FoodInfo> {
                         } else {
                           isLoading = true;
                           setState(() {});
-                          await FoodRepository.instance.updateFood(
+                          await BlocProvider.of<FoodCubit>(widget.refreshContext!).updateFood(
                             context,
                             food,
                           );
@@ -137,10 +143,25 @@ class _FoodInfoState extends State<FoodInfo> {
               physics: const BouncingScrollPhysics(),
               shrinkWrap: true,
               children: [
-                UnderLineTextField(
-                  label: "Food name",
-                  keyboard: TextInputType.text,
-                  controller: nameCont,
+                Row(
+                  children: [
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width / 2,
+                      child: UnderLineTextField(
+                        label: "Food name",
+                        keyboard: TextInputType.text,
+                        controller: nameCont,
+                      ),
+                    ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width / 2,
+                      child: UnderLineTextField(
+                        label: "Brand (optional)",
+                        keyboard: TextInputType.text,
+                        controller: descriptionCont,
+                      ),
+                    ),
+                  ],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,

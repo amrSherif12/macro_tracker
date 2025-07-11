@@ -9,7 +9,8 @@ import '../food/food_tab.dart';
 class AddFood extends StatefulWidget {
   final DateTime date;
   final String meal;
-  const AddFood({super.key, required this.date, required this.meal});
+  final BuildContext dairyContext;
+  const AddFood({super.key, required this.date, required this.meal, required this.dairyContext});
 
   @override
   State<AddFood> createState() => _AddFoodState();
@@ -38,7 +39,7 @@ class _AddFoodState extends State<AddFood> {
         ),
         actions: [IconButton(onPressed: () {}, icon: Icon(Icons.search))],
       ),
-      body: Food(tile: Tile.addDairy, date: widget.date, meal: widget.meal),
+      body: Food(tile: Tile.addDairy, date: widget.date, meal: widget.meal, dairyContext: widget.dairyContext,),
     );
   }
 }

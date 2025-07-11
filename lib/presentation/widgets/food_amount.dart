@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:testt/data/helpers/firestore/day_repository.dart';
 import 'package:testt/data/models/consumable_model.dart';
 import 'package:testt/data/models/recipe_model.dart';
+import 'package:testt/logic/home/home_cubit.dart';
 import 'package:testt/presentation/widgets/textfield.dart';
 
 import '../../data/models/food_model.dart';
@@ -11,12 +13,14 @@ class FoodAmount extends StatefulWidget {
   final ConsumableModel consumable;
   final DateTime date;
   final String meal;
+  final BuildContext dairyContext;
 
   const FoodAmount({
     Key? key,
     required this.consumable,
     required this.meal,
     required this.date,
+    required this.dairyContext,
   }) : super(key: key);
 
   @override
@@ -80,7 +84,6 @@ class _FoodAmountState extends State<FoodAmount> {
                 onTap: () async {
                   if (controller.text.isNotEmpty) {
                     ConsumableModel consumable = widget.consumable;
-
                     if (widget.consumable is FoodModel) {
                       (consumable as FoodModel).amount = double.parse(
                         controller.text,
@@ -90,7 +93,7 @@ class _FoodAmountState extends State<FoodAmount> {
                         controller.text,
                       );
                     }
-                    DayRepository.instance.addFood(
+                    BlocProvider.of<HomeCubit>(widget.dairyContext).addFood(
                       context,
                       widget.date,
                       widget.meal,

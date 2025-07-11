@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:testt/constants/colors.dart';
 import 'package:testt/constants/strings.dart';
+import 'package:testt/data/models/food_model.dart';
 import 'package:testt/logic/food/food_cubit.dart';
 import 'package:testt/logic/food/recipes_cubit.dart';
 import 'package:testt/presentation/screens/food/create_food.dart';
@@ -14,8 +15,9 @@ class Food extends StatefulWidget {
   final Tile tile;
   final String? meal;
   final DateTime? date;
+  final BuildContext? dairyContext;
 
-  const Food({super.key, required this.tile, this.meal, this.date});
+  const Food({super.key, required this.tile, this.meal, this.date, this.dairyContext});
 
   @override
   State<Food> createState() => _FoodState();
@@ -36,14 +38,6 @@ class _FoodState extends State<Food> with TickerProviderStateMixin {
     BlocProvider.of<FoodCubit>(context).getFood();
     BlocProvider.of<RecipesCubit>(context).getRecipes();
     super.initState();
-  }
-
-  Future<void> refreshFoodTab() async {
-    await BlocProvider.of<FoodCubit>(context).getFood(isRefresh: true);
-  }
-
-  Future<void> refreshRecipeTab() async {
-    await BlocProvider.of<RecipesCubit>(context).getRecipes(isRefresh: true);
   }
 
   @override
@@ -84,37 +78,39 @@ class _FoodState extends State<Food> with TickerProviderStateMixin {
         controller: tabController,
         children: [
           widget.tile == Tile.addDairy || widget.tile == Tile.removeDairy
-              ? FoodTab(
-                  refresh: refreshFoodTab,
-                  tile: widget.tile,
-                  date: widget.date,
-                  meal: widget.meal,
-                )
-              : FoodTab(refresh: refreshFoodTab, tile: widget.tile),
+              ? FoodTab(tile: widget.tile, date: widget.date, meal: widget.meal, refreshContext: widget.dairyContext,)
+              : FoodTab(tile: widget.tile, refreshContext: context,),
           widget.tile == Tile.addDairy || widget.tile == Tile.removeDairy
               ? RecipeTab(
-                  refresh: refreshRecipeTab,
                   tile: widget.tile,
                   date: widget.date,
                   meal: widget.meal,
+            refreshContext: widget.dairyContext,
                 )
-              : RecipeTab(refresh: refreshRecipeTab, tile: widget.tile),
+              : RecipeTab(tile: widget.tile, refreshContext: context,),
         ],
       ),
       floatingActionButton: widget.tile == Tile.removeFood
           ? FloatingActionButton(
               onPressed: () async {
                 if (tabController.index == 0) {
-                  await Navigator.pushNamed(context, Routes.createFoodRoute);
-                  refreshFoodTab();
+                  await Navigator.pushNamed(
+                    context,
+                    Routes.createFoodRoute,
+                    arguments: CreateFood(
+                      foodTabContext: context,
+                    ),
+                  );
                 } else {
-                  if (BlocProvider.of<FoodCubit>(context).state is FoodLoaded) {
-                    final ingredients = (BlocProvider.of<FoodCubit>(
-                        context).state as FoodLoaded).food;
-                    await Navigator.pushNamed(context, Routes.createRecipeRoute,
-                        arguments: CreateRecipe(
-                            ingredients: ingredients));
-                    refreshRecipeTab();
+                  final state = BlocProvider.of<FoodCubit>(context).state;
+                  if (state is FoodLoaded || state is FoodNoData) {
+                    List<FoodModel> ingredients = [];
+                    if (state is FoodLoaded) ingredients = state.food;
+                    await Navigator.pushNamed(
+                      context,
+                      Routes.createRecipeRoute,
+                      arguments: CreateRecipe(ingredients: ingredients, refreshContext: context,),
+                    );
                   }
                 }
               },

@@ -506,7 +506,7 @@ class _HomeState extends State<Home> {
                           food: day.breakfast,
                           isFree: day.isFree,
                           date: day.date,
-                          refresh: refresh,
+                          dairyContext: context,
                         ),
                         Meal(
                           key: ValueKey('${day.date}_Lunch_${idGenerator()}'),
@@ -515,7 +515,7 @@ class _HomeState extends State<Home> {
                           food: day.lunch,
                           isFree: day.isFree,
                           date: day.date,
-                          refresh: refresh,
+                          dairyContext: context,
                         ),
                         Meal(
                           key: ValueKey('${day.date}_Dinner_${idGenerator()}'),
@@ -523,8 +523,8 @@ class _HomeState extends State<Home> {
                           meal: "Dinner",
                           food: day.dinner,
                           isFree: day.isFree,
+                          dairyContext: context,
                           date: day.date,
-                          refresh: refresh,
                         ),
                         Meal(
                           key: ValueKey('${day.date}_Snacks_${idGenerator()}'),
@@ -532,8 +532,8 @@ class _HomeState extends State<Home> {
                           meal: "Snacks",
                           food: day.snacks,
                           isFree: day.isFree,
+                          dairyContext: context,
                           date: day.date,
-                          refresh: refresh,
                         ),
                         Exercises(exercises: day.exercises, isFree: day.isFree),
                       ],
@@ -552,5 +552,28 @@ class _HomeState extends State<Home> {
         },
       ),
     );
+  }
+}
+
+
+class CustomClipPath extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    double w = size.width;
+    double h = size.height;
+
+    final path = Path();
+    path.lineTo(0, h - 40);
+    path.quadraticBezierTo(w / 4, h, w / 2, h);
+    path.quadraticBezierTo(w - w / 4, h, w, h - 40);
+    path.lineTo(w, 0);
+    path.close();
+
+    return path;
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
+    return true;
   }
 }

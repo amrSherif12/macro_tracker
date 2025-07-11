@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:testt/data/helpers/auth_helper.dart';
-import 'package:testt/data/helpers/firestore/food_repository.dart';
+import 'package:testt/constants/colors.dart';
 import 'package:testt/data/models/recipe_model.dart';
+import 'package:testt/logic/food/recipes_cubit.dart';
 import 'package:testt/presentation/widgets/textfield.dart';
 import 'package:testt/random.dart';
 
 import '../../data/models/food_model.dart';
 
 class IngredientsAmounts extends StatefulWidget {
-  final List<FoodModel> items;
+  final BuildContext? refreshContext;
+  final List<FoodModel>? items;
   final bool create;
-  final String name;
+  final RecipeModel? recipe;
 
   const IngredientsAmounts({
     Key? key,
-    required this.items,
+    this.items,
+    this.recipe,
     required this.create,
-    required this.name,
+    this.refreshContext,
   }) : super(key: key);
 
   @override
@@ -26,14 +28,25 @@ class IngredientsAmounts extends StatefulWidget {
 
 class _IngredientsAmountsState extends State<IngredientsAmounts> {
   TextEditingController nameCont = TextEditingController();
+  TextEditingController descriptionCont = TextEditingController();
   List<TextEditingController> controllers = [];
 
   @override
   void initState() {
-    for (int i = 0; i < widget.items.length; i++) {
+    int size = widget.create
+        ? widget.items!.length
+        : widget.recipe!.ingredients.length;
+    for (int i = 0; i < size; i++) {
       controllers.add(TextEditingController());
+      if (!widget.create) {
+        controllers[i].text = widget.recipe!.ingredients[i]['amount']
+            .toString();
+      }
     }
-    nameCont.text = widget.name;
+    if (!widget.create) {
+      nameCont.text = widget.recipe!.name;
+      descriptionCont.text = widget.recipe!.description;
+    }
     super.initState();
   }
 
@@ -57,10 +70,19 @@ class _IngredientsAmountsState extends State<IngredientsAmounts> {
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: UnderLineTextField(
-              label: 'recipe name',
-              keyboard: TextInputType.text,
-              controller: nameCont,
+            child: Column(
+              children: [
+                UnderLineTextField(
+                  label: 'Recipe name',
+                  keyboard: TextInputType.text,
+                  controller: nameCont,
+                ),
+                UnderLineTextField(
+                  label: 'Directions',
+                  keyboard: TextInputType.multiline,
+                  controller: descriptionCont,
+                ),
+              ],
             ),
           ),
           Divider(
@@ -98,7 +120,9 @@ class _IngredientsAmountsState extends State<IngredientsAmounts> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width / 2,
                     child: UnderLineTextField(
-                      label: widget.items[index].name,
+                      label: widget.create
+                          ? widget.items![index].name
+                          : widget.recipe!.ingredients[index]['name'],
                       keyboard: const TextInputType.numberWithOptions(
                         decimal: true,
                       ),
@@ -109,7 +133,11 @@ class _IngredientsAmountsState extends State<IngredientsAmounts> {
                   Column(
                     children: [
                       Text(
-                        unitConverter(widget.items[index].unit),
+                        unitConverter(
+                          widget.create
+                              ? widget.items![index].unit
+                              : widget.recipe!.ingredients[index]['unit'],
+                        ),
                         style: const TextStyle(
                           color: Colors.white,
                           fontFamily: 'F',
@@ -128,30 +156,49 @@ class _IngredientsAmountsState extends State<IngredientsAmounts> {
                 ],
               );
             },
-            itemCount: widget.items.length,
+            itemCount: widget.create
+                ? widget.items!.length
+                : widget.recipe!.ingredients.length,
           ),
           const SizedBox(height: 50),
           Center(
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(50),
+              borderRadius: BorderRadius.circular(20),
               child: GestureDetector(
                 onTap: () async {
                   if (nameCont.text.isNotEmpty &&
                       controllersAreNotEmpty(controllers)) {
                     if (widget.create) {
-                      await FoodRepository.instance.addRecipe(
+                      await BlocProvider.of<RecipesCubit>(
+                        widget.refreshContext!,
+                      ).addRecipe(
                         context,
                         nameCont.text,
-                        widget.items,
+                        descriptionCont.text,
+                        widget.items!,
                         controllers,
                       );
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                    } else {
+                      widget.recipe!.name = nameCont.text;
+                      widget.recipe!.description = descriptionCont.text;
+                      widget.recipe!.lowerName = nameCont.text.toLowerCase();
+                      await BlocProvider.of<RecipesCubit>(
+                        widget.refreshContext!,
+                      ).updateRecipeAmounts(
+                        context,
+                        widget.recipe!,
+                        controllers,
+                      );
+                      Navigator.pop(context);
                       Navigator.pop(context);
                       Navigator.pop(context);
                     }
                   }
                 },
                 child: Material(
-                  color: Colors.green,
+                  color: ConstColors.sec,
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(60, 20, 60, 20),
                     child: Text(

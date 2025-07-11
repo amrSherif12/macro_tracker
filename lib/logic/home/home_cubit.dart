@@ -1,17 +1,28 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:testt/data/helpers/firestore/day_repository.dart';
 import 'package:testt/data/models/day_model.dart';
-import 'package:meta/meta.dart';
 
+import '../../data/models/consumable_model.dart';
 import '../../random.dart';
 
 part 'home_state.dart';
 
 class HomeCubit extends Cubit<HomeState> {
   HomeCubit() : super(HomeLoading());
-
   DateTime date = DateTime.now();
   late DayModel currentDay;
+
+  Future<void> addFood(
+    BuildContext context,
+    DateTime date,
+    String meal,
+    ConsumableModel food,
+  ) async {
+    await DayRepository.instance.addFood(context, date, meal, food);
+    await getDay(refresh: true);
+  }
+
   Future<void> incrementDay({required DayModel day}) async {
     try {
       date = day.date.add(const Duration(days: 1));

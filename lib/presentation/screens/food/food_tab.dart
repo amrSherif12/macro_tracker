@@ -10,15 +10,15 @@ import '../../widgets/food_tile.dart';
 import '../../widgets/placeholder/error.dart';
 
 class FoodTab extends StatefulWidget {
-  final Function refresh;
   final Tile tile;
   final String? meal;
   final DateTime? date;
+  final BuildContext? refreshContext;
 
   const FoodTab({
     super.key,
-    required this.refresh,
     required this.tile,
+    this.refreshContext,
     this.meal,
     this.date,
   });
@@ -39,9 +39,9 @@ class _FoodTabState extends State<FoodTab> {
                 children: [
                   index == 0 ? const SizedBox(height: 20) : const SizedBox(),
                   FoodTile(
+                    refreshContext: widget.refreshContext,
                     food: state.food[index],
                     tile: widget.tile,
-                    refresh: widget.refresh,
                     date: widget.date,
                     meal: widget.meal,
                   ),

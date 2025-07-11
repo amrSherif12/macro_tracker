@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:testt/data/models/food_model.dart';
 import 'package:testt/data/models/recipe_model.dart';
 import 'package:testt/presentation/widgets/toast.dart';
+import 'package:testt/random.dart';
 
 import '../auth_helper.dart';
 
@@ -18,12 +19,21 @@ class FoodRepository {
     DocumentReference reference = await ins
         .collection("food")
         .add(food.toMap());
-    saveFood(reference.id);
+    await saveFood(reference.id);
     toastBuilder('Food created', context);
   }
 
   Future<void> saveFood(String id, {bool isRecipe = false, bool unSave = false}) async {
     final uid = AuthenticationHelper.instance.auth.currentUser!.uid;
+    DocumentSnapshot document = await ins.collection("users").doc(uid).get();
+    try {
+      document.get(isRecipe ? 'recipes' : 'foods');
+    } catch (e) {
+      if (await connectedToInternet()) {
+        await ins.collection("users").doc(uid).update(
+          {isRecipe ? 'recipes' : 'foods': []});
+      }
+    }
     await ins.collection("users").doc(uid).update({
       isRecipe ? 'recipes' : 'foods': unSave ? FieldValue.arrayRemove([id]) : FieldValue.arrayUnion([id]),
     });
@@ -44,52 +54,41 @@ class FoodRepository {
   Future<void> addRecipe(
     BuildContext context,
     String name,
+    String description,
     List<FoodModel> foods,
     List<TextEditingController> amounts,
   ) async {
-    List<double> amountsDouble = [];
-    int kcal = 0;
-    double protein = 0;
-    double carb = 0;
-    double fat = 0;
-
+    List<Map> ingredients = [];
     for (int i = 0; i < foods.length; i++) {
-      amountsDouble.add(double.parse(amounts[i].text));
+      ingredients.add({
+        'name': foods[i].name,
+        'kcal': foods[i].kcal,
+        'protein': foods[i].protein,
+        'carb': foods[i].carb,
+        'fat': foods[i].fat,
+        'unit': foods[i].unit,
+        'amount': double.parse(amounts[i].text),
+      });
     }
-    for (int i = 0; i < foods.length; i++) {
-      if (foods[i].unit == 'per piece' || foods[i].unit == 'per table spoon') {
-        kcal += (foods[i].kcal * amountsDouble[i]).toInt();
-        protein += foods[i].protein * amountsDouble[i];
-        carb += foods[i].carb * amountsDouble[i];
-        fat += foods[i].fat * amountsDouble[i];
-      } else {
-        kcal += (foods[i].kcal * amountsDouble[i] / 100).toInt();
-        protein += foods[i].protein * amountsDouble[i] / 100;
-        carb += foods[i].carb * amountsDouble[i] / 100;
-        fat += foods[i].fat * amountsDouble[i] / 100;
-      }
-    }
-
-    Map ingredients = {for (var food in foods) food.name: food.unit};
-
     RecipeModel recipe = RecipeModel(
       uid: AuthenticationHelper.instance.auth.currentUser!.uid,
       name: name,
-      kcal: kcal,
+      lowerName: name.toLowerCase(),
+      description: description,
       ingredients: ingredients,
-      amounts: amountsDouble,
-      protein: protein,
-      carb: carb,
-      fat: fat,
     );
     DocumentReference reference = await ins
         .collection("recipes")
         .add(recipe.toMap());
-    saveFood(reference.id, isRecipe: true);
+    await saveFood(reference.id, isRecipe: true);
     toastBuilder('Recipe created', context);
   }
 
-  Future<void> updateRecipe(BuildContext context, RecipeModel recipe) async {
+  Future<void> updateRecipeAmounts(BuildContext context, RecipeModel recipe, List<TextEditingController> amounts) async {
+
+    for (int i = 0; i < amounts.length; i++) {
+      recipe.ingredients[i]['amount'] = double.parse(amounts[i].text);
+    }
     await ins.collection("recipes").doc(recipe.id!).set(recipe.toMap());
     toastBuilder('Recipes updated', context);
   }

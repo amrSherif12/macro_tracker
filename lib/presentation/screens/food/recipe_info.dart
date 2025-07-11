@@ -1,22 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:testt/random.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:testt/presentation/widgets/update_recipe.dart';
+import 'package:testt/random.dart';
 
 import '../../../constants/colors.dart';
-import '../../../data/models/food_model.dart';
 import '../../../data/models/recipe_model.dart';
-import '../../widgets/ingredients_tile.dart';
 
 class RecipeInfo extends StatefulWidget {
   final RecipeModel recipe;
-
-  const RecipeInfo({Key? key, required this.recipe}) : super(key: key);
+  final BuildContext? refreshContext;
+  const RecipeInfo({Key? key, required this.recipe, this.refreshContext}) : super(key: key);
 
   @override
   State<RecipeInfo> createState() => _RecipeInfoState();
 }
 
 class _RecipeInfoState extends State<RecipeInfo> {
+  TextEditingController nameCont = TextEditingController();
+  TextEditingController descriptionCont = TextEditingController();
+
   Widget macroBuilder(double val, String text, Color color) {
     return Column(
       children: [
@@ -35,6 +37,13 @@ class _RecipeInfoState extends State<RecipeInfo> {
         ),
       ],
     );
+  }
+
+  @override
+  void initState() {
+    nameCont.text = widget.recipe.name;
+    descriptionCont.text = widget.recipe.description ?? "";
+    super.initState();
   }
 
   @override
@@ -58,26 +67,64 @@ class _RecipeInfoState extends State<RecipeInfo> {
     return Scaffold(
       backgroundColor: Colors.grey[900],
       appBar: AppBar(
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(Icons.arrow_back, color: Colors.white, size: 23),
-        ),
-        title: Text(
-          widget.recipe.name,
-          style: const TextStyle(
-            color: Colors.white,
-            fontFamily: 'F',
-            fontSize: 23,
-          ),
-          overflow: TextOverflow.ellipsis,
-        ),
-        backgroundColor: ConstColors.sec,
+      elevation: 0,
+      scrolledUnderElevation: 0,
+      backgroundColor: ConstColors.sec,
+      leading: IconButton(
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        icon: const Icon(Icons.arrow_back, color: Colors.white, size: 23),
       ),
-      body: Column(
+      title: Row(
+        children: [
+          const Expanded(
+            child: Text(
+              'Recipe Info',
+              style: TextStyle(
+                color: Colors.white,
+                fontFamily: 'F',
+                fontSize: 23,
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          const SizedBox(width: 20),
+          GestureDetector(
+            onTap: () async {
+              await showModalBottomSheet(
+              backgroundColor: Colors.grey[900],
+              context: context,
+              isScrollControlled: true,
+              builder: (context) {
+                return UpdateRecipe(
+                  refreshContext: widget.refreshContext,
+                  recipe: widget.recipe,
+                );
+              },
+              isDismissible: true,
+              constraints: BoxConstraints(
+                maxHeight: 240,
+              ),
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(30),
+                  topLeft: Radius.circular(30),
+                ),
+              ),
+              );
+            },
+            child: const Row(
+              children: [
+                Icon(Icons.edit, color: Colors.white, size: 27),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ),
+
+    body: Column(
         children: [
           Expanded(
             child: ListView(
@@ -91,13 +138,72 @@ class _RecipeInfoState extends State<RecipeInfo> {
                   height: 30,
                   color: Colors.grey[800]!,
                 ),
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: Text(
+                      widget.recipe.name,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'F',
+                        fontSize: 25,
+                      ),
+                    ),
+                  ),
+                ),
+                Divider(
+                  thickness: 2,
+                  endIndent: 100,
+                  indent: 100,
+                  height: 30,
+                  color: Colors.grey[800]!,
+                ),
+                widget.recipe.description.isNotEmpty
+                    ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              widget.recipe.description,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ],
+                      )
+                    : Padding(
+                  padding: const EdgeInsets.all(18),
+                  child: Text(
+                    "No Directions Provided",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+
+
+                Divider(
+                  thickness: 2,
+                  endIndent: 100,
+                  indent: 100,
+                  height: 30,
+                  color: Colors.grey[800]!,
+                ),
                 const Center(
                   child: Text(
                     "INGREDIENTS",
                     style: TextStyle(
                       color: Colors.white,
                       fontFamily: 'F',
-                      fontSize: 30,
+                      fontSize: 25,
                     ),
                   ),
                 ),
@@ -119,13 +225,11 @@ class _RecipeInfoState extends State<RecipeInfo> {
                         children: [
                           Expanded(
                             child: Text(
-                              widget.recipe.ingredients.entries
-                                  .toList()[index]
-                                  .key,
+                              widget.recipe.ingredients[index]['name'],
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontFamily: 'F',
-                                fontSize: 20,
+                                fontSize: 19,
                               ),
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -133,23 +237,21 @@ class _RecipeInfoState extends State<RecipeInfo> {
                           Row(
                             children: [
                               Text(
-                                "${(widget.recipe.amounts[index] as double).withoutZeroDecimal()} ",
+                                "${(widget.recipe.ingredients[index]['amount'] as double).withoutZeroDecimal()} ",
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontFamily: 'F',
-                                  fontSize: 20,
+                                  fontSize: 19,
                                 ),
                               ),
                               Text(
                                 unitConverter(
-                                  widget.recipe.ingredients.entries
-                                      .toList()[index]
-                                      .value,
+                                  widget.recipe.ingredients[index]['unit'],
                                 ),
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontFamily: 'F',
-                                  fontSize: 20,
+                                  fontSize: 19,
                                 ),
                               ),
                             ],
@@ -173,7 +275,7 @@ class _RecipeInfoState extends State<RecipeInfo> {
                     style: TextStyle(
                       color: Colors.white,
                       fontFamily: 'F',
-                      fontSize: 30,
+                      fontSize: 25,
                     ),
                   ),
                 ),
@@ -242,7 +344,7 @@ class _RecipeInfoState extends State<RecipeInfo> {
                     style: TextStyle(
                       color: Colors.white,
                       fontFamily: 'F',
-                      fontSize: 30,
+                      fontSize: 25,
                     ),
                   ),
                 ),

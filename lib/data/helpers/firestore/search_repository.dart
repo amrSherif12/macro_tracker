@@ -19,8 +19,8 @@ class SearchRepository {
   ) async {
     Query query = ins
         .collection(filters.isRecipe ? 'recipes' : 'food')
-        .where('name', isGreaterThanOrEqualTo: queryString)
-        .where('name', isLessThan: '${queryString}z');
+        .where('lowerName', isGreaterThanOrEqualTo: queryString)
+        .where('lowerName', isLessThan: '${queryString}z');
     if (filters.filtersOn) {
       query = query
           .where(

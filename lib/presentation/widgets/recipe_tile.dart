@@ -1,9 +1,11 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:testt/data/helpers/firestore/day_repository.dart';
 import 'package:testt/data/helpers/firestore/food_repository.dart';
 import 'package:testt/data/models/recipe_model.dart';
+import 'package:testt/logic/food/recipes_cubit.dart';
 import 'package:testt/presentation/screens/food/recipe_info.dart';
 
 import '../../constants/strings.dart';
@@ -11,6 +13,7 @@ import 'delete.dart';
 import 'food_amount.dart';
 
 class RecipeTile extends StatefulWidget {
+  final BuildContext? refreshContext;
   final RecipeModel recipe;
   final Tile tile;
   final DateTime? date;
@@ -21,6 +24,7 @@ class RecipeTile extends StatefulWidget {
   const RecipeTile({
     Key? key,
     required this.recipe,
+    this.refreshContext,
     required this.tile,
     this.date,
     this.refresh,
@@ -33,13 +37,12 @@ class RecipeTile extends StatefulWidget {
 }
 
 class _RecipeTileState extends State<RecipeTile> {
-
   IconData getIcon(Tile tile) {
-    if (widget.tile == Tile.removeFood ||
-        widget.tile == Tile.removeDairy) {
+    if (widget.tile == Tile.removeFood || widget.tile == Tile.removeDairy) {
       return Icons.delete;
-    } else if(tile == Tile.search) {
-      if (!widget.saved!.contains(widget.recipe.id!)) return Icons.bookmark_border;
+    } else if (tile == Tile.search) {
+      if (!widget.saved!.contains(widget.recipe.id!))
+        return Icons.bookmark_border;
       return Icons.bookmark;
     } else {
       return Icons.add;
@@ -57,7 +60,10 @@ class _RecipeTileState extends State<RecipeTile> {
             await Navigator.pushNamed(
               context,
               Routes.recipeInfoRoute,
-              arguments: RecipeInfo(recipe: widget.recipe),
+              arguments: RecipeInfo(
+                recipe: widget.recipe,
+                refreshContext: widget.refreshContext,
+              ),
             );
           },
           elevation: 10,
@@ -113,10 +119,12 @@ class _RecipeTileState extends State<RecipeTile> {
                                   widget.recipe.id!,
                                   isRecipe: true,
                                 );
+                                await BlocProvider.of<RecipesCubit>(
+                                  widget.refreshContext!,
+                                ).deleteRecipe(context, widget.recipe.id!);
                               },
                             ),
                           );
-                          widget.refresh!();
                         } else if (widget.tile == Tile.removeDairy) {
                           await showDialog(
                             context: context,
@@ -132,13 +140,19 @@ class _RecipeTileState extends State<RecipeTile> {
                               },
                             ),
                           );
-                        }
-                        else if (widget.tile == Tile.search) {
+                        } else if (widget.tile == Tile.search) {
                           if (widget.saved!.contains(widget.recipe.id!)) {
-                            FoodRepository.instance.saveFood(widget.recipe.id!, isRecipe: true, unSave: true);
+                            FoodRepository.instance.saveFood(
+                              widget.recipe.id!,
+                              isRecipe: true,
+                              unSave: true,
+                            );
                             widget.saved!.remove(widget.recipe.id!);
                           } else {
-                            FoodRepository.instance.saveFood(widget.recipe.id!, isRecipe: true);
+                            FoodRepository.instance.saveFood(
+                              widget.recipe.id!,
+                              isRecipe: true,
+                            );
                             widget.saved!.add(widget.recipe.id!);
                           }
                           setState(() {});
@@ -151,6 +165,7 @@ class _RecipeTileState extends State<RecipeTile> {
                                 consumable: widget.recipe,
                                 date: widget.date!,
                                 meal: widget.meal!,
+                                dairyContext: widget.refreshContext!,
                               );
                             },
                             isDismissible: true,
@@ -165,10 +180,7 @@ class _RecipeTileState extends State<RecipeTile> {
                         }
                       },
                       backgroundColor: Colors.grey[700],
-                      child: Icon(
-                        getIcon(widget.tile),
-                        color: Colors.white,
-                      ),
+                      child: Icon(getIcon(widget.tile), color: Colors.white),
                     ),
                   ),
                 ],

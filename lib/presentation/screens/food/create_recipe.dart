@@ -6,8 +6,10 @@ import '../../../data/models/food_model.dart';
 import '../../widgets/ingredients_amounts.dart';
 
 class CreateRecipe extends StatefulWidget {
+  final BuildContext refreshContext;
   final List<FoodModel> ingredients;
-  const CreateRecipe({super.key, required this.ingredients});
+
+  const CreateRecipe({super.key, required this.ingredients, required this.refreshContext});
 
   @override
   State<CreateRecipe> createState() => _CreateRecipeState();
@@ -57,11 +59,11 @@ class _CreateRecipeState extends State<CreateRecipe> {
                         isScrollControlled: true,
                         builder: (context) {
                           return IngredientsAmounts(
+                            refreshContext: widget.refreshContext,
                             items: widget.ingredients
                                 .where((food) => chosen.contains(food.id))
                                 .toList(),
                             create: true,
-                            name: '',
                           );
                         },
                         isDismissible: true,
@@ -111,18 +113,55 @@ class _CreateRecipeState extends State<CreateRecipe> {
           ],
         ),
       ),
-      body: ListView.builder(
-        shrinkWrap: true,
-        itemBuilder: (context, index) {
-          return Column(
-            children: [
-              index == 0 ? const SizedBox(height: 20) : const SizedBox(),
-              IngredientsTile(food: widget.ingredients[index], list: chosen),
-            ],
-          );
-        },
-        itemCount: widget.ingredients.length,
-      ),
+      body: widget.ingredients.isNotEmpty
+          ? ListView.builder(
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                return Column(
+                  children: [
+                    index == 0 ? const SizedBox(height: 20) : const SizedBox(),
+                    IngredientsTile(
+                      food: widget.ingredients[index],
+                      list: chosen,
+                    ),
+                  ],
+                );
+              },
+              itemCount: widget.ingredients.length,
+            )
+          : Center(
+              child: Padding(
+                padding: const EdgeInsets.all(15),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 350,
+                      child: Image.asset('assets/imgs/nofood.png'),
+                    ),
+                    const Text(
+                      'No Food Saved',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 26,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'f',
+                      ),
+                    ),
+                    const Text(
+                      'To create a recipe, you need to have food saved.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontFamily: 'f',
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
     );
   }
 }
