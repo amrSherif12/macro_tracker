@@ -9,7 +9,8 @@ import '../../../data/models/recipe_model.dart';
 class RecipeInfo extends StatefulWidget {
   final RecipeModel recipe;
   final BuildContext? refreshContext;
-  const RecipeInfo({Key? key, required this.recipe, this.refreshContext}) : super(key: key);
+  const RecipeInfo({Key? key, required this.recipe, this.refreshContext})
+    : super(key: key);
 
   @override
   State<RecipeInfo> createState() => _RecipeInfoState();
@@ -67,64 +68,60 @@ class _RecipeInfoState extends State<RecipeInfo> {
     return Scaffold(
       backgroundColor: Colors.grey[900],
       appBar: AppBar(
-      elevation: 0,
-      scrolledUnderElevation: 0,
-      backgroundColor: ConstColors.sec,
-      leading: IconButton(
-        onPressed: () {
-          Navigator.pop(context);
-        },
-        icon: const Icon(Icons.arrow_back, color: Colors.white, size: 23),
-      ),
-      title: Row(
-        children: [
-          const Expanded(
-            child: Text(
-              'Recipe Info',
-              style: TextStyle(
-                color: Colors.white,
-                fontFamily: 'F',
-                fontSize: 23,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        backgroundColor: ConstColors.sec,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(Icons.arrow_back, color: Colors.white, size: 23),
+        ),
+        title: Row(
+          children: [
+            const Expanded(
+              child: Text(
+                'Recipe Info',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: 'F',
+                  fontSize: 23,
+                ),
+                overflow: TextOverflow.ellipsis,
               ),
-              overflow: TextOverflow.ellipsis,
             ),
-          ),
-          const SizedBox(width: 20),
-          GestureDetector(
-            onTap: () async {
-              await showModalBottomSheet(
-              backgroundColor: Colors.grey[900],
-              context: context,
-              isScrollControlled: true,
-              builder: (context) {
-                return UpdateRecipe(
-                  refreshContext: widget.refreshContext,
-                  recipe: widget.recipe,
+            const SizedBox(width: 20),
+            GestureDetector(
+              onTap: () async {
+                await showModalBottomSheet(
+                  backgroundColor: Colors.grey[900],
+                  context: context,
+                  isScrollControlled: true,
+                  builder: (context) {
+                    return UpdateRecipe(
+                      refreshContext: widget.refreshContext,
+                      recipe: widget.recipe,
+                    );
+                  },
+                  isDismissible: true,
+                  constraints: BoxConstraints(maxHeight: 240),
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(30),
+                      topLeft: Radius.circular(30),
+                    ),
+                  ),
                 );
               },
-              isDismissible: true,
-              constraints: BoxConstraints(
-                maxHeight: 240,
+              child: const Row(
+                children: [Icon(Icons.edit, color: Colors.white, size: 27)],
               ),
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(30),
-                  topLeft: Radius.circular(30),
-                ),
-              ),
-              );
-            },
-            child: const Row(
-              children: [
-                Icon(Icons.edit, color: Colors.white, size: 27),
-              ],
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
 
-    body: Column(
+      body: Column(
         children: [
           Expanded(
             child: ListView(
@@ -161,9 +158,8 @@ class _RecipeInfoState extends State<RecipeInfo> {
                 ),
                 widget.recipe.description.isNotEmpty
                     ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
@@ -178,17 +174,13 @@ class _RecipeInfoState extends State<RecipeInfo> {
                         ],
                       )
                     : Padding(
-                  padding: const EdgeInsets.all(18),
-                  child: Text(
-                    "No Directions Provided",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-
+                        padding: const EdgeInsets.all(18),
+                        child: Text(
+                          "No Directions Provided",
+                          style: TextStyle(color: Colors.white, fontSize: 18),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
 
                 Divider(
                   thickness: 2,

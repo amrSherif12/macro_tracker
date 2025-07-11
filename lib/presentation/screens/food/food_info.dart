@@ -17,7 +17,8 @@ class FoodInfo extends StatefulWidget {
   final FoodModel food;
   final BuildContext? refreshContext;
 
-  const FoodInfo({Key? key, required this.food, this.refreshContext}) : super(key: key);
+  const FoodInfo({Key? key, required this.food, this.refreshContext})
+    : super(key: key);
 
   @override
   State<FoodInfo> createState() => _FoodInfoState();
@@ -119,10 +120,9 @@ class _FoodInfoState extends State<FoodInfo> {
                         } else {
                           isLoading = true;
                           setState(() {});
-                          await BlocProvider.of<FoodCubit>(widget.refreshContext!).updateFood(
-                            context,
-                            food,
-                          );
+                          await BlocProvider.of<FoodCubit>(
+                            widget.refreshContext!,
+                          ).updateFood(context, food);
                           Navigator.pop(context);
                         }
                       }

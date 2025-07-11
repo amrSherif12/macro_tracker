@@ -27,9 +27,7 @@ class _UpdateRecipeState extends State<UpdateRecipe> {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: GestureDetector(
-                onTap: () async {
-
-                },
+                onTap: () async {},
                 child: SizedBox(
                   width: MediaQuery.sizeOf(context).width - 50,
                   child: Material(
@@ -104,6 +102,7 @@ class _UpdateRecipeState extends State<UpdateRecipe> {
           ),
         ],
       ),
-    );;
+    );
+    ;
   }
 }

@@ -23,6 +23,17 @@ class HomeCubit extends Cubit<HomeState> {
     await getDay(refresh: true);
   }
 
+  Future<void> removeFood(
+      BuildContext context,
+      DateTime date,
+      String meal,
+      ConsumableModel food,
+      ) async {
+    await DayRepository.instance.removeFood(context, date, meal, food);
+    await getDay(refresh: true);
+  }
+
+
   Future<void> incrementDay({required DayModel day}) async {
     try {
       date = day.date.add(const Duration(days: 1));

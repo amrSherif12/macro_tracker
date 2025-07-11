@@ -23,19 +23,26 @@ class FoodRepository {
     toastBuilder('Food created', context);
   }
 
-  Future<void> saveFood(String id, {bool isRecipe = false, bool unSave = false}) async {
+  Future<void> saveFood(
+    String id, {
+    bool isRecipe = false,
+    bool unSave = false,
+  }) async {
     final uid = AuthenticationHelper.instance.auth.currentUser!.uid;
     DocumentSnapshot document = await ins.collection("users").doc(uid).get();
     try {
       document.get(isRecipe ? 'recipes' : 'foods');
     } catch (e) {
       if (await connectedToInternet()) {
-        await ins.collection("users").doc(uid).update(
-          {isRecipe ? 'recipes' : 'foods': []});
+        await ins.collection("users").doc(uid).update({
+          isRecipe ? 'recipes' : 'foods': [],
+        });
       }
     }
     await ins.collection("users").doc(uid).update({
-      isRecipe ? 'recipes' : 'foods': unSave ? FieldValue.arrayRemove([id]) : FieldValue.arrayUnion([id]),
+      isRecipe ? 'recipes' : 'foods': unSave
+          ? FieldValue.arrayRemove([id])
+          : FieldValue.arrayUnion([id]),
     });
   }
 
@@ -84,8 +91,11 @@ class FoodRepository {
     toastBuilder('Recipe created', context);
   }
 
-  Future<void> updateRecipeAmounts(BuildContext context, RecipeModel recipe, List<TextEditingController> amounts) async {
-
+  Future<void> updateRecipeAmounts(
+    BuildContext context,
+    RecipeModel recipe,
+    List<TextEditingController> amounts,
+  ) async {
     for (int i = 0; i < amounts.length; i++) {
       recipe.ingredients[i]['amount'] = double.parse(amounts[i].text);
     }

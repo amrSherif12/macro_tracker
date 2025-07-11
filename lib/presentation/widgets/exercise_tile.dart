@@ -9,8 +9,7 @@ import '../../constants/strings.dart';
 
 class ExerciseTile extends StatefulWidget {
   final FoodModel food;
-  const ExerciseTile({Key? key, required this.food})
-    : super(key: key);
+  const ExerciseTile({Key? key, required this.food}) : super(key: key);
 
   @override
   State<ExerciseTile> createState() => _ExerciseTileState();
@@ -24,8 +23,7 @@ class _ExerciseTileState extends State<ExerciseTile> {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(20),
         child: MaterialButton(
-          onPressed: () async {
-          },
+          onPressed: () async {},
           elevation: 10,
           color: Colors.grey[800],
           child: SizedBox(

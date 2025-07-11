@@ -4,12 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:testt/data/helpers/firestore/food_repository.dart';
 import 'package:testt/data/models/food_model.dart';
 import 'package:testt/logic/food/food_cubit.dart';
+import 'package:testt/logic/home/home_cubit.dart';
 import 'package:testt/presentation/screens/food/food_info.dart';
 import 'package:testt/presentation/widgets/delete.dart';
 import 'package:testt/presentation/widgets/food_amount.dart';
 
 import '../../constants/strings.dart';
-import '../../data/helpers/firestore/day_repository.dart';
 
 class FoodTile extends StatefulWidget {
   final FoodModel food;
@@ -34,13 +34,12 @@ class FoodTile extends StatefulWidget {
 }
 
 class _FoodTileState extends State<FoodTile> {
-
   IconData getIcon(Tile tile) {
-    if (widget.tile == Tile.removeFood ||
-        widget.tile == Tile.removeDairy) {
+    if (widget.tile == Tile.removeFood || widget.tile == Tile.removeDairy) {
       return Icons.delete;
-    } else if(tile == Tile.search) {
-      if (!widget.saved!.contains(widget.food.id!)) return Icons.bookmark_border;
+    } else if (tile == Tile.search) {
+      if (!widget.saved!.contains(widget.food.id!))
+        return Icons.bookmark_border;
       return Icons.bookmark;
     } else {
       return Icons.add;
@@ -58,7 +57,10 @@ class _FoodTileState extends State<FoodTile> {
             await Navigator.pushNamed(
               context,
               Routes.foodInfoRoute,
-              arguments: FoodInfo(food: widget.food, refreshContext: widget.refreshContext,),
+              arguments: FoodInfo(
+                food: widget.food,
+                refreshContext: widget.refreshContext,
+              ),
             );
           },
           elevation: 10,
@@ -109,10 +111,9 @@ class _FoodTileState extends State<FoodTile> {
                             builder: (context) => Delete(
                               name: widget.food.name,
                               delete: () async {
-                                await BlocProvider.of<FoodCubit>(widget.refreshContext!).deleteFood(
-                                  context,
-                                  widget.food.id!,
-                                );
+                                await BlocProvider.of<FoodCubit>(
+                                  widget.refreshContext!,
+                                ).deleteFood(context, widget.food.id!);
                               },
                             ),
                           );
@@ -122,7 +123,9 @@ class _FoodTileState extends State<FoodTile> {
                             builder: (context) => Delete(
                               name: widget.food.name,
                               delete: () async {
-                                await DayRepository.instance.removeFood(
+                                await BlocProvider.of<HomeCubit>(
+                                  widget.refreshContext!,
+                                ).removeFood(
                                   context,
                                   widget.date!,
                                   widget.meal!,
@@ -133,10 +136,17 @@ class _FoodTileState extends State<FoodTile> {
                           );
                         } else if (widget.tile == Tile.search) {
                           if (widget.saved!.contains(widget.food.id!)) {
-                            FoodRepository.instance.saveFood(widget.food.id!, isRecipe: false, unSave: true);
+                            FoodRepository.instance.saveFood(
+                              widget.food.id!,
+                              isRecipe: false,
+                              unSave: true,
+                            );
                             widget.saved!.remove(widget.food.id!);
                           } else {
-                            FoodRepository.instance.saveFood(widget.food.id!, isRecipe: false);
+                            FoodRepository.instance.saveFood(
+                              widget.food.id!,
+                              isRecipe: false,
+                            );
                             widget.saved!.add(widget.food.id!);
                           }
                           setState(() {});
@@ -164,10 +174,7 @@ class _FoodTileState extends State<FoodTile> {
                         }
                       },
                       backgroundColor: Colors.grey[700],
-                      child: Icon(
-                        getIcon(widget.tile),
-                        color: Colors.white,
-                      ),
+                      child: Icon(getIcon(widget.tile), color: Colors.white),
                     ),
                   ),
                 ],

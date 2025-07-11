@@ -17,7 +17,13 @@ class Food extends StatefulWidget {
   final DateTime? date;
   final BuildContext? dairyContext;
 
-  const Food({super.key, required this.tile, this.meal, this.date, this.dairyContext});
+  const Food({
+    super.key,
+    required this.tile,
+    this.meal,
+    this.date,
+    this.dairyContext,
+  });
 
   @override
   State<Food> createState() => _FoodState();
@@ -78,16 +84,21 @@ class _FoodState extends State<Food> with TickerProviderStateMixin {
         controller: tabController,
         children: [
           widget.tile == Tile.addDairy || widget.tile == Tile.removeDairy
-              ? FoodTab(tile: widget.tile, date: widget.date, meal: widget.meal, refreshContext: widget.dairyContext,)
-              : FoodTab(tile: widget.tile, refreshContext: context,),
+              ? FoodTab(
+                  tile: widget.tile,
+                  date: widget.date,
+                  meal: widget.meal,
+                  refreshContext: widget.dairyContext,
+                )
+              : FoodTab(tile: widget.tile, refreshContext: context),
           widget.tile == Tile.addDairy || widget.tile == Tile.removeDairy
               ? RecipeTab(
                   tile: widget.tile,
                   date: widget.date,
                   meal: widget.meal,
-            refreshContext: widget.dairyContext,
+                  refreshContext: widget.dairyContext,
                 )
-              : RecipeTab(tile: widget.tile, refreshContext: context,),
+              : RecipeTab(tile: widget.tile, refreshContext: context),
         ],
       ),
       floatingActionButton: widget.tile == Tile.removeFood
@@ -97,9 +108,7 @@ class _FoodState extends State<Food> with TickerProviderStateMixin {
                   await Navigator.pushNamed(
                     context,
                     Routes.createFoodRoute,
-                    arguments: CreateFood(
-                      foodTabContext: context,
-                    ),
+                    arguments: CreateFood(foodTabContext: context),
                   );
                 } else {
                   final state = BlocProvider.of<FoodCubit>(context).state;
@@ -109,7 +118,10 @@ class _FoodState extends State<Food> with TickerProviderStateMixin {
                     await Navigator.pushNamed(
                       context,
                       Routes.createRecipeRoute,
-                      arguments: CreateRecipe(ingredients: ingredients, refreshContext: context,),
+                      arguments: CreateRecipe(
+                        ingredients: ingredients,
+                        refreshContext: context,
+                      ),
                     );
                   }
                 }

@@ -44,7 +44,9 @@ class _SearchState extends State<Search> {
                 controller: controller,
                 onChanged: (query) async {
                   deBouncer.call(() {
-                    BlocProvider.of<SearchCubit>(context).search(query, filters);
+                    BlocProvider.of<SearchCubit>(
+                      context,
+                    ).search(query, filters);
                   });
                 },
                 decoration: InputDecoration(
@@ -52,7 +54,10 @@ class _SearchState extends State<Search> {
                   filled: true,
                   disabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
-                    borderSide: BorderSide(width: 0.5, color: Colors.grey[700]!),
+                    borderSide: BorderSide(
+                      width: 0.5,
+                      color: Colors.grey[700]!,
+                    ),
                   ),
                   prefixIcon: Icon(Icons.search, color: Colors.grey),
                   suffixIcon: IconButton(
@@ -114,10 +119,23 @@ class _SearchState extends State<Search> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SizedBox(width: 230, child: Image.asset('assets/imgs/search.png')),
-                  const SizedBox(height: 20,),
-                  Text('Hungry?', style: TextStyle(color: Colors.white, fontSize: 25, fontWeight: FontWeight.bold),),
-                  Text('Find your favorite meal', style: TextStyle(color: Colors.white, fontSize: 20),)
+                  SizedBox(
+                    width: 230,
+                    child: Image.asset('assets/imgs/search.png'),
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    'Hungry?',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    'Find your favorite meal',
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  ),
                 ],
               ),
             );
@@ -127,10 +145,23 @@ class _SearchState extends State<Search> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(width: 230, child: Image.asset('assets/imgs/error.png')),
-                  const SizedBox(height: 20,),
-                  Text('No Rsesults', style: TextStyle(color: Colors.white, fontSize: 25, fontWeight: FontWeight.bold),),
-                  Text('Couldn’t find any matches.', style: TextStyle(color: Colors.white, fontSize: 20),)
+                  SizedBox(
+                    width: 230,
+                    child: Image.asset('assets/imgs/error.png'),
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    'No Rsesults',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    'Couldn’t find any matches.',
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  ),
                 ],
               ),
             );

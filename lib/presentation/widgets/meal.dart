@@ -71,6 +71,7 @@ class _MealState extends State<Meal> {
                 meal: widget.meal,
                 food: widget.food,
                 date: widget.date,
+                dairyContext: widget.dairyContext,
               ),
             );
           }

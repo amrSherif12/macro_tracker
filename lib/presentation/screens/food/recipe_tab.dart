@@ -14,7 +14,7 @@ class RecipeTab extends StatefulWidget {
   final Tile tile;
   final String? meal;
   final DateTime? date;
-  
+
   const RecipeTab({
     super.key,
     required this.tile,

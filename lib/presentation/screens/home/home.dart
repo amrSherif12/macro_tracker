@@ -555,7 +555,6 @@ class _HomeState extends State<Home> {
   }
 }
 
-
 class CustomClipPath extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {

@@ -59,11 +59,11 @@ class DayRepository {
     }
   }
 
-  void changeMacros({
+  Future<void> changeMacros({
     required DateTime date,
     required Map macros,
     bool isMinus = false,
-  }) {
+  }) async {
     int kcal = macros['kcal'];
     double prot = macros['protein'];
     double carb = macros['carb'];
@@ -74,7 +74,7 @@ class DayRepository {
       carb *= -1;
       fat *= -1;
     }
-    ins
+    await ins
         .collection("users")
         .doc(AuthenticationHelper.instance.auth.currentUser!.uid)
         .collection('dairy')
@@ -103,7 +103,7 @@ class DayRepository {
           meal.toLowerCase(): {idGenerator(): food.toMap()},
         }, SetOptions(merge: true));
     Map macros = food.getMacros();
-    changeMacros(date: date, macros: macros);
+    await changeMacros(date: date, macros: macros);
     toastBuilder('Added ${food.name} to $meal', context);
   }
 
@@ -122,11 +122,9 @@ class DayRepository {
           '${meal.toLowerCase()}.${consumable.id}': FieldValue.delete(),
         });
     Map macros = consumable.getMacros();
-    changeMacros(date: date, macros: macros, isMinus: true);
+    await changeMacros(date: date, macros: macros, isMinus: true);
     toastBuilder('Removed ${consumable.name} from $meal', context);
   }
-
-
 
   Future<void> switchCheatDay(DateTime date, bool isFree) async {
     try {

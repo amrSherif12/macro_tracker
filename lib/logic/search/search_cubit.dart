@@ -23,7 +23,9 @@ class SearchCubit extends Cubit<SearchState> {
           query,
           filters,
         );
-        List<String> saved = await FoodRepository.instance.getSaved(filters.isRecipe);
+        List<String> saved = await FoodRepository.instance.getSaved(
+          filters.isRecipe,
+        );
         if (consumables.isNotEmpty) {
           if (latestQuery.isNotEmpty) {
             emit(SearchLoaded(consumables: consumables, saved: saved));

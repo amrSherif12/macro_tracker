@@ -71,7 +71,7 @@ class _WelcomeState extends State<Welcome> {
                   ),
                 ),
               ),
-              const Spacer(flex: 5,),
+              const Spacer(flex: 5),
               FadeInDown(
                 from: 30,
                 delay: const Duration(milliseconds: 140),

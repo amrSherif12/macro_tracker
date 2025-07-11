@@ -63,8 +63,8 @@ class _CreateFoodState extends State<CreateFood> {
                       if (int.parse(kcalCont.text) > 10000) {
                         toastBuilder('Food can\'t exceed 1000 kcal', context);
                       } else if (double.parse(proteinCont.text) * 4 +
-                          double.parse(carbCont.text) * 4 +
-                          double.parse(fatCont.text) * 9 >
+                              double.parse(carbCont.text) * 4 +
+                              double.parse(fatCont.text) * 9 >
                           int.parse(kcalCont.text)) {
                         toastBuilder(
                           'Macro nutrients are exceeding the calories in the food',
@@ -73,21 +73,26 @@ class _CreateFoodState extends State<CreateFood> {
                       } else {
                         isLoading = true;
                         setState(() {});
-                        await BlocProvider.of<FoodCubit>(widget.foodTabContext).addFood(context, FoodModel(
-                          name: nameCont.text,
-                          kcal: int.parse(kcalCont.text),
-                          description: descriptionCont.text.trim(),
-                          lowerName: nameCont.text.toLowerCase(),
-                          unit: unit,
-                          uid: AuthenticationHelper
-                              .instance
-                              .auth
-                              .currentUser!
-                              .uid,
-                          protein: double.parse(proteinCont.text),
-                          carb: double.parse(carbCont.text),
-                          fat: double.parse(fatCont.text),
-                        ),);
+                        await BlocProvider.of<FoodCubit>(
+                          widget.foodTabContext,
+                        ).addFood(
+                          context,
+                          FoodModel(
+                            name: nameCont.text,
+                            kcal: int.parse(kcalCont.text),
+                            description: descriptionCont.text.trim(),
+                            lowerName: nameCont.text.toLowerCase(),
+                            unit: unit,
+                            uid: AuthenticationHelper
+                                .instance
+                                .auth
+                                .currentUser!
+                                .uid,
+                            protein: double.parse(proteinCont.text),
+                            carb: double.parse(carbCont.text),
+                            fat: double.parse(fatCont.text),
+                          ),
+                        );
                         Navigator.pop(context);
                       }
                     },

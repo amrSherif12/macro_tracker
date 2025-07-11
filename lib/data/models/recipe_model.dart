@@ -44,9 +44,10 @@ class RecipeModel extends ConsumableModel {
       double amount = map['ingredients'][i]['amount'];
       int kcal = ((map['ingredients'][i]['kcal'] as int) * amount).toInt();
       double protein = (map['ingredients'][i]['protein'] as double) * amount;
-      double  carb = (map['ingredients'][i]['carb'] as double) * amount;
-      double  fat = (map['ingredients'][i]['fat'] as double) * amount;
-      if (map['ingredients'][i]['unit'] == 'per 100 gm' || map['ingredients'][i]['unit'] == 'per 100 ml' ) {
+      double carb = (map['ingredients'][i]['carb'] as double) * amount;
+      double fat = (map['ingredients'][i]['fat'] as double) * amount;
+      if (map['ingredients'][i]['unit'] == 'per 100 gm' ||
+          map['ingredients'][i]['unit'] == 'per 100 ml') {
         kcal = (kcal / 100).toInt();
         protein /= 100;
         carb /= 100;
@@ -85,9 +86,10 @@ class RecipeModel extends ConsumableModel {
       double amount = map['ingredients'][i]['amount'];
       int kcal = ((map['ingredients'][i]['kcal'] as int) * amount).toInt();
       double protein = (map['ingredients'][i]['protein'] as double) * amount;
-      double  carb = (map['ingredients'][i]['carb'] as double) * amount;
-      double  fat = (map['ingredients'][i]['fat'] as double) * amount;
-      if (map['ingredients'][i]['unit'] == 'per 100 gm' || map['ingredients'][i]['unit'] == 'per 100 ml' ) {
+      double carb = (map['ingredients'][i]['carb'] as double) * amount;
+      double fat = (map['ingredients'][i]['fat'] as double) * amount;
+      if (map['ingredients'][i]['unit'] == 'per 100 gm' ||
+          map['ingredients'][i]['unit'] == 'per 100 ml') {
         kcal = (kcal / 100).toInt();
         protein /= 100;
         carb /= 100;
@@ -137,9 +139,10 @@ class RecipeModel extends ConsumableModel {
       double amount = map['ingredients'][i]['amount'];
       int kcal = ((map['ingredients'][i]['kcal'] as int) * amount).toInt();
       double protein = (map['ingredients'][i]['protein'] as double) * amount;
-      double  carb = (map['ingredients'][i]['carb'] as double) * amount;
-      double  fat = (map['ingredients'][i]['fat'] as double) * amount;
-      if (map['ingredients'][i]['unit'] == 'per 100 gm' || map['ingredients'][i]['unit'] == 'per 100 ml' ) {
+      double carb = (map['ingredients'][i]['carb'] as double) * amount;
+      double fat = (map['ingredients'][i]['fat'] as double) * amount;
+      if (map['ingredients'][i]['unit'] == 'per 100 gm' ||
+          map['ingredients'][i]['unit'] == 'per 100 ml') {
         kcal = (kcal / 100).toInt();
         protein /= 100;
         carb /= 100;

@@ -9,7 +9,11 @@ class CreateRecipe extends StatefulWidget {
   final BuildContext refreshContext;
   final List<FoodModel> ingredients;
 
-  const CreateRecipe({super.key, required this.ingredients, required this.refreshContext});
+  const CreateRecipe({
+    super.key,
+    required this.ingredients,
+    required this.refreshContext,
+  });
 
   @override
   State<CreateRecipe> createState() => _CreateRecipeState();

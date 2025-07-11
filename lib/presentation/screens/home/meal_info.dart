@@ -13,11 +13,14 @@ class MealInfo extends StatefulWidget {
   final List<ConsumableModel> food;
   final String meal;
   final DateTime date;
+  final BuildContext dairyContext;
+
   const MealInfo({
     super.key,
     required this.meal,
     required this.food,
     required this.date,
+    required this.dairyContext,
   });
 
   @override
@@ -101,12 +104,14 @@ class _MealInfoState extends State<MealInfo> {
               if (index == 0) const SizedBox(height: 20),
               widget.food[index] is RecipeModel
                   ? RecipeTile(
+                      refreshContext: widget.dairyContext,
                       recipe: widget.food[index] as RecipeModel,
                       date: widget.date,
                       tile: Tile.removeDairy,
                       meal: widget.meal,
                     )
                   : FoodTile(
+                      refreshContext: widget.dairyContext,
                       food: widget.food[index] as FoodModel,
                       date: widget.date,
                       tile: Tile.removeDairy,

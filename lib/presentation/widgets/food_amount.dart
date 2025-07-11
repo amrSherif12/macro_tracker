@@ -93,12 +93,9 @@ class _FoodAmountState extends State<FoodAmount> {
                         controller.text,
                       );
                     }
-                    BlocProvider.of<HomeCubit>(widget.dairyContext).addFood(
-                      context,
-                      widget.date,
-                      widget.meal,
-                      consumable,
-                    );
+                    BlocProvider.of<HomeCubit>(
+                      widget.dairyContext,
+                    ).addFood(context, widget.date, widget.meal, consumable);
                     Navigator.pop(context);
                   }
                 },

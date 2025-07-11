@@ -20,11 +20,21 @@ class RecipesCubit extends Cubit<RecipesState> {
     List<FoodModel> foods,
     List<TextEditingController> amounts,
   ) async {
-    await FoodRepository.instance.addRecipe(context, name, description, foods, amounts);
+    await FoodRepository.instance.addRecipe(
+      context,
+      name,
+      description,
+      foods,
+      amounts,
+    );
     await getRecipes(isRefresh: true);
   }
 
-  Future<void> updateRecipeAmounts(BuildContext context, RecipeModel recipe, List<TextEditingController> amounts,) async {
+  Future<void> updateRecipeAmounts(
+    BuildContext context,
+    RecipeModel recipe,
+    List<TextEditingController> amounts,
+  ) async {
     await FoodRepository.instance.updateRecipeAmounts(context, recipe, amounts);
     await getRecipes(isRefresh: true);
   }
