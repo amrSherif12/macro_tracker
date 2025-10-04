@@ -96,9 +96,8 @@ class _FoodState extends State<Food> with TickerProviderStateMixin {
                   tile: widget.tile,
                   date: widget.date,
                   meal: widget.meal,
-                  refreshContext: widget.dairyContext,
                 )
-              : RecipeTab(tile: widget.tile, refreshContext: context),
+              : RecipeTab(tile: widget.tile),
         ],
       ),
       floatingActionButton: widget.tile == Tile.removeFood
@@ -108,7 +107,7 @@ class _FoodState extends State<Food> with TickerProviderStateMixin {
                   await Navigator.pushNamed(
                     context,
                     Routes.createFoodRoute,
-                    arguments: CreateFood(foodTabContext: context),
+                    arguments: CreateFood(),
                   );
                 } else {
                   final state = BlocProvider.of<FoodCubit>(context).state;

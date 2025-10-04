@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:testt/random.dart';
+import 'package:testt/data/helpers/random.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class Macro extends StatefulWidget {

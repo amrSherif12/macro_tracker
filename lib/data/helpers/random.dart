@@ -3,34 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 
-String getWeekDay(int day) {
-  switch (day) {
-    case 1:
-      return "Mon";
-    case 2:
-      return "Tue";
-    case 3:
-      return "Wed";
-    case 4:
-      return "Thur";
-    case 5:
-      return "Fri";
-    case 6:
-      return "Sat";
-    case 7:
-      return "Sun";
-    default:
-      return "Sun";
-  }
-}
-
-bool isToday(DateTime date) {
-  DateTime now = DateTime.now();
-  if (date.day == now.day && date.year == now.year && date.month == now.month) {
-    return true;
-  }
-  return false;
-}
 
 String idGenerator() {
   const chars =
@@ -58,13 +30,13 @@ String idGenerator() {
 
 String unitConverter(String unit) {
   if (unit == 'per 100 gm') {
-    return 'gram';
+    return 'grams';
   } else if (unit == 'per 100 ml') {
-    return 'milliliter';
+    return 'milliliters';
   } else if (unit == 'per piece') {
-    return 'piece';
+    return 'pieces';
   } else {
-    return 'table spoon';
+    return 'table spoons';
   }
 }
 

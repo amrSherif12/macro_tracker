@@ -2,30 +2,65 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:testt/constants/colors.dart';
+import 'package:testt/data/helpers/random.dart';
 import 'package:testt/data/models/consumable_model.dart';
 import 'package:testt/data/models/food_model.dart';
-import 'package:testt/logic/home/home_cubit.dart';
+import 'package:testt/data/models/recipe_model.dart';
 import 'package:testt/presentation/screens/home/add_food.dart';
 import 'package:testt/presentation/screens/home/meal_info.dart';
 
-import '../../constants/strings.dart';
+import '../../../constants/strings.dart';
+import '../../logic/food/food_cubit.dart';
+import '../../logic/food/recipes_cubit.dart';
 
-class Meal extends StatefulWidget {
-  final List<ConsumableModel> food;
+class MealWrapper extends StatelessWidget {
+  final List<ConsumableModel> consumables;
   final IconData icon;
   final String meal;
   final bool isFree;
   final DateTime date;
-  final BuildContext dairyContext;
+
+  const MealWrapper({
+    super.key,
+    required this.icon,
+    required this.meal,
+    required this.consumables,
+    required this.isFree,
+    required this.date,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider.value(value: context.read<FoodCubit>()),
+        BlocProvider.value(value: context.read<RecipesCubit>()),
+      ],
+      child: Meal(
+        icon: icon,
+        meal: meal,
+        consumables: consumables,
+        isFree: isFree,
+        date: date,
+      ),
+    );
+  }
+}
+
+class Meal extends StatefulWidget {
+  final List<ConsumableModel> consumables;
+  final IconData icon;
+  final String meal;
+  final bool isFree;
+  final DateTime date;
 
   const Meal({
     super.key,
     required this.icon,
     required this.meal,
-    required this.food,
+    required this.consumables,
     required this.isFree,
     required this.date,
-    required this.dairyContext,
   });
 
   @override
@@ -33,18 +68,12 @@ class Meal extends StatefulWidget {
 }
 
 class _MealState extends State<Meal> {
-  List<String> items = [];
-  List<int> itemsKcal = [];
   int totalKcal = 0;
 
   void kcalCalc() {
     totalKcal = 0;
-    for (int i = 0; i < widget.food.length; i++) {
-      items.add(widget.food[i].name);
-      itemsKcal.add(widget.food[i].getMacros()['kcal']);
-    }
-    for (int i = 0; i < items.length; i++) {
-      totalKcal += itemsKcal[i];
+    for (int i = 0; i < widget.consumables.length; i++) {
+      totalKcal += widget.consumables[i].getMacros()['kcal'] as int;
     }
   }
 
@@ -60,172 +89,171 @@ class _MealState extends State<Meal> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
+      padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.035),
       child: GestureDetector(
         onTap: () async {
-          if (widget.food.isNotEmpty) {
+          if (widget.consumables.isNotEmpty) {
             await Navigator.pushNamed(
               context,
               Routes.mealInfoRoute,
               arguments: MealInfo(
                 meal: widget.meal,
-                food: widget.food,
+                food: widget.consumables,
                 date: widget.date,
-                dairyContext: widget.dairyContext,
               ),
+            );
+          } else {
+            await Navigator.pushNamed(
+              context,
+              Routes.addFoodRoute,
+              arguments: AddFood(date: widget.date, meal: widget.meal),
             );
           }
         },
         child: AnimatedContainer(
-          duration: const Duration(seconds: 1),
+          duration: const Duration(milliseconds: 800),
           width: double.infinity,
+          padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
-            color: Colors.grey[850],
+            color: Colors.white.withOpacity(0.05),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: Colors.white12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.3),
+                blurRadius: 12,
+                offset: const Offset(0, 5),
+              ),
+            ],
           ),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Header with icon, title and add button
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Icon(widget.icon, color: Colors.white, size: 30),
-                  Text(
-                    widget.meal,
-                    style: const TextStyle(
-                      fontFamily: "F",
-                      fontSize: 20,
-                      color: Colors.white,
-                    ),
+                  Row(
+                    children: [
+                      Icon(widget.icon, color: Colors.white, size: 28),
+                      const SizedBox(width: 12),
+                      Text(
+                        widget.meal,
+                        style: const TextStyle(
+                          fontFamily: "F",
+                          fontSize: 22,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 15, 0, 10),
-                    child: FloatingActionButton(
-                      onPressed: () async {
-                        await Navigator.pushNamed(
-                          context,
-                          Routes.addFoodRoute,
-                          arguments: AddFood(
-                            dairyContext: widget.dairyContext,
-                            date: widget.date,
-                            meal: widget.meal,
-                          ),
-                        );
-                      },
-                      heroTag: null,
-                      backgroundColor: widget.isFree
-                          ? ConstColors.cheat
-                          : ConstColors.sec,
-                      child: const Icon(Icons.add, color: Colors.white),
-                    ),
+                  FloatingActionButton(
+                    onPressed: () async {
+                      await Navigator.pushNamed(
+                        context,
+                        Routes.addFoodRoute,
+                        arguments: AddFood(
+                          date: widget.date,
+                          meal: widget.meal,
+                        ),
+                      );
+                    },
+                    heroTag: null,
+                    mini: true,
+                    backgroundColor: widget.isFree
+                        ? ConstColors.cheat
+                        : ConstColors.sec,
+                    child: const Icon(Icons.add, color: Colors.white),
                   ),
                 ],
               ),
-              open == true
-                  ? FadeInDown(
-                      from: 40,
-                      duration: const Duration(milliseconds: 450),
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
-                        child: ListView.builder(
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.all(5),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    items[index],
-                                    style: TextStyle(
-                                      fontFamily: "F",
-                                      fontSize: 20,
-                                      color: Colors.grey[300],
-                                    ),
-                                  ),
-                                  Text(
-                                    itemsKcal[index].toString(),
-                                    style: TextStyle(
-                                      fontFamily: "F",
-                                      fontSize: 20,
-                                      color: Colors.grey[400],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                          itemCount: widget.food.length,
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                        ),
-                      ),
-                    )
-                  : Container(),
-              Column(
-                children: [
-                  Divider(
-                    thickness: 2,
-                    endIndent: 30,
-                    indent: 30,
-                    color: Colors.grey[500],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Row(
-                      children: [
-                        items.isNotEmpty
-                            ? IconButton(
-                                splashRadius: 1,
-                                icon: AnimatedSwitcher(
-                                  duration: const Duration(milliseconds: 400),
-                                  transitionBuilder: (child, anim) =>
-                                      RotationTransition(
-                                        turns:
-                                            child.key == const ValueKey('icon1')
-                                            ? Tween<double>(
-                                                begin: 1,
-                                                end: 1,
-                                              ).animate(anim)
-                                            : Tween<double>(
-                                                begin: 0.75,
-                                                end: 1,
-                                              ).animate(anim),
-                                        child: FadeTransition(
-                                          opacity: anim,
-                                          child: child,
-                                        ),
-                                      ),
-                                  child: open == true
-                                      ? const Icon(
-                                          Icons.keyboard_arrow_up,
-                                          color: Colors.white,
-                                          size: 30,
-                                          key: ValueKey('icon1'),
-                                        )
-                                      : const Icon(
-                                          Icons.keyboard_arrow_down,
-                                          color: Colors.white,
-                                          size: 30,
-                                          key: ValueKey('icon2'),
-                                        ),
-                                ),
-                                onPressed: () {
-                                  open = !open;
-                                  setState(() {});
-                                },
-                              )
-                            : const SizedBox(),
-                        const Spacer(),
-                        Text(
-                          "Total KCAL: $totalKcal",
-                          style: const TextStyle(
-                            fontFamily: "F",
-                            fontSize: 20,
-                            color: Colors.white,
+
+              if (open) const SizedBox(height: 16),
+
+              // Food items list
+              if (open)
+                FadeInDown(
+                  from: 40,
+                  duration: const Duration(milliseconds: 450),
+                  child: ListView.builder(
+                    itemCount: widget.consumables.length,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) => Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 6),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            widget.consumables[index].name,
+                            style: TextStyle(
+                              fontFamily: "F",
+                              fontSize: 16,
+                              color: Colors.grey[300],
+                            ),
                           ),
+                          Text(
+                            widget.consumables[index] is FoodModel
+                                ? "${(widget.consumables[index] as FoodModel).amount?.withoutZeroDecimal()} ${unitConverter((widget.consumables[index] as FoodModel).unit)}"
+                                : widget.consumables[index] is RecipeModel
+                                ? "${(widget.consumables[index] as RecipeModel).servings} servings"
+                                : "Quick KCAL",
+                            style: TextStyle(
+                              fontFamily: "F",
+                              fontSize: 15,
+                              color: Colors.grey[400],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+
+              const SizedBox(height: 16),
+
+              // Divider and total kcal
+              Divider(thickness: 1.5, color: Colors.white.withOpacity(0.08)),
+
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  if (widget.consumables.isNotEmpty)
+                    IconButton(
+                      splashRadius: 1,
+                      icon: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 400),
+                        transitionBuilder: (child, anim) => RotationTransition(
+                          turns: Tween<double>(
+                            begin: 0.75,
+                            end: 1,
+                          ).animate(anim),
+                          child: FadeTransition(opacity: anim, child: child),
                         ),
-                        Spacer(flex: items.isNotEmpty ? 2 : 1),
-                      ],
+                        child: open
+                            ? const Icon(
+                                Icons.keyboard_arrow_up,
+                                key: ValueKey('icon1'),
+                                color: Colors.white,
+                              )
+                            : const Icon(
+                                Icons.keyboard_arrow_down,
+                                key: ValueKey('icon2'),
+                                color: Colors.white,
+                              ),
+                      ),
+                      onPressed: () {
+                        setState(() => open = !open);
+                      },
+                    ),
+                  const Spacer(),
+                  Text(
+                    "Total KCAL: $totalKcal",
+                    style: const TextStyle(
+                      fontFamily: "F",
+                      fontSize: 17,
+                      color: Colors.white,
                     ),
                   ),
                 ],

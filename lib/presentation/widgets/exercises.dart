@@ -24,13 +24,21 @@ class _ExercisesState extends State<Exercises> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
+      padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.035),
       child: AnimatedContainer(
         duration: const Duration(seconds: 1),
         width: double.infinity,
         decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.05),
           borderRadius: BorderRadius.circular(20),
-          color: Colors.grey[850],
+          border: Border.all(color: Colors.white12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              blurRadius: 12,
+              offset: const Offset(0, 5),
+            ),
+          ],
         ),
         child: Column(
           children: [
@@ -59,53 +67,54 @@ class _ExercisesState extends State<Exercises> {
                 ),
               ],
             ),
-            open == true
-                ? FadeInDown(
-                    from: 40,
-                    duration: const Duration(milliseconds: 450),
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
-                      child: ListView.builder(
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.all(5),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  widget.exercises[index].exercise,
-                                  style: TextStyle(
-                                    fontFamily: "F",
-                                    fontSize: 20,
-                                    color: Colors.grey[300],
-                                  ),
-                                ),
-                                Text(
-                                  toString(),
-                                  style: TextStyle(
-                                    fontFamily: "F",
-                                    fontSize: 20,
-                                    color: Colors.grey[400],
-                                  ),
-                                ),
-                              ],
+
+            if (open)
+              FadeInDown(
+                from: 40,
+                duration: const Duration(milliseconds: 450),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
+                  child: ListView.builder(
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.all(5),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              widget.exercises[index].exercise,
+                              style: TextStyle(
+                                fontFamily: "F",
+                                fontSize: 20,
+                                color: Colors.grey[300],
+                              ),
                             ),
-                          );
-                        },
-                        itemCount: widget.exercises.length,
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                      ),
-                    ),
-                  )
-                : Container(),
+                            Text(
+                              toString(), // <-- replace with actual value if needed
+                              style: TextStyle(
+                                fontFamily: "F",
+                                fontSize: 20,
+                                color: Colors.grey[400],
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                    itemCount: widget.exercises.length,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                  ),
+                ),
+              ),
+
             Column(
               children: [
                 Divider(
                   thickness: 2,
                   endIndent: 30,
                   indent: 30,
-                  color: Colors.grey[500],
+                  color: Colors.white.withOpacity(0.1),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(10),
@@ -113,50 +122,48 @@ class _ExercisesState extends State<Exercises> {
                     children: [
                       widget.exercises.isNotEmpty
                           ? IconButton(
-                              splashRadius: 1,
-                              icon: AnimatedSwitcher(
-                                duration: const Duration(milliseconds: 400),
-                                transitionBuilder: (child, anim) =>
-                                    RotationTransition(
-                                      turns:
-                                          child.key == const ValueKey('icon1')
-                                          ? Tween<double>(
-                                              begin: 1,
-                                              end: 1,
-                                            ).animate(anim)
-                                          : Tween<double>(
-                                              begin: 0.75,
-                                              end: 1,
-                                            ).animate(anim),
-                                      child: FadeTransition(
-                                        opacity: anim,
-                                        child: child,
-                                      ),
-                                    ),
-                                child: open == true
-                                    ? const Icon(
-                                        Icons.keyboard_arrow_up,
-                                        color: Colors.white,
-                                        size: 30,
-                                        key: ValueKey('icon1'),
-                                      )
-                                    : const Icon(
-                                        Icons.keyboard_arrow_down,
-                                        color: Colors.white,
-                                        size: 30,
-                                        key: ValueKey('icon2'),
-                                      ),
+                        splashRadius: 1,
+                        icon: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 400),
+                          transitionBuilder: (child, anim) =>
+                              RotationTransition(
+                                turns: child.key == const ValueKey('icon1')
+                                    ? Tween<double>(
+                                  begin: 1,
+                                  end: 1,
+                                ).animate(anim)
+                                    : Tween<double>(
+                                  begin: 0.75,
+                                  end: 1,
+                                ).animate(anim),
+                                child: FadeTransition(
+                                  opacity: anim,
+                                  child: child,
+                                ),
                               ),
-                              onPressed: () {
-                                open = !open;
-                                setState(() {});
-                              },
-                            )
+                          child: open
+                              ? const Icon(
+                            Icons.keyboard_arrow_up,
+                            color: Colors.white,
+                            size: 30,
+                            key: ValueKey('icon1'),
+                          )
+                              : const Icon(
+                            Icons.keyboard_arrow_down,
+                            color: Colors.white,
+                            size: 30,
+                            key: ValueKey('icon2'),
+                          ),
+                        ),
+                        onPressed: () {
+                          setState(() => open = !open);
+                        },
+                      )
                           : const SizedBox(),
                       const Spacer(),
-                      Text(
+                      const Text(
                         "Total KCAL: 0",
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontFamily: "F",
                           fontSize: 20,
                           color: Colors.white,

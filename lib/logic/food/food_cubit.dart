@@ -4,7 +4,8 @@ import 'package:testt/data/helpers/firestore/food_repository.dart';
 import 'package:meta/meta.dart';
 
 import '../../data/models/food_model.dart';
-import '../../random.dart';
+import '../../presentation/widgets/toast.dart';
+import '../../data/helpers/random.dart';
 
 part 'food_state.dart';
 
@@ -12,30 +13,78 @@ class FoodCubit extends Cubit<FoodState> {
   FoodCubit() : super(FoodLoading());
 
   Future<void> addFood(BuildContext context, FoodModel food) async {
-    await FoodRepository.instance.addFood(context, food);
-    await getFood(isRefresh: true);
+    try {
+      FoodModel newFood = await FoodRepository.instance.addFood(food);
+      toastBuilder('Food created', context);
+      if (state is FoodNoData) {
+        emit(FoodLoaded(food: [newFood]));
+        return;
+      }
+      final stateLoaded = state as FoodLoaded;
+      stateLoaded.food.add(newFood);
+      emit(FoodLoaded(food: stateLoaded.food));
+    } catch (e) {
+      if (!(await connectedToInternet())) {
+        emit(FoodNoInternet());
+      } else {
+        emit(FoodError(errorMessage: e.toString()));
+      }
+    }
   }
 
   Future<void> updateFood(BuildContext context, FoodModel food) async {
-    await FoodRepository.instance.updateFood(context, food);
-    await getFood(isRefresh: true);
+    try {
+      await FoodRepository.instance.updateFood(food);
+      toastBuilder('Food updated', context);
+      final stateLoaded = state as FoodLoaded;
+      int index = stateLoaded.food.indexWhere((food_) => food_.id == food.id);
+      stateLoaded.food[index] = food;
+      emit(FoodLoaded(food: stateLoaded.food));
+    } catch (e) {
+      if (!(await connectedToInternet())) {
+        emit(FoodNoInternet());
+      } else {
+        emit(FoodError(errorMessage: e.toString()));
+      }
+    }
   }
 
   Future<void> deleteFood(BuildContext context, String id) async {
-    await FoodRepository.instance.deleteFood(context, id);
-    await getFood(isRefresh: true);
+    try {
+      await FoodRepository.instance.deleteFood(id);
+      toastBuilder('Food deleted', context);
+      final stateLoaded = state as FoodLoaded;
+      stateLoaded.food.removeWhere((food) => food.id == id);
+      emit(FoodLoaded(food: stateLoaded.food));
+    } catch (e) {
+      if (!(await connectedToInternet())) {
+        emit(FoodNoInternet());
+      } else {
+        emit(FoodError(errorMessage: e.toString()));
+      }
+    }
   }
 
   Future<void> getFood({bool? isRefresh}) async {
     if (isRefresh != true) emit(FoodLoading());
-    List<FoodModel> food = await FoodRepository.instance.getFoods();
-
     try {
-      if (food.isEmpty) {
-        emit(FoodNoData());
-      } else {
-        emit(FoodLoaded(food: food));
-      }
+        List<FoodModel> food = [];
+        List<String> foodsIds = await FoodRepository.instance.getSaved(false);
+        for (int i = 0; i < ((foodsIds.length.toDouble()) / 30).ceil(); i++) {
+          List sub = [];
+          if (i < ((foodsIds.length.toDouble()) / 30).ceil() - 1) {
+            sub = foodsIds.sublist(0 + (i * 30), 30 + (i * 30));
+          } else {
+            sub = foodsIds.sublist(0 + (i * 30), foodsIds.length);
+          }
+          food = await FoodRepository.instance.getFoods(sub);
+        }
+        if (food.isEmpty) {
+          emit(FoodNoData());
+        } else {
+          emit(FoodLoaded(food: food));
+        }
+
     } catch (e) {
       if (!(await connectedToInternet())) {
         emit(FoodNoInternet());

@@ -4,7 +4,8 @@ import 'package:testt/data/helpers/firestore/day_repository.dart';
 import 'package:testt/data/models/day_model.dart';
 
 import '../../data/models/consumable_model.dart';
-import '../../random.dart';
+import '../../presentation/widgets/toast.dart';
+import '../../data/helpers/random.dart';
 
 part 'home_state.dart';
 
@@ -19,20 +20,22 @@ class HomeCubit extends Cubit<HomeState> {
     String meal,
     ConsumableModel food,
   ) async {
-    await DayRepository.instance.addFood(context, date, meal, food);
+    await DayRepository.instance.addFood(date, meal, food);
+    toastBuilder('Added ${food.name} to ${meal}', context);
     await getDay(refresh: true);
   }
 
   Future<void> removeFood(
-      BuildContext context,
-      DateTime date,
-      String meal,
-      ConsumableModel food,
-      ) async {
-    await DayRepository.instance.removeFood(context, date, meal, food);
+    BuildContext context,
+    DateTime date,
+    String meal,
+    ConsumableModel food,
+  ) async {
+    await DayRepository.instance.removeFood(date, meal, food);
+    toastBuilder('Removed ${food.name} from $meal', context);
+
     await getDay(refresh: true);
   }
-
 
   Future<void> incrementDay({required DayModel day}) async {
     try {

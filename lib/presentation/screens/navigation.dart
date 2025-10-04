@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:testt/constants/strings.dart';
@@ -35,13 +34,21 @@ class _NavigationState extends State<Navigation> {
       body: BlocBuilder<NavigationCubit, NavigationState>(
         builder: (context, state) {
           if (state is NavigationHome) {
-            return BlocProvider(
-              create: (BuildContext context) => HomeCubit(),
+            return MultiBlocProvider(
+              providers: [
+                BlocProvider.value(value: context.read<HomeCubit>()),
+                BlocProvider.value(value: context.read<FoodCubit>()),
+                BlocProvider.value(value: context.read<RecipesCubit>()),
+              ],
               child: const Home(),
             );
           } else if (state is NavigationSearch) {
-            return BlocProvider(
-              create: (BuildContext context) => SearchCubit(),
+            return MultiBlocProvider(
+              providers: [
+                BlocProvider.value(value: context.read<SearchCubit>()),
+                BlocProvider.value(value: context.read<FoodCubit>()),
+                BlocProvider.value(value: context.read<RecipesCubit>()),
+              ],
               child: const Search(),
             );
           } else if (state is NavigationExercise) {

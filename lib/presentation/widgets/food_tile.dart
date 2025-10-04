@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:testt/data/helpers/firestore/food_repository.dart';
+import 'package:testt/data/helpers/random.dart';
 import 'package:testt/data/models/food_model.dart';
 import 'package:testt/logic/food/food_cubit.dart';
 import 'package:testt/logic/home/home_cubit.dart';
@@ -11,13 +12,46 @@ import 'package:testt/presentation/widgets/food_amount.dart';
 
 import '../../constants/strings.dart';
 
+class FoodTileWrapper extends StatelessWidget {
+  final FoodModel food;
+  final Tile tile;
+  final DateTime? date;
+  final String? meal;
+  final List<String>? saved;
+
+  const FoodTileWrapper({
+    super.key,
+    required this.food,
+    required this.tile,
+    this.date,
+    this.saved,
+    this.meal,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider.value(value: context.read<FoodCubit>()),
+        BlocProvider.value(value: context.read<HomeCubit>()),
+      ],
+      child: FoodTile(
+        food: food,
+        tile: tile,
+        date: date,
+        saved: saved,
+        meal: meal,
+      ),
+    );
+  }
+}
+
 class FoodTile extends StatefulWidget {
   final FoodModel food;
   final Tile tile;
   final DateTime? date;
   final String? meal;
   final List<String>? saved;
-  final BuildContext? refreshContext;
 
   const FoodTile({
     super.key,
@@ -26,7 +60,6 @@ class FoodTile extends StatefulWidget {
     this.date,
     this.saved,
     this.meal,
-    this.refreshContext,
   });
 
   @override
@@ -57,14 +90,11 @@ class _FoodTileState extends State<FoodTile> {
             await Navigator.pushNamed(
               context,
               Routes.foodInfoRoute,
-              arguments: FoodInfo(
-                food: widget.food,
-                refreshContext: widget.refreshContext,
-              ),
+              arguments: FoodInfo(food: widget.food),
             );
           },
           elevation: 10,
-          color: Colors.grey[800],
+          color: Colors.grey[850],
           child: SizedBox(
             width: double.infinity,
             child: Padding(
@@ -86,7 +116,9 @@ class _FoodTileState extends State<FoodTile> {
                         ),
                         const SizedBox(height: 5),
                         Text(
-                          "${widget.food.kcal.toString()} KCAL ${widget.food.unit}",
+                          widget.tile != Tile.removeDairy
+                              ? "${widget.food.kcal.toString()} KCAL ${widget.food.unit}"
+                              : "${widget.food.amount!.withoutZeroDecimal().toString()} ${unitConverter(widget.food.unit)}",
                           style: TextStyle(
                             fontFamily: "F",
                             fontSize: 13,
@@ -111,8 +143,8 @@ class _FoodTileState extends State<FoodTile> {
                             builder: (context) => Delete(
                               name: widget.food.name,
                               delete: () async {
-                                await BlocProvider.of<FoodCubit>(
-                                  widget.refreshContext!,
+                                BlocProvider.of<FoodCubit>(
+                                  context,
                                 ).deleteFood(context, widget.food.id!);
                               },
                             ),
@@ -123,9 +155,7 @@ class _FoodTileState extends State<FoodTile> {
                             builder: (context) => Delete(
                               name: widget.food.name,
                               delete: () async {
-                                await BlocProvider.of<HomeCubit>(
-                                  widget.refreshContext!,
-                                ).removeFood(
+                                BlocProvider.of<HomeCubit>(context).removeFood(
                                   context,
                                   widget.date!,
                                   widget.meal!,
@@ -152,14 +182,13 @@ class _FoodTileState extends State<FoodTile> {
                           setState(() {});
                         } else {
                           await showModalBottomSheet(
-                            backgroundColor: Colors.grey[900],
+                            backgroundColor: Colors.green[300],
                             context: context,
                             builder: (context) {
-                              return FoodAmount(
+                              return FoodAmountWrapper(
                                 consumable: widget.food,
                                 date: widget.date!,
                                 meal: widget.meal!,
-                                dairyContext: widget.refreshContext!,
                               );
                             },
                             isDismissible: true,
@@ -173,7 +202,7 @@ class _FoodTileState extends State<FoodTile> {
                           );
                         }
                       },
-                      backgroundColor: Colors.grey[700],
+                      backgroundColor: Color(0xFF4D4D4D),
                       child: Icon(getIcon(widget.tile), color: Colors.white),
                     ),
                   ),

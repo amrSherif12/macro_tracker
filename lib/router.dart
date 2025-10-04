@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:testt/logic/food/food_cubit.dart';
 import 'package:testt/logic/food/recipes_cubit.dart';
+import 'package:testt/logic/home/home_cubit.dart';
 import 'package:testt/presentation/screens/authentication/login.dart';
 import 'package:testt/presentation/screens/authentication/sign_up.dart';
 import 'package:testt/presentation/screens/authentication/welcome.dart';
@@ -40,63 +41,52 @@ Route<dynamic> generateRoute(RouteSettings settings) {
 
     case Routes.navigationRoute:
       return MaterialPageRoute(
-        builder: (context) => BlocProvider(
-          create: (BuildContext context) => NavigationCubit(),
-          child: const Navigation(),
+        builder: (context) => MultiBlocProvider(
+          providers: [
+            BlocProvider(create: (BuildContext context) => NavigationCubit()),
+            BlocProvider(create: (BuildContext context) => FoodCubit()),
+            BlocProvider(create: (BuildContext context) => RecipesCubit()),
+            BlocProvider(create: (BuildContext context) => HomeCubit()),
+          ],
+          child: Navigation(),
         ),
       );
     case Routes.createFoodRoute:
-      final args = settings.arguments as CreateFood;
-      final foodTabCubit = BlocProvider.of<FoodCubit>(args.foodTabContext);
       return MaterialPageRoute(
-        builder: (context) => BlocProvider.value(
-          value: foodTabCubit,
-          child: CreateFood(foodTabContext: args.foodTabContext),
-        ),
-      );
+          builder: (context) => BlocProvider.value(
+              value: BlocProvider.of<FoodCubit>(context),
+              child: CreateFood()));
 
     case Routes.recipeInfoRoute:
       final args = settings.arguments as RecipeInfo;
-      final recipeTabCubit = args.refreshContext != null
-          ? BlocProvider.of<RecipesCubit>(args.refreshContext!)
-          : null;
       return MaterialPageRoute(
-        builder: (context) => recipeTabCubit != null
-            ? BlocProvider.value(
-                value: recipeTabCubit,
-                child: RecipeInfo(
-                  recipe: args.recipe,
-                  refreshContext: args.refreshContext,
-                ),
-              )
-            : RecipeInfo(recipe: args.recipe),
+        builder: (context) => RecipeInfo(recipe: args.recipe),
       );
 
     case Routes.createRecipeRoute:
       final args = settings.arguments as CreateRecipe;
-      final recipeTabCubit = BlocProvider.of<RecipesCubit>(args.refreshContext);
       return MaterialPageRoute(
-        builder: (context) => BlocProvider.value(
-          value: recipeTabCubit,
-          child: CreateRecipe(
-            ingredients: args.ingredients,
-            refreshContext: args.refreshContext,
-          ),
+        builder: (context) => CreateRecipe(
+          ingredients: args.ingredients,
+          refreshContext: args.refreshContext,
+          recipe: args.recipe,
         ),
       );
 
     case Routes.foodInfoRoute:
       final args = settings.arguments as FoodInfo;
-      return MaterialPageRoute(
-        builder: (context) =>
-            FoodInfo(food: args.food, refreshContext: args.refreshContext),
-      );
+      return MaterialPageRoute(builder: (context) => FoodInfo(food: args.food));
 
     case Routes.mealInfoRoute:
       final args = settings.arguments as MealInfo;
       return MaterialPageRoute(
-        builder: (context) =>
-            MealInfo(food: args.food, meal: args.meal, date: args.date, dairyContext: args.dairyContext,),
+        builder: (context) => MultiBlocProvider(
+          providers: [
+            BlocProvider.value(value: context.read<FoodCubit>()),
+            BlocProvider.value(value: context.read<RecipesCubit>()),
+          ],
+          child: MealInfo(food: args.food, meal: args.meal, date: args.date),
+        ),
       );
 
     case Routes.addFoodRoute:
@@ -104,14 +94,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(
         builder: (context) => MultiBlocProvider(
           providers: [
-            BlocProvider(create: (context) => FoodCubit()),
-            BlocProvider(create: (context) => RecipesCubit()),
+            BlocProvider.value(value: context.read<FoodCubit>()),
+            BlocProvider.value(value: context.read<RecipesCubit>()),
           ],
-          child: AddFood(
-            date: args.date,
-            meal: args.meal,
-            dairyContext: args.dairyContext,
-          ),
+          child: AddFood(date: args.date, meal: args.meal),
         ),
       );
 

@@ -3,16 +3,19 @@ import 'package:testt/presentation/widgets/ingredients_tile.dart';
 import 'package:testt/presentation/widgets/toast.dart';
 
 import '../../../data/models/food_model.dart';
+import '../../../data/models/recipe_model.dart';
 import '../../widgets/ingredients_amounts.dart';
 
 class CreateRecipe extends StatefulWidget {
   final BuildContext refreshContext;
   final List<FoodModel> ingredients;
+  final RecipeModel? recipe;
 
   const CreateRecipe({
     super.key,
     required this.ingredients,
     required this.refreshContext,
+    this.recipe,
   });
 
   @override
@@ -58,7 +61,7 @@ class _CreateRecipeState extends State<CreateRecipe> {
                   onPressed: () async {
                     if (chosen.length >= 2) {
                       await showModalBottomSheet(
-                        backgroundColor: Colors.grey[900],
+                        backgroundColor: Colors.green[300],
                         context: context,
                         isScrollControlled: true,
                         builder: (context) {
@@ -68,6 +71,7 @@ class _CreateRecipeState extends State<CreateRecipe> {
                                 .where((food) => chosen.contains(food.id))
                                 .toList(),
                             create: true,
+                            recipe: widget.recipe,
                           );
                         },
                         isDismissible: true,

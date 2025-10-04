@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:testt/logic/food/food_cubit.dart';
 import 'package:testt/presentation/widgets/update_recipe.dart';
-import 'package:testt/random.dart';
+import 'package:testt/data/helpers/random.dart';
 
 import '../../../constants/colors.dart';
 import '../../../data/models/recipe_model.dart';
 
 class RecipeInfo extends StatefulWidget {
   final RecipeModel recipe;
-  final BuildContext? refreshContext;
-  const RecipeInfo({Key? key, required this.recipe, this.refreshContext})
+
+  const RecipeInfo({Key? key, required this.recipe})
     : super(key: key);
 
   @override
@@ -17,36 +19,6 @@ class RecipeInfo extends StatefulWidget {
 }
 
 class _RecipeInfoState extends State<RecipeInfo> {
-  TextEditingController nameCont = TextEditingController();
-  TextEditingController descriptionCont = TextEditingController();
-
-  Widget macroBuilder(double val, String text, Color color) {
-    return Column(
-      children: [
-        Text(
-          "${val.withoutZeroDecimal()} g",
-          style: TextStyle(color: color, fontFamily: 'F', fontSize: 22),
-        ),
-        const SizedBox(height: 5),
-        Text(
-          text,
-          style: const TextStyle(
-            color: Colors.white,
-            fontFamily: 'F',
-            fontSize: 17,
-          ),
-        ),
-      ],
-    );
-  }
-
-  @override
-  void initState() {
-    nameCont.text = widget.recipe.name;
-    descriptionCont.text = widget.recipe.description ?? "";
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     double others =
@@ -69,12 +41,9 @@ class _RecipeInfoState extends State<RecipeInfo> {
       backgroundColor: Colors.grey[900],
       appBar: AppBar(
         elevation: 0,
-        scrolledUnderElevation: 0,
         backgroundColor: ConstColors.sec,
         leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: () => Navigator.pop(context),
           icon: const Icon(Icons.arrow_back, color: Colors.white, size: 23),
         ),
         title: Row(
@@ -90,273 +59,164 @@ class _RecipeInfoState extends State<RecipeInfo> {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            const SizedBox(width: 20),
             GestureDetector(
               onTap: () async {
                 await showModalBottomSheet(
-                  backgroundColor: Colors.grey[900],
                   context: context,
                   isScrollControlled: true,
-                  builder: (context) {
-                    return UpdateRecipe(
-                      refreshContext: widget.refreshContext,
-                      recipe: widget.recipe,
-                    );
-                  },
-                  isDismissible: true,
-                  constraints: BoxConstraints(maxHeight: 240),
+                  backgroundColor: Colors.green[300],
                   shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(30),
-                      topLeft: Radius.circular(30),
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(30),
+                    ),
+                  ),
+                  constraints: const BoxConstraints(maxHeight: 240),
+                  builder: (_) => BlocProvider(
+                    create: (context) => FoodCubit(),
+                    child: UpdateRecipe(
+                      recipe: widget.recipe,
                     ),
                   ),
                 );
               },
-              child: const Row(
-                children: [Icon(Icons.edit, color: Colors.white, size: 27)],
-              ),
+              child: const Icon(Icons.edit, color: Colors.white, size: 27),
             ),
           ],
         ),
       ),
-
-      body: Column(
+      body: ListView(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+        physics: const BouncingScrollPhysics(),
         children: [
-          Expanded(
-            child: ListView(
-              shrinkWrap: true,
-              physics: const BouncingScrollPhysics(),
-              children: [
-                Divider(
-                  thickness: 2,
-                  endIndent: 100,
-                  indent: 100,
-                  height: 30,
-                  color: Colors.grey[800]!,
-                ),
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    child: Text(
-                      widget.recipe.name,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'F',
-                        fontSize: 25,
-                      ),
-                    ),
-                  ),
-                ),
-                Divider(
-                  thickness: 2,
-                  endIndent: 100,
-                  indent: 100,
-                  height: 30,
-                  color: Colors.grey[800]!,
-                ),
+          // Recipe Name + Description
+          _infoBox(
+            children: [
+              _label("RECIPE NAME"),
+              const SizedBox(height: 6),
+              Text(widget.recipe.name, style: _titleText()),
+              const SizedBox(height: 20),
+              _label("DIRECTIONS"),
+              const SizedBox(height: 6),
+              Text(
                 widget.recipe.description.isNotEmpty
-                    ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              widget.recipe.description,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ],
-                      )
-                    : Padding(
-                        padding: const EdgeInsets.all(18),
+                    ? widget.recipe.description
+                    : "No Directions Provided",
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontFamily: 'F',
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 30),
+
+          // Ingredients List
+          _infoBox(
+            children: [
+              _label("INGREDIENTS"),
+              const SizedBox(height: 16),
+              ...widget.recipe.ingredients.map((item) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
                         child: Text(
-                          "No Directions Provided",
-                          style: TextStyle(color: Colors.white, fontSize: 18),
-                          textAlign: TextAlign.center,
+                          item['name'],
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'F',
+                            fontSize: 17,
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
-
-                Divider(
-                  thickness: 2,
-                  endIndent: 100,
-                  indent: 100,
-                  height: 30,
-                  color: Colors.grey[800]!,
-                ),
-                const Center(
-                  child: Text(
-                    "INGREDIENTS",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'F',
-                      fontSize: 25,
-                    ),
-                  ),
-                ),
-                Divider(
-                  thickness: 2,
-                  endIndent: 100,
-                  indent: 100,
-                  height: 30,
-                  color: Colors.grey[800]!,
-                ),
-                ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.fromLTRB(30, 15, 30, 15),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              widget.recipe.ingredients[index]['name'],
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontFamily: 'F',
-                                fontSize: 19,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          Row(
-                            children: [
-                              Text(
-                                "${(widget.recipe.ingredients[index]['amount'] as double).withoutZeroDecimal()} ",
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontFamily: 'F',
-                                  fontSize: 19,
-                                ),
-                              ),
-                              Text(
-                                unitConverter(
-                                  widget.recipe.ingredients[index]['unit'],
-                                ),
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontFamily: 'F',
-                                  fontSize: 19,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                  itemCount: widget.recipe.ingredients.length,
-                ),
-                Divider(
-                  thickness: 2,
-                  endIndent: 100,
-                  indent: 100,
-                  height: 30,
-                  color: Colors.grey[800]!,
-                ),
-                const Center(
-                  child: Text(
-                    "MACROS",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'F',
-                      fontSize: 25,
-                    ),
-                  ),
-                ),
-                Divider(
-                  thickness: 2,
-                  endIndent: 100,
-                  indent: 100,
-                  height: 30,
-                  color: Colors.grey[800]!,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Column(
+                      Row(
                         children: [
                           Text(
-                            widget.recipe.kcal.toString(),
+                            "${(item['amount'] as double).withoutZeroDecimal()} ",
                             style: const TextStyle(
-                              color: Colors.white,
-                              fontFamily: 'F',
-                              fontSize: 22,
-                            ),
-                          ),
-                          const SizedBox(height: 5),
-                          const Text(
-                            "KCAL",
-                            style: TextStyle(
                               color: Colors.white,
                               fontFamily: 'F',
                               fontSize: 17,
                             ),
                           ),
+                          Text(
+                            unitConverter(item['unit']),
+                            style: const TextStyle(
+                              color: Colors.white70,
+                              fontFamily: 'F',
+                              fontSize: 15,
+                            ),
+                          ),
                         ],
-                      ),
-                      macroBuilder(
-                        widget.recipe.protein,
-                        "PROTEIN",
-                        const Color.fromRGBO(246, 114, 128, 1),
-                      ),
-                      macroBuilder(
-                        widget.recipe.carb,
-                        "CARB",
-                        const Color.fromRGBO(253, 157, 133, 1.0),
-                      ),
-                      macroBuilder(
-                        widget.recipe.fat,
-                        "FAT",
-                        const Color.fromRGBO(255, 217, 159, 1.0),
                       ),
                     ],
                   ),
-                ),
-                const SizedBox(height: 20),
-                Divider(
-                  thickness: 2,
-                  endIndent: 100,
-                  indent: 100,
-                  height: 30,
-                  color: Colors.grey[800]!,
-                ),
-                const Center(
-                  child: Text(
-                    "KCAL DISTRIBUTION",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'F',
-                      fontSize: 25,
-                    ),
+                );
+              }).toList(),
+            ],
+          ),
+
+          const SizedBox(height: 30),
+
+          // Macros
+          _infoBox(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [_label("MACROS"), _label("per serving")],
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  macroCard(
+                    "KCAL",
+                    widget.recipe.kcal.toString(),
+                    Colors.white,
                   ),
-                ),
-                Divider(
-                  thickness: 2,
-                  endIndent: 100,
-                  indent: 100,
-                  height: 30,
-                  color: Colors.grey[800]!,
-                ),
-                SfCircularChart(
+                  macroCard(
+                    "PROTEIN",
+                    "${widget.recipe.protein.withoutZeroDecimal()}g",
+                    const Color(0xFFF67280),
+                  ),
+                  macroCard(
+                    "CARB",
+                    "${widget.recipe.carb.withoutZeroDecimal()}g",
+                    const Color(0xFFFD9D85),
+                  ),
+                  macroCard(
+                    "FAT",
+                    "${widget.recipe.fat.withoutZeroDecimal()}g",
+                    const Color(0xFFFFD99F),
+                  ),
+                ],
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 30),
+
+          // Chart
+          _infoBox(
+            children: [
+              _label("KCAL DISTRIBUTION"),
+              const SizedBox(height: 20),
+              SizedBox(
+                height: 250,
+                child: SfCircularChart(
                   palette: const [
-                    Color.fromRGBO(246, 114, 128, 1),
-                    Color.fromRGBO(253, 157, 133, 1.0),
-                    Color.fromRGBO(255, 217, 159, 1.0),
-                    Color.fromRGBO(255, 255, 255, 1.0),
+                    Color(0xFFF67280),
+                    Color(0xFFFDA189),
+                    Color(0xFFFFD99F),
+                    Colors.white,
                   ],
                   legend: const Legend(
                     isVisible: true,
-                    overflowMode: LegendItemOverflowMode.scroll,
                     iconHeight: 20,
                     iconWidth: 20,
                     textStyle: TextStyle(
@@ -368,8 +228,8 @@ class _RecipeInfoState extends State<RecipeInfo> {
                   series: <CircularSeries>[
                     DoughnutSeries<PieNutrients, String>(
                       dataSource: chartData,
-                      xValueMapper: (PieNutrients data, _) => data.nutrient,
-                      yValueMapper: (PieNutrients data, _) => data.value,
+                      xValueMapper: (data, _) => data.nutrient,
+                      yValueMapper: (data, _) => data.value,
                       dataLabelSettings: const DataLabelSettings(
                         isVisible: true,
                         textStyle: TextStyle(
@@ -381,10 +241,68 @@ class _RecipeInfoState extends State<RecipeInfo> {
                     ),
                   ],
                 ),
-              ],
-            ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 40),
+        ],
+      ),
+    );
+  }
+
+  Widget macroCard(String label, String value, Color color) {
+    return Column(
+      children: [
+        Text(
+          value,
+          style: TextStyle(color: color, fontFamily: 'F', fontSize: 22),
+        ),
+        const SizedBox(height: 5),
+        Text(
+          label,
+          style: const TextStyle(
+            color: Colors.white60,
+            fontFamily: 'F',
+            fontSize: 14,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _infoBox({required List<Widget> children}) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.05),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.white12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.3),
+            blurRadius: 12,
+            offset: const Offset(0, 5),
           ),
         ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: children,
+      ),
+    );
+  }
+
+  TextStyle _titleText() =>
+      const TextStyle(color: Colors.white, fontSize: 24, fontFamily: 'F');
+
+  Widget _label(String text) {
+    return Text(
+      text,
+      style: const TextStyle(
+        color: Colors.white60,
+        fontSize: 13,
+        letterSpacing: 1.5,
+        fontFamily: 'F',
       ),
     );
   }

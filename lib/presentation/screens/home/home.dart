@@ -2,18 +2,18 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
 import 'package:testt/constants/colors.dart';
 import 'package:testt/data/helpers/auth_helper.dart';
-import 'package:testt/data/models/day_model.dart';
 import 'package:testt/logic/home/home_cubit.dart';
 import 'package:testt/presentation/widgets/drawer.dart';
 import 'package:testt/presentation/widgets/exercises.dart';
 import 'package:testt/presentation/widgets/placeholder/error.dart';
 import 'package:testt/presentation/widgets/placeholder/loading_widget.dart';
 import 'package:testt/presentation/widgets/placeholder/no_internet.dart';
-import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
 
-import '../../../random.dart';
+import '../../../constants/strings.dart';
+import '../../../data/helpers/random.dart';
 import '../../widgets/macro.dart';
 import '../../widgets/meal.dart';
 
@@ -25,8 +25,44 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  void refresh({required DayModel day}) {
-    BlocProvider.of<HomeCubit>(context).getDay(day: day, refresh: true);
+  String getWeekDay(int day) {
+    switch (day) {
+      case 1:
+        return "Mon";
+      case 2:
+        return "Tue";
+      case 3:
+        return "Wed";
+      case 4:
+        return "Thur";
+      case 5:
+        return "Fri";
+      case 6:
+        return "Sat";
+      case 7:
+        return "Sun";
+      default:
+        return "Sun";
+    }
+  }
+
+  String dateString(DateTime date) {
+    DateTime now = DateTime.now();
+    if (date.day == now.day &&
+        date.year == now.year &&
+        date.month == now.month) {
+      return 'Today';
+    } else if (date.day == now.day - 1 &&
+        date.year == now.year &&
+        date.month == now.month) {
+      return 'Yesterday';
+    } else if (date.day == now.day + 1 &&
+        date.year == now.year &&
+        date.month == now.month) {
+      return 'Tomorrow';
+    } else {
+      return '${getWeekDay(date.weekday)} ${date.day} / ${date.month} / ${date.year}';
+    }
   }
 
   @override
@@ -34,7 +70,6 @@ class _HomeState extends State<Home> {
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
         systemNavigationBarColor: ConstColors.main,
-        statusBarColor: ConstColors.secDark,
       ),
     );
     BlocProvider.of<HomeCubit>(context).getDay();
@@ -198,7 +233,8 @@ class _HomeState extends State<Home> {
                                               child: IconButton(
                                                 onPressed: () {
                                                   AuthenticationHelper.instance
-                                                      .logout(context);
+                                                      .logout();
+                                                  Navigator.pushReplacementNamed(context, Routes.welcomeRoute);
                                                 },
                                                 icon: const Icon(
                                                   Icons.bolt_rounded,
@@ -294,7 +330,9 @@ class _HomeState extends State<Home> {
                               firstDate: DateTime.now().subtract(
                                 Duration(days: 300),
                               ),
-                              lastDate: DateTime.now(),
+                              lastDate: DateTime.now().add(
+                                Duration(days: 300),
+                              ),
                               builder: (context, child) {
                                 return Theme(
                                   data: Theme.of(context).copyWith(
@@ -314,7 +352,7 @@ class _HomeState extends State<Home> {
                           child: Padding(
                             padding: const EdgeInsets.all(15),
                             child: Text(
-                              '${day.date.day} / ${day.date.month} / ${day.date.year}',
+                              dateString(day.date),
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontFamily: "F",
@@ -348,16 +386,24 @@ class _HomeState extends State<Home> {
                       children: [
                         Padding(
                           padding: EdgeInsets.fromLTRB(
-                            MediaQuery.of(context).size.width * 0.05,
+                            MediaQuery.of(context).size.width * 0.035,
                             0,
                             20,
-                            MediaQuery.of(context).size.width * 0.05,
+                            MediaQuery.of(context).size.width * 0.035,
                           ),
                           child: Center(
                             child: Container(
                               decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.05),
                                 borderRadius: BorderRadius.circular(15),
-                                color: Colors.grey[850],
+                                border: Border.all(color: Colors.white12),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.3),
+                                    blurRadius: 12,
+                                    offset: const Offset(0, 5),
+                                  ),
+                                ],
                               ),
                               child: Column(
                                 children: [
@@ -370,7 +416,7 @@ class _HomeState extends State<Home> {
                                   Divider(
                                     height: 10,
                                     thickness: 2,
-                                    color: Colors.grey[900],
+                                    color: Colors.white.withOpacity(0.1),
                                   ),
                                   Macro(
                                     target: day.carbGoal,
@@ -381,7 +427,7 @@ class _HomeState extends State<Home> {
                                   Divider(
                                     height: 10,
                                     thickness: 2,
-                                    color: Colors.grey[900],
+                                    color: Colors.white.withOpacity(0.1),
                                   ),
                                   Macro(
                                     target: day.fatGoal,
@@ -396,143 +442,102 @@ class _HomeState extends State<Home> {
                           ),
                         ),
                         Padding(
-                          padding: EdgeInsets.all(
-                            MediaQuery.of(context).size.width * 0.05,
-                          ),
+                          padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.035),
                           child: Container(
                             width: double.infinity,
+                            padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              color: Colors.grey[850],
+                              color: Colors.white.withOpacity(0.05),
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(color: Colors.white12),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.3),
+                                  blurRadius: 12,
+                                  offset: const Offset(0, 5),
+                                ),
+                              ],
                             ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: !day.isFree
-                                  ? InkWell(
-                                      onTap: () {
-                                        BlocProvider.of<HomeCubit>(
-                                          context,
-                                        ).switchCheatDay(true, day: day);
-                                      },
-                                      child: Padding(
-                                        padding: EdgeInsets.all(15),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              "Want to take a ",
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontFamily: "F",
-                                                fontSize: 17,
-                                                letterSpacing: 1,
-                                              ),
-                                            ),
-                                            Text(
-                                              'cheat day',
-                                              style: TextStyle(
-                                                fontSize: 19,
-                                                color: ConstColors.cheatMidOff,
-                                                fontWeight: FontWeight.bold,
-                                                fontFamily: "F",
-                                              ),
-                                            ),
-                                            Text(
-                                              " ?",
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontFamily: "F",
-                                                fontSize: 17,
-                                                letterSpacing: 1,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    )
-                                  : InkWell(
-                                      onTap: () {
-                                        BlocProvider.of<HomeCubit>(
-                                          context,
-                                        ).switchCheatDay(false, day: day);
-                                      },
-                                      child: const Padding(
-                                        padding: EdgeInsets.all(15),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              "Go back on ",
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontFamily: "F",
-                                                fontSize: 17,
-                                                letterSpacing: 1,
-                                              ),
-                                            ),
-                                            Text(
-                                              'diet',
-                                              style: TextStyle(
-                                                fontSize: 19,
-                                                color: Colors.green,
-                                                fontWeight: FontWeight.bold,
-                                                fontFamily: "F",
-                                              ),
-                                            ),
-                                            Text(
-                                              " ?",
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontFamily: "F",
-                                                fontSize: 17,
-                                                letterSpacing: 1,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
+                            child: InkWell(
+                              onTap: () {
+                                BlocProvider.of<HomeCubit>(context).switchCheatDay(
+                                  !day.isFree,
+                                  day: day,
+                                );
+                              },
+                              borderRadius: BorderRadius.circular(20),
+                              child: Padding(
+                                padding: const EdgeInsets.all(15),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      day.isFree ? "Go back on " : "Want to take a ",
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontFamily: "F",
+                                        fontSize: 17,
+                                        letterSpacing: 1,
                                       ),
                                     ),
+                                    Text(
+                                      day.isFree ? "diet" : "cheat day",
+                                      style: TextStyle(
+                                        fontSize: 19,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: "F",
+                                        color: day.isFree
+                                            ? Colors.green
+                                            : ConstColors.cheatMidOff,
+                                      ),
+                                    ),
+                                    const Text(
+                                      " ?",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontFamily: "F",
+                                        fontSize: 17,
+                                        letterSpacing: 1,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                        Meal(
+                        MealWrapper(
                           key: ValueKey(
                             '${day.date}_Breakfast_${idGenerator()}',
                           ),
                           icon: Icons.coffee,
                           meal: "Breakfast",
-                          food: day.breakfast,
+                          consumables: day.breakfast,
                           isFree: day.isFree,
                           date: day.date,
-                          dairyContext: context,
                         ),
-                        Meal(
+                        MealWrapper(
                           key: ValueKey('${day.date}_Lunch_${idGenerator()}'),
                           icon: Icons.lunch_dining,
                           meal: "Lunch",
-                          food: day.lunch,
+                          consumables: day.lunch,
                           isFree: day.isFree,
                           date: day.date,
-                          dairyContext: context,
                         ),
-                        Meal(
+                        MealWrapper(
                           key: ValueKey('${day.date}_Dinner_${idGenerator()}'),
                           icon: Icons.dinner_dining,
                           meal: "Dinner",
-                          food: day.dinner,
+                          consumables: day.dinner,
                           isFree: day.isFree,
-                          dairyContext: context,
                           date: day.date,
                         ),
-                        Meal(
+                        MealWrapper(
                           key: ValueKey('${day.date}_Snacks_${idGenerator()}'),
                           icon: Icons.local_pizza,
                           meal: "Snacks",
-                          food: day.snacks,
+                          consumables: day.snacks,
                           isFree: day.isFree,
-                          dairyContext: context,
                           date: day.date,
                         ),
                         Exercises(exercises: day.exercises, isFree: day.isFree),

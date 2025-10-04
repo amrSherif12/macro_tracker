@@ -98,13 +98,13 @@ class _SearchState extends State<Search> {
             return ListView.builder(
               itemBuilder: (context, index) {
                 if (state.consumables.first is FoodModel) {
-                  return FoodTile(
+                  return FoodTileWrapper(
                     food: (state.consumables[index] as FoodModel),
                     saved: state.saved,
                     tile: Tile.search,
                   );
                 } else {
-                  return RecipeTile(
+                  return RecipeTileWrapper(
                     recipe: (state.consumables[index] as RecipeModel),
                     saved: state.saved,
                     tile: Tile.search,

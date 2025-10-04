@@ -5,7 +5,7 @@ import 'package:testt/data/models/food_model.dart';
 import 'package:testt/data/models/recipe_model.dart';
 import 'package:testt/presentation/widgets/food_tile.dart';
 import 'package:testt/presentation/widgets/recipe_tile.dart';
-import 'package:testt/random.dart';
+import 'package:testt/data/helpers/random.dart';
 
 import '../../../constants/colors.dart';
 
@@ -13,14 +13,12 @@ class MealInfo extends StatefulWidget {
   final List<ConsumableModel> food;
   final String meal;
   final DateTime date;
-  final BuildContext dairyContext;
 
   const MealInfo({
     super.key,
     required this.meal,
     required this.food,
     required this.date,
-    required this.dairyContext,
   });
 
   @override
@@ -37,10 +35,10 @@ class _MealInfoState extends State<MealInfo> {
   Widget build(BuildContext context) {
     for (int i = 0; i < widget.food.length; i++) {
       Map macros = widget.food[i].getMacros();
-      kcal = macros['kcal'];
-      protein = macros['protein'];
-      carb = macros['carb'];
-      fat = macros['fat'];
+      kcal += macros['kcal'] as int;
+      protein += macros['protein'];
+      carb += macros['carb'];
+      fat += macros['fat'];
     }
 
     Widget macroBuilder(String macro, double val) {
@@ -103,15 +101,13 @@ class _MealInfoState extends State<MealInfo> {
             children: [
               if (index == 0) const SizedBox(height: 20),
               widget.food[index] is RecipeModel
-                  ? RecipeTile(
-                      refreshContext: widget.dairyContext,
+                  ? RecipeTileWrapper(
                       recipe: widget.food[index] as RecipeModel,
                       date: widget.date,
                       tile: Tile.removeDairy,
                       meal: widget.meal,
                     )
-                  : FoodTile(
-                      refreshContext: widget.dairyContext,
+                  : FoodTileWrapper(
                       food: widget.food[index] as FoodModel,
                       date: widget.date,
                       tile: Tile.removeDairy,

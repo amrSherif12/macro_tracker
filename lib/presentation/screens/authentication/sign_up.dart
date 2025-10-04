@@ -33,6 +33,11 @@ class _SignUpState extends State<SignUp> {
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController userNameCon = TextEditingController();
+    TextEditingController emailCon = TextEditingController();
+    TextEditingController passwordCon = TextEditingController();
+    TextEditingController passwordConfirmCon = TextEditingController();
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: ConstColors.main,
@@ -70,9 +75,7 @@ class _SignUpState extends State<SignUp> {
                         from: 30,
                         delay: const Duration(milliseconds: 70),
                         child: FilledTextFieldBuilder(
-                          controller: BlocProvider.of<SignUpCubit>(
-                            context,
-                          ).userNameCon,
+                          controller: userNameCon,
                           label: "User name",
                           hint: "Enter your name",
                           iconData: Icons.person,
@@ -83,9 +86,7 @@ class _SignUpState extends State<SignUp> {
                         from: 30,
                         delay: const Duration(milliseconds: 140),
                         child: FilledTextFieldBuilder(
-                          controller: BlocProvider.of<SignUpCubit>(
-                            context,
-                          ).emailCon,
+                          controller: emailCon,
                           label: "E-mail",
                           hint: "Enter your E-mail",
                           iconData: Icons.email,
@@ -96,9 +97,7 @@ class _SignUpState extends State<SignUp> {
                         from: 30,
                         delay: const Duration(milliseconds: 210),
                         child: ObscureTextFieldBuilder(
-                          controller: BlocProvider.of<SignUpCubit>(
-                            context,
-                          ).passwordCon,
+                          controller: passwordCon,
                           obscureText: BlocProvider.of<SignUpCubit>(
                             context,
                           ).obscureText,
@@ -113,9 +112,7 @@ class _SignUpState extends State<SignUp> {
                         from: 30,
                         delay: const Duration(milliseconds: 280),
                         child: ObscureTextFieldBuilder(
-                          controller: BlocProvider.of<SignUpCubit>(
-                            context,
-                          ).passwordConfirmCon,
+                          controller: passwordConfirmCon,
                           obscureText: BlocProvider.of<SignUpCubit>(
                             context,
                           ).confirmObscureText,
@@ -137,7 +134,7 @@ class _SignUpState extends State<SignUp> {
                                 return MaterialButton(
                                   onPressed: () => BlocProvider.of<SignUpCubit>(
                                     context,
-                                  ).signUp(context),
+                                  ).signUp(context, passwordCon.text, emailCon.text, passwordConfirmCon.text, userNameCon.text),
                                   minWidth: double.infinity,
                                   height: 50,
                                   color: Colors.white,
@@ -189,7 +186,7 @@ class _SignUpState extends State<SignUp> {
             FittedBox(
               child: TextButton(
                 onPressed: () =>
-                    BlocProvider.of<SignUpCubit>(context).openLogin(context),
+                    Navigator.pushReplacementNamed(context, Routes.loginRoute),
                 child: const Text(
                   'Login',
                   style: TextStyle(

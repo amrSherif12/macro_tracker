@@ -12,8 +12,8 @@ import '../../widgets/textfield.dart';
 import '../../widgets/toast.dart';
 
 class CreateFood extends StatefulWidget {
-  final BuildContext foodTabContext;
-  const CreateFood({Key? key, required this.foodTabContext}) : super(key: key);
+  final FoodModel? food;
+  const CreateFood({Key? key, this.food}) : super(key: key);
 
   @override
   State<CreateFood> createState() => _CreateFoodState();
@@ -32,7 +32,18 @@ class _CreateFoodState extends State<CreateFood> {
 
   @override
   void initState() {
-    unit = Lists.units.first;
+    if (widget.food == null){
+      unit = Lists.units.first;
+    } else {
+      unit = widget.food!.unit;
+      nameCont.text = widget.food!.name;
+      kcalCont.text = widget.food!.kcal.toString();
+      proteinCont.text = widget.food!.protein.toString();
+      carbCont.text = widget.food!.carb.toString();
+      fatCont.text = widget.food!.fat.toString();
+      descriptionCont.text = widget.food!.description;
+    }
+
     super.initState();
   }
 
@@ -71,28 +82,39 @@ class _CreateFoodState extends State<CreateFood> {
                           context,
                         );
                       } else {
+                        FoodModel food = FoodModel(
+                          name: nameCont.text,
+                          kcal: int.parse(kcalCont.text),
+                          description: descriptionCont.text.trim(),
+                          lowerName: nameCont.text.toLowerCase(),
+                          unit: unit,
+                          uid: AuthenticationHelper
+                              .instance
+                              .auth
+                              .currentUser!
+                              .uid,
+                          protein: double.parse(proteinCont.text),
+                          carb: double.parse(carbCont.text),
+                          fat: double.parse(fatCont.text),
+                        );
                         isLoading = true;
                         setState(() {});
-                        await BlocProvider.of<FoodCubit>(
-                          widget.foodTabContext,
-                        ).addFood(
-                          context,
-                          FoodModel(
-                            name: nameCont.text,
-                            kcal: int.parse(kcalCont.text),
-                            description: descriptionCont.text.trim(),
-                            lowerName: nameCont.text.toLowerCase(),
-                            unit: unit,
-                            uid: AuthenticationHelper
-                                .instance
-                                .auth
-                                .currentUser!
-                                .uid,
-                            protein: double.parse(proteinCont.text),
-                            carb: double.parse(carbCont.text),
-                            fat: double.parse(fatCont.text),
-                          ),
-                        );
+                        if (widget.food == null) {
+                          await BlocProvider.of<FoodCubit>(context
+                          ).addFood(
+                            context,
+                            food
+                          );
+                        } else {
+                          food.id = widget.food!.id;
+                          await BlocProvider.of<FoodCubit>(
+                            context
+                          ).updateFood(
+                              context,
+                              food
+                          );
+                          Navigator.pop(context);
+                        }
                         Navigator.pop(context);
                       }
                     },

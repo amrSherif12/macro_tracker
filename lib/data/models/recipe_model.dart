@@ -130,19 +130,19 @@ class RecipeModel extends ConsumableModel {
     };
   }
 
-  Map _calcMacros(Map map) {
+  void recalculateMacros() {
     int totKcal = 0;
     double totProtein = 0;
     double totCarb = 0;
     double totFat = 0;
-    for (int i = 0; i < map['ingredients'].length; i++) {
-      double amount = map['ingredients'][i]['amount'];
-      int kcal = ((map['ingredients'][i]['kcal'] as int) * amount).toInt();
-      double protein = (map['ingredients'][i]['protein'] as double) * amount;
-      double carb = (map['ingredients'][i]['carb'] as double) * amount;
-      double fat = (map['ingredients'][i]['fat'] as double) * amount;
-      if (map['ingredients'][i]['unit'] == 'per 100 gm' ||
-          map['ingredients'][i]['unit'] == 'per 100 ml') {
+    for (int i = 0; i < ingredients.length; i++) {
+      double amount = ingredients[i]['amount'];
+      int kcal = ((ingredients[i]['kcal'] as int) * amount).toInt();
+      double protein = (ingredients[i]['protein'] as double) * amount;
+      double carb = (ingredients[i]['carb'] as double) * amount;
+      double fat = (ingredients[i]['fat'] as double) * amount;
+      if (ingredients[i]['unit'] == 'per 100 gm' ||
+          ingredients[i]['unit'] == 'per 100 ml') {
         kcal = (kcal / 100).toInt();
         protein /= 100;
         carb /= 100;
@@ -154,11 +154,11 @@ class RecipeModel extends ConsumableModel {
       totFat += fat;
     }
 
-    return {
-      'kcal': totKcal,
-      'protein': totProtein,
-      'carb': totCarb,
-      'fat': totFat,
-    };
+      kcal = totKcal;
+      protein = totProtein;
+      carb = totCarb;
+      fat = totFat;
   }
+
+
 }

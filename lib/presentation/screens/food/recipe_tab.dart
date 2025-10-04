@@ -10,7 +10,6 @@ import '../../../logic/food/food_cubit.dart';
 import '../../widgets/placeholder/error.dart';
 
 class RecipeTab extends StatefulWidget {
-  final BuildContext? refreshContext;
   final Tile tile;
   final String? meal;
   final DateTime? date;
@@ -18,7 +17,6 @@ class RecipeTab extends StatefulWidget {
   const RecipeTab({
     super.key,
     required this.tile,
-    this.refreshContext,
     this.meal,
     this.date,
   });
@@ -40,8 +38,7 @@ class _RecipeTabState extends State<RecipeTab> {
                   index == 0 ? const SizedBox(height: 20) : const SizedBox(),
                   BlocProvider(
                     create: (context) => FoodCubit(),
-                    child: RecipeTile(
-                      refreshContext: widget.refreshContext,
+                    child: RecipeTileWrapper(
                       recipe: state.recipes[index],
                       tile: widget.tile,
                       date: widget.date,

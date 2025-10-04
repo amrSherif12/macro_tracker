@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:testt/data/models/consumable_model.dart';
 import 'package:testt/data/models/day_model.dart';
 import 'package:testt/presentation/widgets/toast.dart';
-import 'package:testt/random.dart';
+import 'package:testt/data/helpers/random.dart';
 
 import '../auth_helper.dart';
 
@@ -88,7 +88,6 @@ class DayRepository {
   }
 
   Future<void> addFood(
-    BuildContext context,
     DateTime date,
     String meal,
     ConsumableModel food,
@@ -104,11 +103,9 @@ class DayRepository {
         }, SetOptions(merge: true));
     Map macros = food.getMacros();
     await changeMacros(date: date, macros: macros);
-    toastBuilder('Added ${food.name} to $meal', context);
   }
 
   Future<void> removeFood(
-    BuildContext context,
     DateTime date,
     String meal,
     ConsumableModel consumable,
@@ -123,7 +120,6 @@ class DayRepository {
         });
     Map macros = consumable.getMacros();
     await changeMacros(date: date, macros: macros, isMinus: true);
-    toastBuilder('Removed ${consumable.name} from $meal', context);
   }
 
   Future<void> switchCheatDay(DateTime date, bool isFree) async {

@@ -31,7 +31,7 @@ class _IngredientsTileState extends State<IngredientsTile> {
             setState(() {});
           },
           elevation: 10,
-          color: !isChecked ? Colors.grey[800] : ConstColors.secOff,
+          color: !isChecked ? Colors.grey[850] : ConstColors.secOff,
           child: SizedBox(
             width: double.infinity,
             child: Padding(
@@ -75,7 +75,7 @@ class _IngredientsTileState extends State<IngredientsTile> {
                       heroTag: null,
                       onPressed: null,
                       backgroundColor: !isChecked
-                          ? Colors.grey[700]
+                          ? Color(0xFF4D4D4D)
                           : ConstColors.sec,
                       child: const Icon(Icons.done, color: Colors.white),
                     ),

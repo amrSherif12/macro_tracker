@@ -4,7 +4,7 @@ import 'package:testt/data/helpers/firestore/food_repository.dart';
 import 'package:testt/data/helpers/firestore/search_repository.dart';
 import 'package:testt/data/models/consumable_model.dart';
 import 'package:testt/data/models/filter_model.dart';
-import 'package:testt/random.dart';
+import 'package:testt/data/helpers/random.dart';
 
 part 'search_state.dart';
 

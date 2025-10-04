@@ -2,18 +2,51 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:testt/data/helpers/firestore/day_repository.dart';
 import 'package:testt/data/helpers/firestore/food_repository.dart';
 import 'package:testt/data/models/recipe_model.dart';
 import 'package:testt/logic/food/recipes_cubit.dart';
 import 'package:testt/presentation/screens/food/recipe_info.dart';
 
 import '../../constants/strings.dart';
+import '../../logic/home/home_cubit.dart';
 import 'delete.dart';
 import 'food_amount.dart';
 
+class RecipeTileWrapper extends StatelessWidget {
+  final RecipeModel recipe;
+  final Tile tile;
+  final DateTime? date;
+  final String? meal;
+  final List<String>? saved;
+
+  const RecipeTileWrapper({
+    super.key,
+    required this.recipe,
+    required this.tile,
+    this.date,
+    this.saved,
+    this.meal,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider.value(value: context.read<RecipesCubit>()),
+        BlocProvider.value(value: context.read<HomeCubit>()),
+      ],
+      child: RecipeTile(
+        recipe: recipe,
+        tile: tile,
+        date: date,
+        saved: saved,
+        meal: meal,
+      ),
+    );
+  }
+}
+
 class RecipeTile extends StatefulWidget {
-  final BuildContext? refreshContext;
   final RecipeModel recipe;
   final Tile tile;
   final DateTime? date;
@@ -24,7 +57,6 @@ class RecipeTile extends StatefulWidget {
   const RecipeTile({
     Key? key,
     required this.recipe,
-    this.refreshContext,
     required this.tile,
     this.date,
     this.refresh,
@@ -49,6 +81,14 @@ class _RecipeTileState extends State<RecipeTile> {
     }
   }
 
+  IconData getSecIcon(Tile tile) {
+    if (widget.tile == Tile.removeDairy) {
+      return Icons.edit;
+    } else {
+      return Icons.star_rate_rounded;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -62,12 +102,11 @@ class _RecipeTileState extends State<RecipeTile> {
               Routes.recipeInfoRoute,
               arguments: RecipeInfo(
                 recipe: widget.recipe,
-                refreshContext: widget.refreshContext,
               ),
             );
           },
           elevation: 10,
-          color: Colors.grey[800],
+          color: Colors.grey[850],
           child: SizedBox(
             width: double.infinity,
             child: Padding(
@@ -88,14 +127,20 @@ class _RecipeTileState extends State<RecipeTile> {
                           overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(height: 5),
-                        Text(
-                          "${widget.recipe.kcal.toString()} KCAL",
-                          style: TextStyle(
-                            fontFamily: "F",
-                            fontSize: 13,
-                            color: Colors.grey[300]!,
-                          ),
-                          overflow: TextOverflow.ellipsis,
+                        Row(
+                          children: [
+                            Text(
+                              widget.tile != Tile.removeDairy
+                                  ? "${widget.recipe.kcal.toString()} KCAL"
+                                  : "${widget.recipe.servings.toString()} ${widget.recipe.servings! > 1 ? "servings" : "serving"}",
+                              style: TextStyle(
+                                fontFamily: "F",
+                                fontSize: 13,
+                                color: Colors.grey[300]!,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -114,13 +159,8 @@ class _RecipeTileState extends State<RecipeTile> {
                             builder: (context) => Delete(
                               name: widget.recipe.name,
                               delete: () async {
-                                await FoodRepository.instance.deleteFood(
-                                  context,
-                                  widget.recipe.id!,
-                                  isRecipe: true,
-                                );
                                 await BlocProvider.of<RecipesCubit>(
-                                  widget.refreshContext!,
+                                  context
                                 ).deleteRecipe(context, widget.recipe.id!);
                               },
                             ),
@@ -131,7 +171,7 @@ class _RecipeTileState extends State<RecipeTile> {
                             builder: (context) => Delete(
                               name: widget.recipe.name,
                               delete: () async {
-                                await DayRepository.instance.removeFood(
+                                BlocProvider.of<HomeCubit>(context).removeFood(
                                   context,
                                   widget.date!,
                                   widget.meal!,
@@ -158,14 +198,13 @@ class _RecipeTileState extends State<RecipeTile> {
                           setState(() {});
                         } else {
                           await showModalBottomSheet(
-                            backgroundColor: Colors.grey[900],
+                            backgroundColor: Colors.green[300],
                             context: context,
                             builder: (context) {
-                              return FoodAmount(
+                              return FoodAmountWrapper(
                                 consumable: widget.recipe,
                                 date: widget.date!,
                                 meal: widget.meal!,
-                                dairyContext: widget.refreshContext!,
                               );
                             },
                             isDismissible: true,
@@ -179,10 +218,14 @@ class _RecipeTileState extends State<RecipeTile> {
                           );
                         }
                       },
-                      backgroundColor: Colors.grey[700],
-                      child: Icon(getIcon(widget.tile), color: Colors.white),
+                      backgroundColor: Color(0xFF4D4D4D),
+                      child: Icon(
+                        getIcon(widget.tile),
+                        color: Colors.white,
+                      ),
                     ),
                   ),
+
                 ],
               ),
             ),

@@ -3,6 +3,8 @@ import 'package:testt/constants/colors.dart';
 import 'package:testt/data/helpers/auth_helper.dart';
 import 'package:testt/presentation/widgets/drawer_tile.dart';
 
+import '../../constants/strings.dart';
+
 class HomeDrawer extends StatefulWidget {
   const HomeDrawer({super.key});
 
@@ -49,7 +51,8 @@ class _HomeDrawerState extends State<HomeDrawer> {
               const Spacer(),
               InkWell(
                 onTap: () {
-                  AuthenticationHelper.instance.logout(context);
+                  AuthenticationHelper.instance.logout();
+                  Navigator.pushReplacementNamed(context, Routes.welcomeRoute);
                 },
                 child: const Row(
                   children: [

@@ -15,7 +15,6 @@ class Delete extends StatefulWidget {
 }
 
 class _DeleteState extends State<Delete> {
-  bool isLoading = false;
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -37,17 +36,13 @@ class _DeleteState extends State<Delete> {
           ),
           onPressed: () => Navigator.of(context).pop(false),
         ),
-        isLoading
-            ? SmallLoading()
-            : TextButton(
+            TextButton(
                 child: const Text(
                   'Delete',
                   style: TextStyle(color: Colors.red),
                 ),
                 onPressed: () async {
-                  isLoading = true;
-                  setState(() {});
-                  await widget.delete();
+                  widget.delete();
                   Navigator.of(context).pop();
                 },
               ),

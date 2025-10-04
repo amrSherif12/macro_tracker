@@ -29,6 +29,13 @@ class _LoginState extends State<Login> {
     super.initState();
   }
 
+  TextEditingController usernameCon = TextEditingController();
+  TextEditingController emailCon = TextEditingController();
+  TextEditingController passwordCon = TextEditingController();
+
+  Icon hideText = const Icon(Icons.visibility_off_outlined);
+  Icon showText = const Icon(Icons.visibility_outlined);
+  Icon icon = const Icon(Icons.visibility_off_outlined);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,7 +79,7 @@ class _LoginState extends State<Login> {
                     child: FilledTextFieldBuilder(
                       hint: "Enter your E-mail",
                       label: "E-mail",
-                      controller: BlocProvider.of<LoginCubit>(context).emailCon,
+                      controller: emailCon,
                       iconData: Icons.email,
                     ),
                   ),
@@ -81,13 +88,11 @@ class _LoginState extends State<Login> {
                     from: 30,
                     delay: const Duration(milliseconds: 200),
                     child: ObscureTextFieldBuilder(
-                      controller: BlocProvider.of<LoginCubit>(
-                        context,
-                      ).passwordCon,
+                      controller: passwordCon,
                       obscureText: BlocProvider.of<LoginCubit>(
                         context,
                       ).obscureText,
-                      icon: BlocProvider.of<LoginCubit>(context).icon,
+                      icon: icon,
                       label: "Password",
                       hint: "Enter your password",
                       iconData: Icons.password,
@@ -110,7 +115,7 @@ class _LoginState extends State<Login> {
                               onPressed: () {
                                 BlocProvider.of<LoginCubit>(
                                   context,
-                                ).login(context);
+                                ).login(context, passwordCon.text, emailCon.text);
                               },
                               minWidth: double.infinity,
                               height: 50,
@@ -161,7 +166,7 @@ class _LoginState extends State<Login> {
             FittedBox(
               child: TextButton(
                 onPressed: () =>
-                    BlocProvider.of<LoginCubit>(context).openSignUp(context),
+                    Navigator.pushNamed(context, Routes.signUpRoute),
                 child: const Text(
                   'Sign up',
                   style: TextStyle(

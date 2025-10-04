@@ -20,4 +20,5 @@ class ConstColors {
   static Color cheatDark = Colors.purple[900]!;
 
   static Color main = Colors.grey[900]!;
+  static Color mainDark = Colors.black.withOpacity(0.85);
 }
