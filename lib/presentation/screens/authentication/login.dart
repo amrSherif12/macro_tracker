@@ -113,9 +113,11 @@ class _LoginState extends State<Login> {
                           if (state is LoginInitial) {
                             return MaterialButton(
                               onPressed: () {
-                                BlocProvider.of<LoginCubit>(
+                                BlocProvider.of<LoginCubit>(context).login(
                                   context,
-                                ).login(context, passwordCon.text, emailCon.text);
+                                  passwordCon.text,
+                                  emailCon.text,
+                                );
                               },
                               minWidth: double.infinity,
                               height: 50,

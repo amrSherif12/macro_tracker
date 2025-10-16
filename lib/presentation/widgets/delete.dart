@@ -36,16 +36,13 @@ class _DeleteState extends State<Delete> {
           ),
           onPressed: () => Navigator.of(context).pop(false),
         ),
-            TextButton(
-                child: const Text(
-                  'Delete',
-                  style: TextStyle(color: Colors.red),
-                ),
-                onPressed: () async {
-                  widget.delete();
-                  Navigator.of(context).pop();
-                },
-              ),
+        TextButton(
+          child: const Text('Delete', style: TextStyle(color: Colors.red)),
+          onPressed: () async {
+            widget.delete();
+            Navigator.of(context).pop();
+          },
+        ),
       ],
     );
   }

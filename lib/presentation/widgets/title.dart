@@ -29,14 +29,16 @@ class InfoTitle extends StatelessWidget {
                     fontSize: 23,
                   ),
                 ),
-                subTitle.isNotEmpty ? Text(
-                  subTitle,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'F',
-                    fontSize: 15,
-                  ),
-                ) : SizedBox(),
+                subTitle.isNotEmpty
+                    ? Text(
+                        subTitle,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: 'F',
+                          fontSize: 15,
+                        ),
+                      )
+                    : SizedBox(),
               ],
             ),
           ),

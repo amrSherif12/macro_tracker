@@ -11,4 +11,4 @@ class NavigationSearch extends NavigationState {}
 
 class NavigationFood extends NavigationState {}
 
-class NavigationExercise extends NavigationState {}
+class NavigationProfile extends NavigationState {}

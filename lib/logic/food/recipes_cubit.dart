@@ -2,10 +2,10 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:testt/data/helpers/firestore/food_repository.dart';
 
+import '../../data/helpers/random.dart';
 import '../../data/models/food_model.dart';
 import '../../data/models/recipe_model.dart';
 import '../../presentation/widgets/toast.dart';
-import '../../data/helpers/random.dart';
 
 part 'recipes_state.dart';
 
@@ -71,15 +71,13 @@ class RecipesCubit extends Cubit<RecipesState> {
     List<TextEditingController> amounts,
   ) async {
     try {
-      await FoodRepository.instance.updateRecipeAmounts(
-        recipe,
-        amounts,
-      );
+      await FoodRepository.instance.updateRecipeAmounts(recipe, amounts);
       toastBuilder('Recipes updated', context);
       final stateLoaded = state as RecipesLoaded;
       int index = stateLoaded.recipes.indexWhere(
         (recipe_) => recipe_.id == recipe.id,
       );
+      recipe.recalculateMacros();
       stateLoaded.recipes[index] = recipe;
       emit(RecipesLoaded(recipes: stateLoaded.recipes));
     } catch (e) {
@@ -91,13 +89,21 @@ class RecipesCubit extends Cubit<RecipesState> {
     }
   }
 
-  Future<void> deleteRecipe(BuildContext context, String id) async {
+  Future<void> deleteRecipe(
+    BuildContext context,
+    String id, {
+    bool unSave = true,
+  }) async {
     try {
-      await FoodRepository.instance.deleteFood(id, isRecipe: true);
-      toastBuilder('Recipe deleted', context);
+      FoodRepository.instance.deleteFood(id, isRecipe: true);
+      if (!unSave) toastBuilder('Recipe deleted', context);
       final stateLoaded = state as RecipesLoaded;
       stateLoaded.recipes.removeWhere((recipe) => recipe.id == id);
-      emit(RecipesLoaded(recipes: stateLoaded.recipes));
+      if (stateLoaded.recipes.isEmpty) {
+        emit(RecipesNoData());
+      } else {
+        emit(RecipesLoaded(recipes: stateLoaded.recipes));
+      }
     } catch (e) {
       if (!(await connectedToInternet())) {
         emit(RecipesNoInternet());
@@ -126,6 +132,26 @@ class RecipesCubit extends Cubit<RecipesState> {
       } else {
         emit(RecipesLoaded(recipes: recipes));
       }
+    } catch (e) {
+      if (!(await connectedToInternet())) {
+        emit(RecipesNoInternet());
+      } else {
+        emit(RecipesError(errorMessage: e.toString()));
+      }
+    }
+  }
+
+  Future<void> saveRecipe(RecipeModel recipe) async {
+    try {
+      await FoodRepository.instance.saveFood(recipe.id!, isRecipe: true);
+
+      if (state is RecipesNoData) {
+        emit(RecipesLoaded(recipes: [recipe]));
+        return;
+      }
+      final stateLoaded = state as RecipesLoaded;
+      stateLoaded.recipes.add(recipe);
+      emit(RecipesLoaded(recipes: stateLoaded.recipes));
     } catch (e) {
       if (!(await connectedToInternet())) {
         emit(RecipesNoInternet());

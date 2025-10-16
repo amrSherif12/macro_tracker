@@ -39,7 +39,8 @@ class _IngredientsAmountsState extends State<IngredientsAmounts> {
     for (int i = 0; i < size; i++) {
       controllers.add(TextEditingController());
       if (!widget.create) {
-        controllers[i].text = widget.recipe!.ingredients[i]['amount'].toString();
+        controllers[i].text = widget.recipe!.ingredients[i]['amount']
+            .toString();
       }
     }
     if (!widget.create || widget.recipe != null) {
@@ -234,7 +235,10 @@ class _IngredientsAmountsState extends State<IngredientsAmounts> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: ConstColors.sec,
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 16),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 30,
+                      vertical: 16,
+                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25),
                     ),
@@ -245,9 +249,7 @@ class _IngredientsAmountsState extends State<IngredientsAmounts> {
                     if (nameCont.text.isNotEmpty &&
                         controllersAreNotEmpty(controllers)) {
                       if (widget.create) {
-                        await BlocProvider.of<RecipesCubit>(
-                          widget.refreshContext!,
-                        ).addRecipe(
+                        await BlocProvider.of<RecipesCubit>(context).addRecipe(
                           context,
                           nameCont.text,
                           descriptionCont.text,
@@ -266,7 +268,7 @@ class _IngredientsAmountsState extends State<IngredientsAmounts> {
                         widget.recipe!.description = descriptionCont.text;
                         widget.recipe!.lowerName = nameCont.text.toLowerCase();
                         await BlocProvider.of<RecipesCubit>(
-                          widget.refreshContext!,
+                          context,
                         ).updateRecipeAmounts(
                           context,
                           widget.recipe!,
@@ -280,7 +282,9 @@ class _IngredientsAmountsState extends State<IngredientsAmounts> {
                   },
                   icon: const Icon(Icons.check),
                   label: Text(
-                    widget.create && widget.recipe == null ? "Create Recipe" : "Update Recipe",
+                    widget.create && widget.recipe == null
+                        ? "Create Recipe"
+                        : "Update Recipe",
                     style: const TextStyle(
                       fontFamily: 'F',
                       fontSize: 16,
@@ -288,7 +292,6 @@ class _IngredientsAmountsState extends State<IngredientsAmounts> {
                     ),
                   ),
                 ),
-
               ),
             ),
             const SizedBox(height: 40),

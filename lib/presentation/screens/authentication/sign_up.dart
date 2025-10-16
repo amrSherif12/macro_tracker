@@ -132,9 +132,16 @@ class _SignUpState extends State<SignUp> {
                             builder: (context, state) {
                               if (state is SignUpInitial) {
                                 return MaterialButton(
-                                  onPressed: () => BlocProvider.of<SignUpCubit>(
-                                    context,
-                                  ).signUp(context, passwordCon.text, emailCon.text, passwordConfirmCon.text, userNameCon.text),
+                                  onPressed: () =>
+                                      BlocProvider.of<SignUpCubit>(
+                                        context,
+                                      ).signUp(
+                                        context,
+                                        passwordCon.text,
+                                        emailCon.text,
+                                        passwordConfirmCon.text,
+                                        userNameCon.text,
+                                      ),
                                   minWidth: double.infinity,
                                   height: 50,
                                   color: Colors.white,

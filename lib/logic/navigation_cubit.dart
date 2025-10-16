@@ -22,7 +22,7 @@ class NavigationCubit extends Cubit<NavigationState> {
     emit(NavigationFood());
   }
 
-  void openExercise() {
-    emit(NavigationExercise());
+  void openProfile() {
+    emit(NavigationProfile());
   }
 }

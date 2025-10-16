@@ -13,40 +13,6 @@ import '../../../constants/strings.dart';
 import '../../logic/food/food_cubit.dart';
 import '../../logic/food/recipes_cubit.dart';
 
-class MealWrapper extends StatelessWidget {
-  final List<ConsumableModel> consumables;
-  final IconData icon;
-  final String meal;
-  final bool isFree;
-  final DateTime date;
-
-  const MealWrapper({
-    super.key,
-    required this.icon,
-    required this.meal,
-    required this.consumables,
-    required this.isFree,
-    required this.date,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider.value(value: context.read<FoodCubit>()),
-        BlocProvider.value(value: context.read<RecipesCubit>()),
-      ],
-      child: Meal(
-        icon: icon,
-        meal: meal,
-        consumables: consumables,
-        isFree: isFree,
-        date: date,
-      ),
-    );
-  }
-}
-
 class Meal extends StatefulWidget {
   final List<ConsumableModel> consumables;
   final IconData icon;
@@ -96,11 +62,7 @@ class _MealState extends State<Meal> {
             await Navigator.pushNamed(
               context,
               Routes.mealInfoRoute,
-              arguments: MealInfo(
-                meal: widget.meal,
-                food: widget.consumables,
-                date: widget.date,
-              ),
+              arguments: MealInfo(meal: widget.meal, date: widget.date),
             );
           } else {
             await Navigator.pushNamed(

@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:testt/data/helpers/firestore/food_repository.dart';
 import 'package:testt/data/models/recipe_model.dart';
 import 'package:testt/logic/food/recipes_cubit.dart';
 import 'package:testt/presentation/screens/food/recipe_info.dart';
@@ -11,40 +10,6 @@ import '../../constants/strings.dart';
 import '../../logic/home/home_cubit.dart';
 import 'delete.dart';
 import 'food_amount.dart';
-
-class RecipeTileWrapper extends StatelessWidget {
-  final RecipeModel recipe;
-  final Tile tile;
-  final DateTime? date;
-  final String? meal;
-  final List<String>? saved;
-
-  const RecipeTileWrapper({
-    super.key,
-    required this.recipe,
-    required this.tile,
-    this.date,
-    this.saved,
-    this.meal,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider.value(value: context.read<RecipesCubit>()),
-        BlocProvider.value(value: context.read<HomeCubit>()),
-      ],
-      child: RecipeTile(
-        recipe: recipe,
-        tile: tile,
-        date: date,
-        saved: saved,
-        meal: meal,
-      ),
-    );
-  }
-}
 
 class RecipeTile extends StatefulWidget {
   final RecipeModel recipe;
@@ -100,9 +65,7 @@ class _RecipeTileState extends State<RecipeTile> {
             await Navigator.pushNamed(
               context,
               Routes.recipeInfoRoute,
-              arguments: RecipeInfo(
-                recipe: widget.recipe,
-              ),
+              arguments: RecipeInfo(recipe: widget.recipe),
             );
           },
           elevation: 10,
@@ -160,7 +123,7 @@ class _RecipeTileState extends State<RecipeTile> {
                               name: widget.recipe.name,
                               delete: () async {
                                 await BlocProvider.of<RecipesCubit>(
-                                  context
+                                  context,
                                 ).deleteRecipe(context, widget.recipe.id!);
                               },
                             ),
@@ -182,17 +145,12 @@ class _RecipeTileState extends State<RecipeTile> {
                           );
                         } else if (widget.tile == Tile.search) {
                           if (widget.saved!.contains(widget.recipe.id!)) {
-                            FoodRepository.instance.saveFood(
-                              widget.recipe.id!,
-                              isRecipe: true,
-                              unSave: true,
-                            );
+                            BlocProvider.of<RecipesCubit>(context).deleteRecipe(context, widget.recipe.id!, unSave: true);
                             widget.saved!.remove(widget.recipe.id!);
                           } else {
-                            FoodRepository.instance.saveFood(
-                              widget.recipe.id!,
-                              isRecipe: true,
-                            );
+                            BlocProvider.of<RecipesCubit>(
+                              context,
+                            ).saveRecipe(widget.recipe);
                             widget.saved!.add(widget.recipe.id!);
                           }
                           setState(() {});
@@ -201,7 +159,7 @@ class _RecipeTileState extends State<RecipeTile> {
                             backgroundColor: Colors.green[300],
                             context: context,
                             builder: (context) {
-                              return FoodAmountWrapper(
+                              return FoodAmount(
                                 consumable: widget.recipe,
                                 date: widget.date!,
                                 meal: widget.meal!,
@@ -219,13 +177,9 @@ class _RecipeTileState extends State<RecipeTile> {
                         }
                       },
                       backgroundColor: Color(0xFF4D4D4D),
-                      child: Icon(
-                        getIcon(widget.tile),
-                        color: Colors.white,
-                      ),
+                      child: Icon(getIcon(widget.tile), color: Colors.white),
                     ),
                   ),
-
                 ],
               ),
             ),

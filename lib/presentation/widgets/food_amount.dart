@@ -8,27 +8,6 @@ import 'package:testt/presentation/widgets/textfield.dart';
 import '../../data/helpers/random.dart';
 import '../../data/models/food_model.dart';
 
-class FoodAmountWrapper extends StatelessWidget {
-  final ConsumableModel consumable;
-  final DateTime date;
-  final String meal;
-
-  const FoodAmountWrapper({
-    super.key,
-    required this.consumable,
-    required this.meal,
-    required this.date,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider.value(
-      value: context.read<HomeCubit>(),
-      child: FoodAmount(consumable: consumable, meal: meal, date: date),
-    );
-  }
-}
-
 class FoodAmount extends StatefulWidget {
   final ConsumableModel consumable;
   final DateTime date;

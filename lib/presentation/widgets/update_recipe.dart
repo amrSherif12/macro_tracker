@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:testt/constants/colors.dart';
 import 'package:testt/constants/strings.dart';
-import 'package:testt/data/helpers/firestore/food_repository.dart';
 import 'package:testt/data/models/recipe_model.dart';
 import 'package:testt/logic/food/food_cubit.dart';
 import 'package:testt/presentation/screens/food/create_recipe.dart';
@@ -31,9 +30,7 @@ class _UpdateRecipeState extends State<UpdateRecipe> {
         child: GestureDetector(
           onTap: onTap,
           child: Container(
-            width: MediaQuery
-                .sizeOf(context)
-                .width - 50,
+            width: MediaQuery.sizeOf(context).width - 50,
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [ConstColors.sec.withOpacity(0.9), ConstColors.secDark],
@@ -73,86 +70,78 @@ class _UpdateRecipeState extends State<UpdateRecipe> {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(
-        bottom: MediaQuery
-            .of(context)
-            .viewInsets
-            .bottom,
+        bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
       child: !isLoading
           ? Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.black.withOpacity(0.85), Colors.grey[900]!],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            buildActionButton("CHANGE INGREDIENTS", () async {
-              setState(() => isLoading = true);
-              List<FoodModel> ingredients = await BlocProvider
-                  .of<FoodCubit>(context)
-                  .getFood()
-                  .then((val) => (BlocProvider.of<FoodCubit>(context)
-                  .state as FoodLoaded).food);
-              Navigator.pushNamed(
-              context,
-              Routes.createRecipeRoute,
-              arguments: CreateRecipe(
-              ingredients: ingredients,
-              refreshContext: widget.refreshContext!,
-              recipe: widget.recipe,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.black.withOpacity(0.85), Colors.grey[900]!],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
               ),
-              );
-              setState(()
-              =>
-              isLoading
-              =
-              false
-              );
-            }),
-            buildActionButton("CHANGE AMOUNTS", () async {
-              await showModalBottomSheet(
-                backgroundColor: Colors.green[300],
-                context: context,
-                isScrollControlled: true,
-                builder: (context) {
-                  return IngredientsAmounts(
-                    refreshContext: widget.refreshContext,
-                    recipe: widget.recipe,
-                    create: false,
-                  );
-                },
-                isDismissible: true,
-                constraints: BoxConstraints(
-                  maxHeight: MediaQuery
-                      .of(context)
-                      .size
-                      .height * 0.8,
-                ),
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(30),
-                    topLeft: Radius.circular(30),
-                  ),
-                ),
-              );
-            }),
-          ],
-        ),
-      )
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  buildActionButton("CHANGE INGREDIENTS", () async {
+                    setState(() => isLoading = true);
+                    List<FoodModel> ingredients =
+                        await BlocProvider.of<FoodCubit>(
+                          context,
+                        ).getFood().then(
+                          (val) =>
+                              (BlocProvider.of<FoodCubit>(context).state
+                                      as FoodLoaded)
+                                  .food,
+                        );
+                    Navigator.pushNamed(
+                      context,
+                      Routes.createRecipeRoute,
+                      arguments: CreateRecipe(
+                        ingredients: ingredients,
+                        recipe: widget.recipe,
+                      ),
+                    );
+                    setState(() => isLoading = false);
+                  }),
+                  buildActionButton("CHANGE AMOUNTS", () async {
+                    await showModalBottomSheet(
+                      backgroundColor: Colors.green[300],
+                      context: context,
+                      isScrollControlled: true,
+                      builder: (context) {
+                        return IngredientsAmounts(
+                          refreshContext: widget.refreshContext,
+                          recipe: widget.recipe,
+                          create: false,
+                        );
+                      },
+                      isDismissible: true,
+                      constraints: BoxConstraints(
+                        maxHeight: MediaQuery.of(context).size.height * 0.8,
+                      ),
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(30),
+                          topLeft: Radius.circular(30),
+                        ),
+                      ),
+                    );
+                  }),
+                ],
+              ),
+            )
           : Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.black.withOpacity(0.85), Colors.grey[900]!],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        child: LoadingWidget(),
-      ),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.black.withOpacity(0.85), Colors.grey[900]!],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+              ),
+              child: LoadingWidget(),
+            ),
     );
   }
 }

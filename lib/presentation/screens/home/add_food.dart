@@ -9,11 +9,7 @@ import '../food/food_tab.dart';
 class AddFood extends StatefulWidget {
   final DateTime date;
   final String meal;
-  const AddFood({
-    super.key,
-    required this.date,
-    required this.meal,
-  });
+  const AddFood({super.key, required this.date, required this.meal});
 
   @override
   State<AddFood> createState() => _AddFoodState();
@@ -22,7 +18,6 @@ class AddFood extends StatefulWidget {
 class _AddFoodState extends State<AddFood> {
   @override
   void initState() {
-    BlocProvider.of<FoodCubit>(context).getFood();
     super.initState();
   }
 
@@ -42,11 +37,7 @@ class _AddFoodState extends State<AddFood> {
         ),
         actions: [IconButton(onPressed: () {}, icon: Icon(Icons.search))],
       ),
-      body: Food(
-        tile: Tile.addDairy,
-        date: widget.date,
-        meal: widget.meal,
-      ),
+      body: Food(tile: Tile.addDairy, date: widget.date, meal: widget.meal),
     );
   }
 }

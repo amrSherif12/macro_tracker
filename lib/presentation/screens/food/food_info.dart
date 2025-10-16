@@ -9,8 +9,7 @@ import 'package:testt/data/helpers/random.dart';
 class FoodInfo extends StatefulWidget {
   final FoodModel food;
 
-  const FoodInfo({Key? key, required this.food})
-    : super(key: key);
+  const FoodInfo({Key? key, required this.food}) : super(key: key);
 
   @override
   State<FoodInfo> createState() => _FoodInfoState();
@@ -61,9 +60,7 @@ class _FoodInfoState extends State<FoodInfo> {
                 Navigator.pushNamed(
                   context,
                   Routes.createFoodRoute,
-                  arguments: CreateFood(
-                    food: widget.food,
-                  ),
+                  arguments: CreateFood(food: widget.food),
                 );
               },
               icon: Icon(Icons.edit, color: Colors.white),
@@ -127,7 +124,6 @@ class _FoodInfoState extends State<FoodInfo> {
 
           const SizedBox(height: 30),
 
-          // 🍗 Macros
           Container(
             padding: const EdgeInsets.all(20),
             decoration: infoBoxDecoration(),
@@ -189,7 +185,6 @@ class _FoodInfoState extends State<FoodInfo> {
 
           const SizedBox(height: 30),
 
-          // 🍩 Doughnut Chart
           Container(
             padding: const EdgeInsets.all(20),
             decoration: infoBoxDecoration(),

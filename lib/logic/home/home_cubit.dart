@@ -21,7 +21,7 @@ class HomeCubit extends Cubit<HomeState> {
     ConsumableModel food,
   ) async {
     await DayRepository.instance.addFood(date, meal, food);
-    toastBuilder('Added ${food.name} to ${meal}', context);
+    toastBuilder('Added ${food.name} to $meal', context);
     await getDay(refresh: true);
   }
 
@@ -31,16 +31,27 @@ class HomeCubit extends Cubit<HomeState> {
     String meal,
     ConsumableModel food,
   ) async {
+    if (meal.toLowerCase() == 'breakfast') {
+      currentDay.breakfast.removeWhere(
+        (consumable) => consumable.id == food.id,
+      );
+    } else if (meal.toLowerCase() == 'lunch') {
+      currentDay.lunch.removeWhere((consumable) => consumable.id == food.id);
+    } else if (meal.toLowerCase() == 'dinner') {
+      currentDay.dinner.removeWhere((consumable) => consumable.id == food.id);
+    } else if (meal.toLowerCase() == 'snacks') {
+      currentDay.snacks.removeWhere((consumable) => consumable.id == food.id);
+    }
+    emit(HomeLoaded(day: currentDay, animate: true));
     await DayRepository.instance.removeFood(date, meal, food);
     toastBuilder('Removed ${food.name} from $meal', context);
-
     await getDay(refresh: true);
   }
 
   Future<void> incrementDay({required DayModel day}) async {
     try {
       date = day.date.add(const Duration(days: 1));
-      getDay(day: day);
+      getDay();
     } catch (e) {
       if (!(await connectedToInternet())) {
         emit(HomeNoInternet());
@@ -53,7 +64,7 @@ class HomeCubit extends Cubit<HomeState> {
   Future<void> decrementDay({required DayModel day}) async {
     try {
       date = day.date.subtract(const Duration(days: 1));
-      getDay(day: day);
+      getDay();
     } catch (e) {
       if (!(await connectedToInternet())) {
         emit(HomeNoInternet());
@@ -69,7 +80,7 @@ class HomeCubit extends Cubit<HomeState> {
   }) async {
     try {
       date = newDate;
-      getDay(day: day);
+      getDay();
     } catch (e) {
       if (!(await connectedToInternet())) {
         emit(HomeNoInternet());
@@ -93,11 +104,11 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
-  Future<void> getDay({DayModel? day, bool refresh = false}) async {
-    if (day == null) {
+  Future<void> getDay({bool refresh = true}) async {
+    if (refresh) {
+      emit(HomeLoaded(day: currentDay, animate: false));
+    } else {
       emit(HomeLoading());
-    } else if (!refresh) {
-      emit(HomeLoaded(day: day, animate: false));
     }
     try {
       DayModel day = await DayRepository.instance.getDay(date);

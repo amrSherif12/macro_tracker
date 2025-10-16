@@ -154,11 +154,9 @@ class RecipeModel extends ConsumableModel {
       totFat += fat;
     }
 
-      kcal = totKcal;
-      protein = totProtein;
-      carb = totCarb;
-      fat = totFat;
+    kcal = totKcal;
+    protein = totProtein;
+    carb = totCarb;
+    fat = totFat;
   }
-
-
 }

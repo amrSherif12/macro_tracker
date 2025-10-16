@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:testt/data/helpers/firestore/day_repository.dart';
 import 'dart:io' show Platform;
 
 import '../../constants/colors.dart';
@@ -16,6 +17,7 @@ class _LoadingState extends State<Loading> {
   void navigation() async {
     final prefs = await SharedPreferences.getInstance();
     final String? loggedIn = prefs.getString("loggedIn");
+    await DayRepository.instance.addUserDocument();
 
     if (!Platform.isAndroid) {
       Navigator.pushReplacementNamed(context, Routes.unsupportedPlatformRoute);

@@ -14,12 +14,7 @@ class RecipeTab extends StatefulWidget {
   final String? meal;
   final DateTime? date;
 
-  const RecipeTab({
-    super.key,
-    required this.tile,
-    this.meal,
-    this.date,
-  });
+  const RecipeTab({super.key, required this.tile, this.meal, this.date});
 
   @override
   State<RecipeTab> createState() => _RecipeTabState();
@@ -38,7 +33,7 @@ class _RecipeTabState extends State<RecipeTab> {
                   index == 0 ? const SizedBox(height: 20) : const SizedBox(),
                   BlocProvider(
                     create: (context) => FoodCubit(),
-                    child: RecipeTileWrapper(
+                    child: RecipeTile(
                       recipe: state.recipes[index],
                       tile: widget.tile,
                       date: widget.date,

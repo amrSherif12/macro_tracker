@@ -7,6 +7,7 @@ import 'package:testt/logic/food/recipes_cubit.dart';
 import 'package:testt/logic/search/search_cubit.dart';
 import 'package:testt/presentation/screens/exercise/exercise.dart';
 import 'package:testt/presentation/screens/food/food.dart';
+import 'package:testt/presentation/screens/profile/profile.dart';
 import 'package:testt/presentation/screens/search/search.dart';
 import 'package:testt/presentation/screens/undefined_screen.dart';
 
@@ -25,6 +26,9 @@ class Navigation extends StatefulWidget {
 class _NavigationState extends State<Navigation> {
   @override
   void initState() {
+    BlocProvider.of<HomeCubit>(context).getDay(refresh: false);
+    BlocProvider.of<FoodCubit>(context).getFood();
+    BlocProvider.of<RecipesCubit>(context).getRecipes();
     super.initState();
   }
 
@@ -34,36 +38,16 @@ class _NavigationState extends State<Navigation> {
       body: BlocBuilder<NavigationCubit, NavigationState>(
         builder: (context, state) {
           if (state is NavigationHome) {
-            return MultiBlocProvider(
-              providers: [
-                BlocProvider.value(value: context.read<HomeCubit>()),
-                BlocProvider.value(value: context.read<FoodCubit>()),
-                BlocProvider.value(value: context.read<RecipesCubit>()),
-              ],
-              child: const Home(),
-            );
+            return const Home();
           } else if (state is NavigationSearch) {
-            return MultiBlocProvider(
-              providers: [
-                BlocProvider.value(value: context.read<SearchCubit>()),
-                BlocProvider.value(value: context.read<FoodCubit>()),
-                BlocProvider.value(value: context.read<RecipesCubit>()),
-              ],
-              child: const Search(),
-            );
-          } else if (state is NavigationExercise) {
             return BlocProvider(
-              create: (BuildContext context) => SearchCubit(),
-              child: const Exercise(),
+              create: (context) => SearchCubit(),
+              child: Search(),
             );
           } else if (state is NavigationFood) {
-            return MultiBlocProvider(
-              providers: [
-                BlocProvider(create: (context) => FoodCubit()),
-                BlocProvider(create: (context) => RecipesCubit()),
-              ],
-              child: const Food(tile: Tile.removeFood),
-            );
+            return const Food(tile: Tile.removeFood);
+          } else if (state is NavigationProfile) {
+            return const Profile();
           } else {
             return const Undefined();
           }
@@ -80,9 +64,9 @@ class _NavigationState extends State<Navigation> {
               } else if (index == 1) {
                 BlocProvider.of<NavigationCubit>(context).openSearch();
               } else if (index == 2) {
-                BlocProvider.of<NavigationCubit>(context).openExercise();
-              } else if (index == 3) {
                 BlocProvider.of<NavigationCubit>(context).openFood();
+              } else if (index == 3) {
+                BlocProvider.of<NavigationCubit>(context).openProfile();
               }
             },
             backgroundColor: ConstColors.main,
@@ -124,8 +108,8 @@ class _NavigationState extends State<Navigation> {
                   color: Colors.white,
                   fontSize: 14,
                 ),
-                icon: Icons.fitness_center,
-                text: 'Exercises',
+                icon: Icons.restaurant,
+                text: 'Food',
               ),
               GButton(
                 iconActiveColor: Colors.white,
@@ -136,8 +120,8 @@ class _NavigationState extends State<Navigation> {
                   color: Colors.white,
                   fontSize: 14,
                 ),
-                icon: Icons.restaurant,
-                text: 'Food',
+                icon: Icons.account_circle,
+                text: 'Profile',
               ),
             ],
           ),

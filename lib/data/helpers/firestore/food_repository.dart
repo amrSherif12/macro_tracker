@@ -71,16 +71,14 @@ class FoodRepository {
       description: description,
       ingredients: ingredients,
     );
-    if(id == null) {
+    if (id == null) {
       DocumentReference reference = await ins
           .collection("recipes")
           .add(recipe.toMap());
       await saveFood(reference.id, isRecipe: true);
       return RecipeModel.fromDocument(await reference.get());
     } else {
-      await ins
-          .collection("recipes")
-          .doc(id).update(recipe.toMap());
+      await ins.collection("recipes").doc(id).update(recipe.toMap());
       recipe.id = id;
       return recipe;
     }
@@ -103,10 +101,7 @@ class FoodRepository {
     return recipe;
   }
 
-  Future<void> deleteFood(
-    String id, {
-    bool isRecipe = false,
-  }) async {
+  Future<void> deleteFood(String id, {bool isRecipe = false}) async {
     await ins
         .collection('users')
         .doc(AuthenticationHelper.instance.auth.currentUser!.uid)
@@ -117,25 +112,25 @@ class FoodRepository {
 
   Future<List<RecipeModel>> getRecipes(List sub) async {
     List<RecipeModel> recipes = [];
-      QuerySnapshot foodSnapshot = await ins
-          .collection("recipes")
-          .where(FieldPath.documentId, whereIn: sub)
-          .get();
-      for (int i = 0; i < foodSnapshot.docs.length; i++) {
-        recipes.add(RecipeModel.fromDocument(foodSnapshot.docs[i]));
-      }
+    QuerySnapshot foodSnapshot = await ins
+        .collection("recipes")
+        .where(FieldPath.documentId, whereIn: sub)
+        .get();
+    for (int i = 0; i < foodSnapshot.docs.length; i++) {
+      recipes.add(RecipeModel.fromDocument(foodSnapshot.docs[i]));
+    }
     return recipes;
   }
 
   Future<List<FoodModel>> getFoods(List sub) async {
     List<FoodModel> foods = [];
-      QuerySnapshot foodSnapshot = await ins
-          .collection("food")
-          .where(FieldPath.documentId, whereIn: sub)
-          .get();
-      for (int i = 0; i < foodSnapshot.docs.length; i++) {
-        foods.add(FoodModel.fromDocument(foodSnapshot.docs[i]));
-      }
+    QuerySnapshot foodSnapshot = await ins
+        .collection("food")
+        .where(FieldPath.documentId, whereIn: sub)
+        .get();
+    for (int i = 0; i < foodSnapshot.docs.length; i++) {
+      foods.add(FoodModel.fromDocument(foodSnapshot.docs[i]));
+    }
 
     return foods;
   }

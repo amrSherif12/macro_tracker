@@ -87,11 +87,7 @@ class DayRepository {
         });
   }
 
-  Future<void> addFood(
-    DateTime date,
-    String meal,
-    ConsumableModel food,
-  ) async {
+  Future<void> addFood(DateTime date, String meal, ConsumableModel food) async {
     await checkAndAddDay(date);
     ins
         .collection("users")
@@ -169,6 +165,19 @@ class DayRepository {
             .get(),
       );
       return day;
+    }
+  }
+
+  Future<void> addUserDocument() async {
+    DocumentSnapshot documentSnapshot = await ins
+        .collection("users")
+        .doc(AuthenticationHelper.instance.auth.currentUser!.uid)
+        .get();
+    if (!documentSnapshot.exists) {
+      await ins
+          .collection("users")
+          .doc(AuthenticationHelper.instance.auth.currentUser!.uid)
+          .set({});
     }
   }
 }

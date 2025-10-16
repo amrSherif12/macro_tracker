@@ -32,7 +32,7 @@ class _CreateFoodState extends State<CreateFood> {
 
   @override
   void initState() {
-    if (widget.food == null){
+    if (widget.food == null) {
       unit = Lists.units.first;
     } else {
       unit = widget.food!.unit;
@@ -100,19 +100,14 @@ class _CreateFoodState extends State<CreateFood> {
                         isLoading = true;
                         setState(() {});
                         if (widget.food == null) {
-                          await BlocProvider.of<FoodCubit>(context
-                          ).addFood(
+                          await BlocProvider.of<FoodCubit>(
                             context,
-                            food
-                          );
+                          ).addFood(context, food);
                         } else {
                           food.id = widget.food!.id;
                           await BlocProvider.of<FoodCubit>(
-                            context
-                          ).updateFood(
-                              context,
-                              food
-                          );
+                            context,
+                          ).updateFood(context, food);
                           Navigator.pop(context);
                         }
                         Navigator.pop(context);

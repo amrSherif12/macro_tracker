@@ -122,43 +122,44 @@ class _ExercisesState extends State<Exercises> {
                     children: [
                       widget.exercises.isNotEmpty
                           ? IconButton(
-                        splashRadius: 1,
-                        icon: AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 400),
-                          transitionBuilder: (child, anim) =>
-                              RotationTransition(
-                                turns: child.key == const ValueKey('icon1')
-                                    ? Tween<double>(
-                                  begin: 1,
-                                  end: 1,
-                                ).animate(anim)
-                                    : Tween<double>(
-                                  begin: 0.75,
-                                  end: 1,
-                                ).animate(anim),
-                                child: FadeTransition(
-                                  opacity: anim,
-                                  child: child,
-                                ),
+                              splashRadius: 1,
+                              icon: AnimatedSwitcher(
+                                duration: const Duration(milliseconds: 400),
+                                transitionBuilder: (child, anim) =>
+                                    RotationTransition(
+                                      turns:
+                                          child.key == const ValueKey('icon1')
+                                          ? Tween<double>(
+                                              begin: 1,
+                                              end: 1,
+                                            ).animate(anim)
+                                          : Tween<double>(
+                                              begin: 0.75,
+                                              end: 1,
+                                            ).animate(anim),
+                                      child: FadeTransition(
+                                        opacity: anim,
+                                        child: child,
+                                      ),
+                                    ),
+                                child: open
+                                    ? const Icon(
+                                        Icons.keyboard_arrow_up,
+                                        color: Colors.white,
+                                        size: 30,
+                                        key: ValueKey('icon1'),
+                                      )
+                                    : const Icon(
+                                        Icons.keyboard_arrow_down,
+                                        color: Colors.white,
+                                        size: 30,
+                                        key: ValueKey('icon2'),
+                                      ),
                               ),
-                          child: open
-                              ? const Icon(
-                            Icons.keyboard_arrow_up,
-                            color: Colors.white,
-                            size: 30,
-                            key: ValueKey('icon1'),
-                          )
-                              : const Icon(
-                            Icons.keyboard_arrow_down,
-                            color: Colors.white,
-                            size: 30,
-                            key: ValueKey('icon2'),
-                          ),
-                        ),
-                        onPressed: () {
-                          setState(() => open = !open);
-                        },
-                      )
+                              onPressed: () {
+                                setState(() => open = !open);
+                              },
+                            )
                           : const SizedBox(),
                       const Spacer(),
                       const Text(

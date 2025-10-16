@@ -15,15 +15,8 @@ class Food extends StatefulWidget {
   final Tile tile;
   final String? meal;
   final DateTime? date;
-  final BuildContext? dairyContext;
 
-  const Food({
-    super.key,
-    required this.tile,
-    this.meal,
-    this.date,
-    this.dairyContext,
-  });
+  const Food({super.key, required this.tile, this.meal, this.date});
 
   @override
   State<Food> createState() => _FoodState();
@@ -41,8 +34,6 @@ class _FoodState extends State<Food> with TickerProviderStateMixin {
       ),
     );
     tabController = TabController(length: 2, vsync: this);
-    BlocProvider.of<FoodCubit>(context).getFood();
-    BlocProvider.of<RecipesCubit>(context).getRecipes();
     super.initState();
   }
 
@@ -84,12 +75,7 @@ class _FoodState extends State<Food> with TickerProviderStateMixin {
         controller: tabController,
         children: [
           widget.tile == Tile.addDairy || widget.tile == Tile.removeDairy
-              ? FoodTab(
-                  tile: widget.tile,
-                  date: widget.date,
-                  meal: widget.meal,
-                  refreshContext: widget.dairyContext,
-                )
+              ? FoodTab(tile: widget.tile, date: widget.date, meal: widget.meal)
               : FoodTab(tile: widget.tile, refreshContext: context),
           widget.tile == Tile.addDairy || widget.tile == Tile.removeDairy
               ? RecipeTab(
@@ -117,10 +103,7 @@ class _FoodState extends State<Food> with TickerProviderStateMixin {
                     await Navigator.pushNamed(
                       context,
                       Routes.createRecipeRoute,
-                      arguments: CreateRecipe(
-                        ingredients: ingredients,
-                        refreshContext: context,
-                      ),
+                      arguments: CreateRecipe(ingredients: ingredients),
                     );
                   }
                 }

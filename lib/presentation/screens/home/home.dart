@@ -72,7 +72,6 @@ class _HomeState extends State<Home> {
         systemNavigationBarColor: ConstColors.main,
       ),
     );
-    BlocProvider.of<HomeCubit>(context).getDay();
     super.initState();
   }
 
@@ -506,7 +505,7 @@ class _HomeState extends State<Home> {
                             ),
                           ),
                         ),
-                        MealWrapper(
+                        Meal(
                           key: ValueKey(
                             '${day.date}_Breakfast_${idGenerator()}',
                           ),
@@ -516,7 +515,7 @@ class _HomeState extends State<Home> {
                           isFree: day.isFree,
                           date: day.date,
                         ),
-                        MealWrapper(
+                        Meal(
                           key: ValueKey('${day.date}_Lunch_${idGenerator()}'),
                           icon: Icons.lunch_dining,
                           meal: "Lunch",
@@ -524,7 +523,7 @@ class _HomeState extends State<Home> {
                           isFree: day.isFree,
                           date: day.date,
                         ),
-                        MealWrapper(
+                        Meal(
                           key: ValueKey('${day.date}_Dinner_${idGenerator()}'),
                           icon: Icons.dinner_dining,
                           meal: "Dinner",
@@ -532,7 +531,7 @@ class _HomeState extends State<Home> {
                           isFree: day.isFree,
                           date: day.date,
                         ),
-                        MealWrapper(
+                        Meal(
                           key: ValueKey('${day.date}_Snacks_${idGenerator()}'),
                           icon: Icons.local_pizza,
                           meal: "Snacks",

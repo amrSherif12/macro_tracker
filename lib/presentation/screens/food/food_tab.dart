@@ -38,7 +38,7 @@ class _FoodTabState extends State<FoodTab> {
               return Column(
                 children: [
                   index == 0 ? const SizedBox(height: 20) : const SizedBox(),
-                  FoodTileWrapper(
+                  FoodTile(
                     food: state.food[index],
                     tile: widget.tile,
                     date: widget.date,

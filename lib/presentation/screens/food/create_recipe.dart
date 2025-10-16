@@ -7,16 +7,10 @@ import '../../../data/models/recipe_model.dart';
 import '../../widgets/ingredients_amounts.dart';
 
 class CreateRecipe extends StatefulWidget {
-  final BuildContext refreshContext;
   final List<FoodModel> ingredients;
   final RecipeModel? recipe;
 
-  const CreateRecipe({
-    super.key,
-    required this.ingredients,
-    required this.refreshContext,
-    this.recipe,
-  });
+  const CreateRecipe({super.key, required this.ingredients, this.recipe});
 
   @override
   State<CreateRecipe> createState() => _CreateRecipeState();
@@ -66,7 +60,6 @@ class _CreateRecipeState extends State<CreateRecipe> {
                         isScrollControlled: true,
                         builder: (context) {
                           return IngredientsAmounts(
-                            refreshContext: widget.refreshContext,
                             items: widget.ingredients
                                 .where((food) => chosen.contains(food.id))
                                 .toList(),

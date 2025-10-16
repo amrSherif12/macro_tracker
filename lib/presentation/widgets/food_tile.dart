@@ -12,39 +12,6 @@ import 'package:testt/presentation/widgets/food_amount.dart';
 
 import '../../constants/strings.dart';
 
-class FoodTileWrapper extends StatelessWidget {
-  final FoodModel food;
-  final Tile tile;
-  final DateTime? date;
-  final String? meal;
-  final List<String>? saved;
-
-  const FoodTileWrapper({
-    super.key,
-    required this.food,
-    required this.tile,
-    this.date,
-    this.saved,
-    this.meal,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider.value(value: context.read<FoodCubit>()),
-        BlocProvider.value(value: context.read<HomeCubit>()),
-      ],
-      child: FoodTile(
-        food: food,
-        tile: tile,
-        date: date,
-        saved: saved,
-        meal: meal,
-      ),
-    );
-  }
-}
 
 class FoodTile extends StatefulWidget {
   final FoodModel food;
@@ -166,17 +133,10 @@ class _FoodTileState extends State<FoodTile> {
                           );
                         } else if (widget.tile == Tile.search) {
                           if (widget.saved!.contains(widget.food.id!)) {
-                            FoodRepository.instance.saveFood(
-                              widget.food.id!,
-                              isRecipe: false,
-                              unSave: true,
-                            );
+                            BlocProvider.of<FoodCubit>(context).deleteFood(context, widget.food.id!, unSave: true);
                             widget.saved!.remove(widget.food.id!);
                           } else {
-                            FoodRepository.instance.saveFood(
-                              widget.food.id!,
-                              isRecipe: false,
-                            );
+                            BlocProvider.of<FoodCubit>(context).saveFood(widget.food);
                             widget.saved!.add(widget.food.id!);
                           }
                           setState(() {});
@@ -185,7 +145,7 @@ class _FoodTileState extends State<FoodTile> {
                             backgroundColor: Colors.green[300],
                             context: context,
                             builder: (context) {
-                              return FoodAmountWrapper(
+                              return FoodAmount(
                                 consumable: widget.food,
                                 date: widget.date!,
                                 meal: widget.meal!,
